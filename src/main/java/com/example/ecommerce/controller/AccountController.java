@@ -27,50 +27,50 @@ public class AccountController {
 
     @GetMapping("/login")
     public String login() {
-        return "accounts/login"; // trả về view login.html (thymeleaf hoặc jsp)
+        return "accounts/login";
     }
 
-    @PostMapping("/login")
-    public String loginPost(
-            @RequestParam String email,
-            @RequestParam String password,
-            Model model,
-            HttpSession session) {
+    // @PostMapping("/login")
+    // public String loginPost(
+    //         @RequestParam String email,
+    //         @RequestParam String password,
+    //         Model model,
+    //         HttpSession session) {
 
-        User user = userRepository.findByEmail(email);
+    //     User user = userRepository.findByEmail(email);
 
-        if (user == null || !BCrypt.checkpw(password, user.getPasswordHash())) {
-            model.addAttribute("error", "Email hoặc mật khẩu không đúng!");
-            return "accounts/login";
-        }
+    //     if (user == null || !BCrypt.checkpw(password, user.getPasswordHash())) {
+    //         model.addAttribute("error", "Email hoặc mật khẩu không đúng!");
+    //         return "accounts/login";
+    //     }
 
-        if (user.isLocked()) {
-            model.addAttribute("error", "Tài khoản của bạn đã bị khóa!");
-            return "accounts/login";
-        }
+    //     if (user.isLocked()) {
+    //         model.addAttribute("error", "Tài khoản của bạn đã bị khóa!");
+    //         return "accounts/login";
+    //     }
 
-        // Lưu thông tin user vào session
-        session.setAttribute("userId", user.getUserId());
-        session.setAttribute("userName", user.getFullName() != null ? user.getFullName() : "User");
+    //     // Lưu thông tin user vào session
+    //     session.setAttribute("userId", user.getUserId());
+    //     session.setAttribute("userName", user.getFullName() != null ? user.getFullName() : "User");
 
-        String roleName;
-        switch (user.getRoleId()) {
-            case 1:
-                roleName = "Admin";
-                break;
-            case 2:
-                roleName = "Customer";
-                break;
-            default:
-                roleName = "Customer";
-        }
-        session.setAttribute("role", roleName);
+    //     String roleName;
+    //     switch (user.getRoleId()) {
+    //         case 1:
+    //             roleName = "Admin";
+    //             break;
+    //         case 2:
+    //             roleName = "Customer";
+    //             break;
+    //         default:
+    //             roleName = "Customer";
+    //     }
+    //     session.setAttribute("role", roleName);
 
-        // Có thể lưu thêm thời gian hết hạn hoặc xử lý đăng nhập nâng cao ở đây
+    //     // Có thể lưu thêm thời gian hết hạn hoặc xử lý đăng nhập nâng cao ở đây
 
-        model.addAttribute("loginSuccess", "Đăng nhập thành công!");
-        return "redirect:/products";
-    }
+    //     model.addAttribute("loginSuccess", "Đăng nhập thành công!");
+    //     return "redirect:/index";
+    // }
     
     @GetMapping("/register")
     public String showRegisterForm() {

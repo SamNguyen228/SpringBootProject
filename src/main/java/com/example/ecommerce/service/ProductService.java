@@ -30,4 +30,22 @@ public class ProductService {
     public void deleteById(Integer id) {
         productRepository.deleteById(id);
     }
+
+    public Product findById(Integer id) {
+        return productRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm với ID: " + id));
+    }
+
+    public Product getProductById(int id) {
+        return productRepository.findById(id).orElse(null);
+    }
+
+    public List<Product> getRelatedProducts(int productId, int categoryId) {   
+        // Lấy sản phẩm đang xem
+        Product currentProduct = productRepository.findById(productId)
+            .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        // Lấy 4 sản phẩm cùng danh mục (khác id hiện tại)
+        return productRepository.findTop4ByCategoryAndProductIdNot(currentProduct.getCategory(), productId);
+    }
 }

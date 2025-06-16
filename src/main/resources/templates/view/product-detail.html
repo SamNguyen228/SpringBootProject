@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments/head :: page_head('Chi Tiết Sản Phẩm')}"></head>
+<body>
+    <!-- HEADER -->
+	<header th:replace="~{fragments/header :: page_header}"></header>
+	<!-- /HEADER -->
+
+	<!-- NAVIGATION -->
+	<nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
+	<!-- /NAVIGATION -->
+
+    <!-- SECTION -->
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <!-- Hình ảnh chính -->
+                <div class="col-md-5 col-md-push-2">
+                    <div id="product-main-img">
+                        <div class="product-preview" th:each="i : ${#numbers.sequence(1, 4)}">
+                            <img th:src="@{${productDetail.HinhAnh}}" alt="">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thumbnail -->
+                <div class="col-md-2 col-md-pull-5">
+                    <div id="product-imgs">
+                        <div class="product-preview" th:each="i : ${#numbers.sequence(1, 4)}">
+                            <img th:src="${productDetail.HinhAnh}" alt="">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thông tin sản phẩm -->
+                <div class="col-md-5">
+                    <div class="product-details">
+                        <h2 class="product-name" th:text="${productDetail.TenSP}"></h2>
+
+                        <div>
+                            <!-- Đánh giá ở đây có thể là một fragment hoặc component sau -->
+                            <div th:replace="~{fragments/partial-rating :: partialRating(${averageRating})}"></div>
+                            <a class="review-link" href="#tab3" onclick="openTab('tab3')">| Thêm đánh giá |</a>
+                        </div>
+
+                        <div>
+                            <h3 class="product-price" th:text="'$' + ${productDetail.Gia}"></h3>
+                            <span class="product-available">Còn hàng</span>
+                        </div>
+
+                        <p th:text="${productDetail.MoTa}"></p>
+                        <p th:inline="text">Còn: <b>[[${productDetail.SoLuongTon}]]</b> sản phẩm.</p>
+
+                        <div class="product-options">
+                            <!-- Dung Lượng -->
+                           <label>
+                                Dung Lượng
+                                <select class="input-select">
+                                    <th:block th:if="${#lists.isEmpty(capacities)}">
+                                        <option value="0">N/A</option>
+                                    </th:block>
+                                    <th:block th:each="capacity : ${capacities}">
+                                        <option th:value="${capacity}" th:text="${capacity}"></option>
+                                    </th:block>
+                                </select>
+                            </label>
+
+                            <!-- Màu Sắc -->
+                            <label>
+                                Màu Sắc
+                                <select class="input-select">
+                                    <th:block th:if="${#lists.isEmpty(colors)}">
+                                        <option value="0">N/A</option>
+                                    </th:block>
+                                    <th:block th:each="color : ${colors}">
+                                        <option th:value="${color}" th:text="${color}"></option>
+                                    </th:block>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="add-to-cart">
+                            <form th:action="@{/cart/add/{id}(id=${productDetail.MaSP})}" method="post">
+                                <input type="hidden" name="id" th:value="${productDetail.MaSP}" />
+                                <div class="qty-label">
+                                    Số lượng
+                                    <div class="input-number">
+                                        <input type="number" name="quantity" value="1" min="1">
+                                        <button class="qty-up" type="button">+</button>
+                                        <button class="qty-down" type="button">-</button>
+                                    </div>
+                                </div>
+                                <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Thêm vào giỏ</button>
+                            </form>
+                        </div>
+
+                        <ul class="product-links">
+                            <li>Danh mục:</li>
+                            <li>
+                                <a th:href="@{/products(loai=${productDetail.MaLoai})}" th:text="${productDetail.TenLoai}"></a>
+                            </li>
+                        </ul>
+
+                        <ul class="product-links">
+                            <li>Chia sẻ:</li>
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                            <li><a href="#"><i class="fa fa-envelope"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="col-md-12">
+                    <div id="product-tab">
+                        <ul class="tab-nav">
+                            <li class="active"><a data-toggle="tab" href="#tab1">Mô tả</a></li>
+                            <li><a data-toggle="tab" href="#tab2">Chi tiết</a></li>
+                            <li><a data-toggle="tab" href="#tab3">Đánh giá</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div id="tab1" class="tab-pane fade in active">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p th:text="${productDetail.MoTa}" style="text-align: center;"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="tab2" class="tab-pane fade in">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tên sản phẩm</th>
+                                                    <th>Màu sắc</th>
+                                                    <th>Dung lượng</th>
+                                                    <th>Giá</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td th:text="${productDetail.TenSP}"></td>
+                                                    <td th:text="${productDetail.MauSac}">-</td>
+                                                    <td th:text="${productDetail.DungLuong}">-</td>
+                                                    <td th:text="'$' + ${productDetail.Gia}"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- tab3 -->
+                            <div id="tab3" class="tab-pane fade">
+                                <div class="row">
+                                    <!-- Rating & Reviews -->
+                                   <div th:replace="~{fragments/review :: reviewFragment(${reviews}, ${averageRating}, ${starCounts}, ${totalReviews})}"></div>
+                                    <!-- <div th:replace="~{fragments/review :: reviewFragment}"></div> -->
+                                    <!-- /Rating & Reviews -->
+
+                                    <!-- Review Form -->
+                                    <div class="col-md-3">
+                                        <div th:if="${productDetail.daMuaHang}">
+                                            <div th:if="${productDetail.choPhepDanhGia}">
+                                                <div id="review-form">
+                                                    <form class="review-form" th:action="@{/api/reviews}" method="post">
+                                                        <input class="input" type="text" id="name" name="name" placeholder="Your Name" required />
+                                                        <input class="input" type="email" id="email" name="email" placeholder="Your Email" required />
+                                                        <textarea class="input" id="review" name="review" placeholder="Your Review" required></textarea>
+                                                        <input type="hidden" id="productId" name="productId" th:value="${productDetail.maSP}" />
+                                                        <div class="input-rating">
+                                                            <span>Your Rating: </span>
+                                                            <div class="stars">
+                                                                <input id="star5" name="rating" value="5" type="radio"><label for="star5"></label>
+                                                                <input id="star4" name="rating" value="4" type="radio"><label for="star4"></label>
+                                                                <input id="star3" name="rating" value="3" type="radio"><label for="star3"></label>
+                                                                <input id="star2" name="rating" value="2" type="radio"><label for="star2"></label>
+                                                                <input id="star1" name="rating" value="1" type="radio"><label for="star1"></label>
+                                                            </div>
+                                                        </div>
+                                                        <button type="submit" class="primary-btn">Submit</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div th:unless="${productDetail.choPhepDanhGia}">
+                                                <p class="text-success font-weight-bold">Bạn đã đánh giá sản phẩm này. Mua thêm để được đánh giá tiếp.</p>
+                                            </div>
+                                        </div>
+                                        <div th:unless="${productDetail.daMuaHang}">
+                                            <p class="text-danger font-weight-bold">Bạn cần mua sản phẩm này để có thể đánh giá.</p>
+                                        </div>
+                                    </div>
+                                    <!-- /Review Form -->
+                                </div>
+                            </div>
+                            <!-- /tab3 -->
+                        </div>
+                    </div>
+                </div>
+                <!-- /Tabs -->
+            </div>
+        </div>
+    </div>
+    <!-- /SECTION -->
+
+    <!-- Section -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="section-title text-center">
+                        <h3 class="title">Sản Phẩm Liên Quan</h3>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-xs-6" th:each="item : ${relatedProducts}">
+                    <div class="product">
+                        <a class="product-img" th:href="@{/product/detail/{id}(id=${item.productId})}">
+                            <img th:src="@{${item.imageUrl}}" alt="">
+                        </a>
+                        <div class="product-body">
+                            <p class="product-category" th:text="${item.category.categoryName}">Category</p>
+                            <h3 class="product-name">
+                                <a th:href="@{/product/detail/{id}(id=${item.productId})}" th:text="${item.productName}">Tên sản phẩm</a>
+                            </h3>
+                            <h4 class="product-price">
+                                <span th:text="'$' + ${item.price}">$0.00</span>
+                                <del class="product-old-price">$990.00</del>
+                            </h4>
+                            <div class="product-btns">
+                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                            </div>
+                        </div>
+                        <div class="add-to-cart">
+                            <form th:action="@{/cart/add/{id}(id=${item.productId})}" method="post">
+                                <input type="hidden" name="id" th:value="${item.productId}" />
+                                <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Thêm vào giỏ</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="clearfix visible-sm visible-xs"></div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /Section -->
+
+    <!-- FOOTER -->
+	<footer th:replace="~{fragments/footer :: page_footer}"></footer> 
+	<!-- /FOOTER -->
+
+    <script>
+        function openTab(tabId) {
+            // Ẩn tất cả các tab
+            document.querySelectorAll('.tab-pane').forEach(tab => {
+                tab.classList.remove('in', 'active');
+            });
+            // Hiển thị tab được chọn
+            document.getElementById(tabId).classList.add('in', 'active');
+        }
+
+        // Mặc định mở tab mô tả
+        openTab('tab1'); 
+        document.addEventListener("DOMContentLoaded", function () {
+			// Lấy URL hiện tại
+			let currentLocation = window.location.pathname;
+		
+			// Lấy tất cả các mục menu
+			let menuItems = document.querySelectorAll(".main-nav li");
+		
+			menuItems.forEach(item => {
+				let link = item.querySelector("a");
+				if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
+					// Xóa class "active" khỏi tất cả menu
+					menuItems.forEach(i => i.classList.remove("active"));
+					// Thêm class "active" vào mục phù hợp
+					item.classList.add("active");
+				}
+			});
+		});
+	</script>
+
+    <!-- Thêm/Giảm SP  -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const qtyUps = document.querySelectorAll(".qty-up");
+            const qtyDowns = document.querySelectorAll(".qty-down");
+
+            qtyUps.forEach(button => {
+                button.addEventListener("click", function () {
+                    const input = this.parentElement.querySelector("input[name='quantity']");
+                    let value = parseInt(input.value) || 1;
+                    input.value = value + 1;
+                });
+            });
+
+            qtyDowns.forEach(button => {
+                button.addEventListener("click", function () {
+                    const input = this.parentElement.querySelector("input[name='quantity']");
+                    let value = parseInt(input.value) || 1;
+                    if (value > 1) input.value = value - 1;
+                });
+            });
+        });
+    </script>
+
+    <!-- Đánh Giá -->
+    <script>
+        $(document).ready(function () {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                }
+            });
+
+            $(".review-form").submit(function (event) {
+                event.preventDefault();
+
+                var name = $("#name").val().trim();
+                var email = $("#email").val().trim();
+                var review = $("#review").val().trim();
+                var rating = $("input[name='rating']:checked").val();
+                var productId = $("#productId").val();
+
+                if (!name || !email || !review) {
+                    alert("Vui lòng điền đầy đủ thông tin!");
+                    return;
+                }
+
+                if (!rating) {
+                    alert("Vui lòng chọn số sao đánh giá!");
+                    return;
+                }
+
+                $.ajax({
+                    url: "/api/reviews",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        tenKhachHang: name,
+                        email: email,
+                        noiDung: review,
+                        danhGia: parseInt(rating),
+                        maSanPham: parseInt(productId)
+                    }),
+                    success: function (response) {
+                        alert("Cảm ơn bạn đã đánh giá!");
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                        alert("Lỗi: " + xhr.responseText || "Gửi đánh giá thất bại.");
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!-- Bootstrap JS -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- Slick Carousel JS -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+	<!-- Custom JS -->
+	<script src="/js/main.js"></script>
+    <!-- jQuery Plugins -->
+	<script src="/js/jquery.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/slick.min.js"></script>
+	<script src="/js/nouislider.min.js"></script>
+	<script src="/js/jquery.zoom.min.js"></script>
+	<script src="/js/main.js"></script>
+</body>
+</html>

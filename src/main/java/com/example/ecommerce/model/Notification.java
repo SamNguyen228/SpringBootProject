@@ -9,16 +9,49 @@ public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "notification_id")
     private Integer notificationId;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "content")
     private String content;
 
-    @Column(nullable = false)
+    @Column(name = "is_read", nullable = false)
     private boolean isRead;
 
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    // Constructors, getters, setters (hoặc dùng Lombok)
+    // ===== Getters and Setters =====
+
+    public Integer getNotificationId() {
+        return notificationId;
+    }
+
+    public void setNotificationId(Integer notificationId) {
+        this.notificationId = notificationId;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean isRead) {
+        this.isRead = isRead;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }

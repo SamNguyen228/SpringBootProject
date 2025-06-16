@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: page_head('Đặt Hàng Thành Công')"></head>
+<body>
+    <!-- HEADER -->
+	<header th:replace="~{fragments/header :: page_header}"></header>
+	<!-- /HEADER -->
+
+	<!-- NAVIGATION -->
+	<nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
+	<!-- /NAVIGATION -->
+    <br> <br>
+    <div class="container mt-4" th:if="${order != null}">
+        <h2 class="text-center text-success">🎉 Cảm ơn bạn đã đặt hàng! 🎉</h2>
+
+        <div class="card p-4 mt-3 shadow">
+            <p><strong>Mã đơn hàng:</strong> #<span th:text="${order.orderId}"></span></p>
+            <p>
+                <strong>Trạng thái:</strong>
+                <span th:classappend="'badge bg-' + (${order.status} == 'Completed' ? 'success' : (${order.status} == 'Pending' ? 'warning' : 'danger'))">
+                    <span th:text="${order.status}"></span>
+                </span>
+            </p>
+            <p><strong>Ngày đặt hàng:</strong> <span th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy')}"></span></p>
+        </div>
+
+        <h3 class="mt-4">🛒 Chi tiết đơn hàng:</h3>
+        <table class="table table-bordered table-hover mt-2">
+            <thead class="table-dark">
+            <tr>
+                <th>Sản phẩm</th>
+                <th class="text-end">Giá</th>
+                <th class="text-center">Số lượng</th>
+                <th class="text-end">Tổng</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${order.orderDetails}">
+                <td th:text="${item.product.productName}"></td>
+                <td class="text-end" th:text="${#numbers.formatCurrency(item.price)}"></td>
+                <td class="text-center" th:text="${item.quantity}"></td>
+                <td class="text-end" th:text="${#numbers.formatCurrency(item.price * item.quantity)}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="text-end">
+            <h5 class="text-success" th:if="${order.discountAmount > 0}">
+                🎁 Giảm giá: -<span th:text="${#numbers.formatCurrency(order.discountAmount)}"></span>
+            </h5>
+            <h3 class="text-danger mt-3">💰 Tổng tiền: <span th:text="${#numbers.formatCurrency(order.totalAmount)}"></span></h3>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-primary">
+                <i class="bi bi-house-door"></i> Quay về trang chủ
+            </a>
+        </div>
+    </div>
+    <br> <br>
+    
+    <!-- FOOTER -->
+	<footer th:replace="~{fragments/footer :: page_footer}"></footer> 
+	<!-- /FOOTER -->
+</body>
+</html>

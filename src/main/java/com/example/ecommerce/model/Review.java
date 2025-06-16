@@ -11,23 +11,72 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer reviewId;
 
-    @Column(nullable = false)
-    private Integer rating;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
+    private int rating;
 
     @Column(columnDefinition = "TEXT")
     private String reviewText;
 
     private LocalDateTime createdAt;
 
-    // Quan hệ N-1 với Product
-    @ManyToOne
-    @JoinColumn(name = "productId", nullable = false)
-    private Product product;
+    // Constructors
+    public Review() {
+    }
 
-    // Quan hệ N-1 với User
-    @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
-    private User user;
+    // Getters and setters
 
-    // Constructors, getters, setters (hoặc dùng Lombok)
+    public Integer getReviewId() {
+        return reviewId;
+    }
+
+    public void setReviewId(Integer reviewId) {
+        this.reviewId = reviewId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public String getReviewText() {
+        return reviewText;
+    }
+
+    public void setReviewText(String reviewText) {
+        this.reviewText = reviewText;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }

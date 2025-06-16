@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sản Phẩm</title>
+</head>
+<body>
+
+<h4>Có <b th:text="${#lists.size(products)}">0</b> sản phẩm</h4>
+
+<div class="row" th:fragment="product_list">
+    <div class="col-md-4 col-xs-6" th:each="item : ${products}">
+        <div class="product">
+            <a class="product-img" th:href="@{/products/detail/{id}(id=${item.maSP})}">
+                <img th:src="${item.hinhAnh}" alt="">
+            </a>
+            <div class="product-body">
+                <p class="product-category" th:text="${item.tenLoai}">Loại</p>
+                <h3 class="product-name">
+                    <a th:href="@{/products/detail/{id}(id=${item.maSP})}" th:text="${item.tenSP}">Tên sản phẩm</a>
+                </h3>
+                <h4 class="product-price">
+                    <span th:text="'$' + ${item.gia}">0.00</span>
+                </h4>
+            </div>
+            <div class="add-to-cart">
+                <form th:action="@{/cart/add/{id}(id=${item.maSP})}" method="post">
+                    <input type="hidden" name="quantity" value="1" />
+                    <button class="add-to-cart-btn">
+                        <i class="fa fa-shopping-cart"></i> Thêm vào giỏ
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

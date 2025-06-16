@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div th:fragment="searchPanel">
+        <form th:action="@{/product/search}" method="get">
+            <select class="input-select">
+                <!-- Option -->
+            </select>
+            <input type="search" id="searchText" class="input" placeholder="Tìm kiếm sản phẩm..." name="query">
+            <button class="search-btn" id="searchButton"><i class="fa fa-search"></i></button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<div th:fragment="partialRating(averageRating)">
+    <span th:text="${#numbers.formatDecimal(averageRating, 1, 1)}">0.0</span>
+    <div class="product-rating"
+         th:with="floorRating=${T(java.lang.Math).floor(averageRating)},
+                  ceilRating=${T(java.lang.Math).ceil(averageRating)},
+                  decimalPart=${averageRating % 1.0}">
+        <th:block th:each="i : ${#numbers.sequence(1,5)}">
+            <i class="fa fa-star"
+               th:if="${i <= floorRating}"></i>
+            <i class="fa fa-star-half-o"
+               th:if="${i == ceilRating and decimalPart >= 0.5 and i > floorRating}"></i>
+            <i class="fa fa-star-o"
+               th:if="${i > ceilRating or (i > floorRating and (i != ceilRating or decimalPart < 0.5))}"></i>
+        </th:block>
+    </div>
+</div>
+</body>
+</html>

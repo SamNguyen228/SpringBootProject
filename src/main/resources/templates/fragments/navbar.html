@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+    <!-- NAVIGATION -->
+    <nav id="navigation" th:fragment="page_navbar">
+        <!-- container -->
+        <div class="container">
+            <!-- responsive-nav -->
+            <div id="responsive-nav">
+                <!-- NAV -->
+                <ul class="main-nav nav navbar-nav">
+                    <!-- @if (User.IsInRole("Admin"))
+                    {
+                        <li class="active"><a asp-controller="Home" asp-action="Index">Trang Chủ</a></li>
+                        <li><a asp-controller="Home" asp-action="HotDeal">Ưu Đãi</a></li>
+                        <li><a asp-controller="Product" asp-action="Index">Danh Mục</a></li>
+                        <li><a asp-controller="Home" asp-action="Contact">Liên Hệ</a></li>
+                        <li><a asp-controller="Home" asp-action="DashBoard">Bảng Điều Khiển</a></li>
+                    }
+                    else -->
+                    
+                    <li class="active"><a th:href="@{/index}">Trang Chủ</a></li>
+                    <li><a th:href="@{/hotdeal}">Ưu Đãi</a></li>
+                    <li><a th:href="@{/products}">Danh Mục</a></li>
+                    <li><a th:href="@{/cart}">Giỏ Hàng</a></li>
+                    <li><a th:href="@{/order-history}">Lịch Sử Đặt Hàng</a></li>
+                    <li><a th:href="@{/contact}">Liên Hệ</a></li>
+                </ul>
+                <!-- /NAV -->
+            </div>
+            <!-- /responsive-nav -->
+        </div>
+        <!-- /container -->
+    </nav>
+    <!-- /NAVIGATION -->
+</body>
+</html>

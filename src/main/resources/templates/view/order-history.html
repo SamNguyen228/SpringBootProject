@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments/head :: page_head('Lịch Sử Đặt Hàng')">
+    <title>Lịch Sử Đặt Hàng</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap-icons.css}" />
+</head>
+<body>
+    <!-- HEADER -->
+	<header th:replace="~{fragments/header :: page_header}"></header>
+	<!-- /HEADER -->
+
+	<!-- NAVIGATION -->
+	<nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
+	<!-- /NAVIGATION -->
+
+    <br> <br>
+    <div class="container mt-4">
+        <h2 class="text-center mb-4 text-primary">Lịch Sử Đặt Hàng</h2>
+
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Mã Đơn</th>
+                    <th>Ngày Đặt</th>
+                    <th>Tổng Tiền</th>
+                    <th>Trạng Thái</th>
+                    <th>Chi Tiết</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.orderId}">1</td>
+                <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy')}"></td>
+                <td th:text="${#numbers.formatCurrency(order.totalAmount)}">0 VND</td>
+                <td>
+                    <span class="badge"
+                        th:classappend="'bg-' + ${order.status == 'Pending' ? 'warning' :
+                                                order.status == 'Processing' ? 'primary' :
+                                                order.status == 'Shipped' ? 'info' :
+                                                order.status == 'Completed' ? 'success' :
+                                                order.status == 'Cancelled' ? 'danger' : 'secondary'}"
+                        th:text="${order.status == 'Pending' ? 'Chờ xác nhận' :
+                                    order.status == 'Processing' ? 'Đang xử lý' :
+                                    order.status == 'Shipped' ? 'Đã giao hàng' :
+                                    order.status == 'Completed' ? 'Hoàn thành' :
+                                    order.status == 'Cancelled' ? 'Đã hủy' : 'Không xác định'}">
+                    </span>
+                </td>
+                <td>
+                    <a th:href="@{'/order-detail/' + ${order.orderId}}" class="btn btn-info btn-sm">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+	<footer th:replace="~{fragments/footer :: page_footer}"></footer> 
+	<!-- /FOOTER -->
+
+    <script>
+		document.addEventListener("DOMContentLoaded", function () {
+				// Lấy URL hiện tại
+				let currentLocation = window.location.pathname;
+		
+				// Lấy tất cả các mục menu
+				let menuItems = document.querySelectorAll(".main-nav li");
+		
+				menuItems.forEach(item => {
+					let link = item.querySelector("a");
+					if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
+						// Xóa class "active" khỏi tất cả menu
+						menuItems.forEach(i => i.classList.remove("active"));
+						// Thêm class "active" vào mục phù hợp
+						item.classList.add("active");
+					}
+				});
+			});
+		</script>
+</body>
+</html>

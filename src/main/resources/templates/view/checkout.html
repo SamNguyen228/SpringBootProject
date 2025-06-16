@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: page_head('Thanh Toán')}"></head>
+<body>
+    <!-- HEADER -->
+	<header th:replace="~{fragments/header :: page_header}"></header>
+	<!-- /HEADER -->
+
+	<!-- NAVIGATION -->
+	<nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
+	<!-- /NAVIGATION -->
+
+    <div th:if="${checkoutModel.cartItems.isEmpty()}">
+        <div class="alert alert-warning text-center">
+            <h4>Giỏ hàng của bạn đang trống. Vui lòng thêm sản phẩm trước khi thanh toán.</h4>
+        </div>
+    </div>
+    <div th:if="${!checkoutModel.cartItems.isEmpty()}">
+        <div class="section">
+            <div class="container">
+                <div class="row">
+                    <form th:action="@{/process}" method="post" id="checkoutForm">
+                        <input type="hidden" name="promotionId" id="promotionId" value="" />
+                        <div class="col-md-7">
+                            <div class="billing-details">
+                                <div class="section-title">
+                                    <h3 class="title">Địa Chỉ Thanh Toán</h3>
+                                </div>
+                                <div class="form-group">
+                                    <input class="input" id="fullName" th:value="${checkoutModel.fullName}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <input class="input" id="email" th:value="${checkoutModel.email}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <input class="input" id="address" name="address" th:value="${checkoutModel.address}" placeholder="Chưa có địa chỉ giao hàng">
+                                </div>
+                                <div class="form-group">
+                                    <input class="input" id="phone" th:value="${checkoutModel.phone}" readonly>
+                                </div> 
+                            </div>
+                        </div>
+
+                        <div class="col-md-5 order-details">
+                            <div class="section-title text-center">
+                                <h3 class="title">Đơn Hàng Của Bạn</h3>
+                            </div>
+                            <div class="order-summary">
+                                <div class="order-col">
+                                    <div><strong>SẢN PHẨM</strong></div>
+                                    <div><strong>TỔNG</strong></div>
+                                </div>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Ảnh</th>
+                                            <th>Sản phẩm</th>
+                                            <th>Giá</th>
+                                            <th>Số lượng</th>
+                                            <th>Tổng</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="item : ${checkoutModel.cartItems}">
+                                        <td><img th:src="@{${item.hinhAnh}}" width="50" height="50" /></td>
+                                        <td th:text="${item.tenSP}"></td>
+                                        <td th:text="${#numbers.formatCurrency(item.gia)}"></td>
+                                        <td th:text="${item.soLuong}"></td>
+                                        <td th:text="${#numbers.formatCurrency(item.gia * item.soLuong)}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="coupon order-col">
+                                    <input type="text" id="promoCode" class="input" placeholder="Nhập mã giảm giá"> <br> <br>
+                                    <button type="button" class="primary-btn" onclick="applyPromo()">Áp dụng</button>
+                                </div>  
+                                <div class="order-col">
+                                    <div>Giao Hàng:</div>
+                                    <span th:text="'Miễn phí'"></span>
+                                </div>
+                                <div class="order-col">
+                                    <div>Giảm giá:</div> 
+                                    <span id="discountAmount">- $0.00</span>
+                                </div>
+                                <div class="order-col">
+                                    <div><strong>Tổng cộng:</strong></div>  
+                                    <div><strong class="order-total" id="totalAmount" th:text="'$' + ${#numbers.formatDecimal(checkoutModel.totalAmount, 0, 'COMMA', 0, 'POINT')}"></strong></div>
+                                </div>
+                            </div>
+                            <div class="payment-method">
+                                <div class="input-radio">
+                                    <input type="radio" name="payment" id="payment-1">
+                                    <label for="payment-1"><span></span>Chuyển khoản ngân hàng</label>
+                                </div>
+                                <div class="input-radio">
+                                    <input type="radio" name="payment" id="payment-2">
+                                    <label for="payment-2"><span></span>Thanh toán khi nhận hàng</label>
+                                </div>
+                                <div class="input-radio">
+                                    <input type="radio" name="payment" id="payment-3">
+                                    <label for="payment-3"><span></span>Hệ thống Paypal</label>
+                                </div>
+                            </div>
+
+                            <div class="input-checkbox">
+                                <input type="checkbox" id="terms">
+                                <label for="terms"><span></span> Tôi đã đọc và đồng ý với <a href="#">điều khoản & điều kiện</a></label>
+                            </div>
+
+                            <button type="submit" class="primary-btn order-submit" onclick="return validateForm()">Đặt Hàng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div id="newsletter" class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="newsletter">
+                        <p>Sign Up for the <strong>NEWSLETTER</strong></p>
+                        <form>
+                            <input class="input" type="email" placeholder="Enter Your Email">
+                            <button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
+                        </form>
+                        <ul class="newsletter-follow">
+                            <li>
+                                <a href="#"><i class="fa fa-facebook"></i></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-twitter"></i></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-instagram"></i></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-pinterest"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /NEWSLETTER -->
+
+    <!-- FOOTER -->
+	<footer th:replace="~{fragments/footer :: page_footer}"></footer> 
+	<!-- /FOOTER -->
+
+    <script>
+        function applyPromo() {
+            let promoCode = document.getElementById("promoCode").value.trim();
+            if (!promoCode) {
+                alert("Vui lòng nhập mã giảm giá!");
+                return;
+            }
+
+            // Gửi yêu cầu tới controller: /apply-promotion?code=...
+            fetch('/apply-promotion?code=' + encodeURIComponent(promoCode))
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Lỗi khi gọi server: " + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert("✅ Áp dụng mã giảm giá thành công! Giảm: $" + data.discount.toLocaleString("en-US"));
+
+                        // Hiển thị số tiền giảm giá
+                        document.getElementById("discountAmount").innerText = "- $" + data.discount.toLocaleString("en-US");
+
+                        // Hiển thị tổng tiền sau khi giảm
+                        document.getElementById("totalAmount").innerText = "$" + data.totalAmount.toLocaleString("en-US");
+
+                        // Gán promotionId vào hidden input
+                        document.getElementById("promotionId").value = data.promotionId;
+                    } else {
+                        alert("❌ " + data.message);
+                    }
+                })
+                .catch(err => {
+                    alert("⚠️ Đã xảy ra lỗi khi áp dụng mã giảm giá.");
+                    console.error("Apply promo error:", err);
+                });
+        }
+    </script>
+
+    <script>
+        function validateForm() {
+            const fullNameInput = document.getElementById("fullName");
+            const emailInput = document.getElementById("email");
+            const addressInput = document.getElementById("address");
+            const phoneInput = document.getElementById("phone");
+            const termsCheckbox = document.getElementById("terms");
+            const paymentMethods = document.getElementsByName("payment");
+
+            if (!fullNameInput || !emailInput || !addressInput || !phoneInput || !termsCheckbox) {
+                alert("Thiếu trường dữ liệu trong form. Vui lòng tải lại trang.");
+                return false;
+            }
+
+            const fullName = fullNameInput.value.trim();
+            const email = emailInput.value.trim();
+            const address = addressInput.value.trim();
+            const phone = phoneInput.value.trim();
+            const termsChecked = termsCheckbox.checked;
+
+            // Kiểm tra Họ tên
+            if (fullName.length < 3) {
+                alert("Họ và tên phải có ít nhất 3 ký tự.");
+                return false;
+            }
+
+            // Kiểm tra Email
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailPattern.test(email)) {
+                alert("Email không hợp lệ.");
+                return false;
+            }
+
+            // Kiểm tra Địa chỉ
+            if (address === "") {
+                alert("Địa chỉ không được để trống.");
+                return false;
+            }
+
+            // Kiểm tra Số điện thoại
+            const phonePattern = /^[0-9]{10,}$/;
+            if (!phonePattern.test(phone)) {
+                alert("Số điện thoại không hợp lệ. Phải có ít nhất 10 chữ số.");
+                return false;
+            }
+
+            // Kiểm tra phương thức thanh toán
+            let paymentSelected = false;
+            for (let i = 0; i < paymentMethods.length; i++) {
+                if (paymentMethods[i].checked) {
+                    paymentSelected = true;
+                    break;
+                }
+            }
+            if (!paymentSelected) {
+                alert("Vui lòng chọn phương thức thanh toán.");
+                return false;
+            }
+
+            // Kiểm tra đồng ý điều khoản
+            if (!termsChecked) {
+                alert("Bạn phải đồng ý với điều khoản & điều kiện.");
+                return false;
+            }
+
+            // ✅ Tất cả đều hợp lệ
+            return true;
+        }
+    </script>
+
+    <!-- jQuery Plugins -->
+	<script th:src="@{/js/jquery.min.js}"></script>
+	<script th:src="@{/js/bootstrap.min.js}"></script>
+	<script th:src="@{/js/slick.min.js}"></script>
+	<script th:src="@{/js/nouislider.min.js}"></script>
+	<script th:src="@{/js/jquery.zoom.min.js}"></script>
+	<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

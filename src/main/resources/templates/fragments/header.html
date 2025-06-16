@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+   <!-- HEADER -->
+	<header th:fragment="page_header">
+		<!-- TOP HEADER -->
+		<div id="top-header">
+			<div class="container">
+				<ul class="header-links pull-left">
+					<li><a href="#"><i class="fa fa-phone"></i> +999999999</a></li>
+					<li><a href="#"><i class="fa fa-envelope-o"></i> applestore@gmail.com</a></li>
+					<li><a href="#"><i class="fa fa-map-marker"></i> Ha Noi</a></li>
+				</ul>
+				<ul class="header-links pull-right">
+					<li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
+
+					<!-- Nếu đã đăng nhập -->
+					<li th:if="${#authorization.expression('isAuthenticated()')}" class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<i class="fa fa-user-o"></i>
+							<span th:text="${#authentication.principal.fullName}">Username</span>
+							<b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu">
+							<li>
+								<form th:action="@{/account/profile}" method="get">
+									<button type="submit" class="dropdown-item btn btn-link">Thông tin cá nhân</button>
+								</form>
+							</li>
+							<li>
+								<form th:action="@{/account/edit}" method="get">
+									<button type="submit" class="dropdown-item btn btn-link">Chỉnh sửa thông tin</button>
+								</form>
+							</li>
+							<li>
+								<form th:action="@{/logout}" method="post">
+									<button type="submit" class="dropdown-item btn btn-link">Đăng xuất</button>
+								</form>
+							</li>
+						</ul>
+					</li>
+
+					<!-- Nếu chưa đăng nhập -->
+					<li th:unless="${#authorization.expression('isAuthenticated()')}">
+						<a th:href="@{/login}">
+							<i class="fa fa-user-o"></i> Đăng Nhập
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- /TOP HEADER -->
+
+		<!-- MAIN HEADER -->
+		<div id="header">
+			<div class="container">
+				<div class="row">
+					<!-- LOGO -->
+					<div class="col-md-3">
+						<div class="header-logo">
+							<a th:href="@{/}" class="logo">
+								<img th:src="@{/img/logo3.png}" alt="Logo" width="260" height="75">
+							</a>
+						</div>
+					</div>
+					<!-- /LOGO -->
+
+					<!-- SEARCH BAR -->
+					<div class="col-md-6">
+						<div class="header-search">
+							<div th:replace="~{fragments/search :: searchPanel}"></div>
+						</div>
+					</div>
+					<!-- /SEARCH BAR -->
+
+					<!-- ACCOUNT AREA -->
+					<div class="col-md-3 clearfix">
+						<div class="header-ctn">
+							<!-- Nếu là Admin -->
+							<div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+								<!-- Thông báo -->
+								<div style="position: relative;">
+									<a href="#" id="notification-btn">
+										<i class="fa fa-bell-o" style="font-size: 20px;"></i>
+										<span>Thông Báo</span>
+										<div class="qty" id="notification-qty">0</div>
+									</a>
+									<div id="notification-list" style="display:none; background:#fff; width: 300px; padding: 15px; position:absolute; top:40px; right:-25px; border:1px solid #ccc; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index:999;">
+										<div class="notification-header" style="font-weight:bold; margin-bottom:10px;">Danh sách thông báo</div>
+										<div id="notification-content" style="max-height: 300px; overflow-y: auto;"></div>
+									</div>
+								</div>
+
+								<!-- Dashboard -->
+								<div style="position: relative;">
+									<a th:href="@{/dashboard}" id="dashboard-btn">
+										<i class="fa fa-gauge" style="font-size: 20px;"></i>
+										<span>Dashboard</span>
+									</a>
+								</div>
+							</div>
+
+							<!-- Nếu không phải Admin -->
+							<div th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+								<!-- <div th:replace="~{fragments/cart-quick :: cartQuick}"></div> -->
+							</div>
+
+							<!-- Menu Toggle -->
+							<div class="menu-toggle">
+								<a href="#">
+									<i class="fa fa-bars"></i>
+									<span>Menu</span>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- /ACCOUNT AREA -->
+				</div>
+			</div>
+		</div>
+		<!-- /MAIN HEADER -->
+	</header>
+	<!-- /HEADER -->
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: page_head}"></head>
+<body>
+    <!-- templates/fragments/cart-quickview.html -->
+    <div th:fragment="cartQuick" class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style="cursor: pointer;">
+            <i class="fa fa-shopping-cart"></i>
+            <span>Giỏ Hàng</span>
+            <div class="qty" th:text="${#numbers.formatInteger(#lists.sum(cartItems, 'soLuong'), 0)}">0</div>
+        </a>
+
+        <div class="cart-dropdown">
+            <div class="cart-list" id="cart-items">
+                <div th:if="${#lists.isEmpty(cartItems)}" class="text-center">Giỏ hàng của bạn đang trống!</div>
+                <div th:each="item : ${cartItems}" class="product-widget" th:attr="data-id=${item.maSP}">
+                    <div class="product-img">
+                        <img th:src="@{${item.hinhAnh}}" th:alt="${item.tenSP}">
+                        <button class="delete-cart-item"
+                                th:attr="data-id=${item.maSP}"
+                                th:onclick="'removeCartItem(' + '\"' + '[[${item.maSP}]]' + '\"' + ')'">
+                            <i class="fa fa-close"></i>
+                        </button>
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-name">
+                            <a th:href="@{/products/detail/{id}(id=${item.maSP})}" th:text="${item.tenSP}"></a>
+                        </h3>
+                        <h4 class="product-price">
+                            <span class="qty" th:text="${item.soLuong} + ' x'"></span> $<span th:text="${item.gia}"></span>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cart-summary">
+                <small><span id="cart-count" th:text="${#lists.sum(cartItems, 'soLuong')}"></span> Hàng được chọn</small>
+                <h5>
+                    Tổng: $<span id="cart-total" th:text="${#numbers.formatDecimal(cartItems.stream().mapToDouble(i -> i.thanhTien).sum(), 1, 2)}">0.00</span>
+                </h5>
+            </div>
+
+            <div class="cart-btns">
+                <a th:href="@{/cart}">Xem Giỏ Hàng</a>
+                <a th:href="@{/checkout}">Thanh Toán <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function removeCartItem(productId) {
+            fetch('/cart/remove', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'id=' + productId
+            }).then(() => location.reload());
+        }
+
+        document.querySelectorAll('.delete-cart-item').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const id = this.getAttribute('data-id');
+                removeCartItem(id);
+            });
+        });
+    </script>
+</body>
+</html>

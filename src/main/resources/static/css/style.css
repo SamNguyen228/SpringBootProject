@@ -50,6 +50,9 @@ Table OF Contents
 /*=========================================================
 	01 -> GENERAL
 ===========================================================*/
+*{
+  scroll-behavior: smooth;
+}
 :root {
     --background-color: #ffffff;
     --text-color: #000000;

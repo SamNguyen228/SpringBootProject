@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments/head :: page_head('Chi Tiết Đơn Hàng')}">
+    <title>Chi Tiết Đơn</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap-icons.css}" />
+    <style>
+        .order-card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            background-color: #ffffff;
+        }
+        .order-info p { font-size: 1.1rem; }
+        .badge { font-size: 1rem; padding: 0.5em 1em; border-radius: 20px; }
+        table th, table td { vertical-align: middle !important; }
+        table tbody tr:hover { background-color: #f1f1f1; transition: background-color 0.3s ease; }
+        .btn-back, .btn-review { transition: all 0.3s ease; }
+        .btn-back:hover { background-color: #495057; color: #fff; }
+        .btn-review:hover { background-color: #198754; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+	<header th:replace="~{fragments/header :: page_header}"></header>
+	<!-- /HEADER -->
+
+	<!-- NAVIGATION -->
+	<nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
+	<!-- /NAVIGATION -->
+
+    <!-- Thông báo -->
+    <div th:if="${cancelError}" th:text="${cancelError}" class="alert alert-danger" role="alert"></div>
+    <div th:if="${cancelSuccess}" th:text="${cancelSuccess}" class="alert alert-success" role="alert"></div>
+
+    <br> <br>
+    <div class="container mt-4">
+        <h2 class="text-center text-primary">
+            <i class="bi bi-receipt"></i> Chi Tiết Đơn Hàng #<span th:text="${order.orderId}"></span>
+        </h2>
+
+        <!-- Thông tin đơn hàng -->
+        <div class="card p-4 mt-3 order-card">
+            <div class="order-info">
+                <p>
+                    <i class="bi bi-calendar-event"></i>
+                    <strong>Ngày đặt:</strong>
+                    <span th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy')}"></span>
+                </p>
+                <p>
+                    <i class="bi bi-cash-stack"></i>
+                    <strong>Tổng tiền:</strong>
+                    <span th:text="${#numbers.formatCurrency(order.totalAmount)}"></span>
+                </p>
+                <p>
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Trạng thái:</strong>
+                    <span class="badge"
+                        th:classappend="'bg-' + ${order.status == 'Pending' ? 'warning' :
+                                                    order.status == 'Processing' ? 'primary' :
+                                                    order.status == 'Shipped' ? 'info' :
+                                                    order.status == 'Completed' ? 'success' :
+                                                    order.status == 'Cancelled' ? 'danger' : 'secondary'}"
+                        th:text="${order.status == 'Pending' ? 'Chờ xác nhận' :
+                                    order.status == 'Processing' ? 'Đang xử lý' :
+                                    order.status == 'Shipped' ? 'Đang giao hàng' :
+                                    order.status == 'Completed' ? 'Hoàn thành' :
+                                    order.status == 'Cancelled' ? 'Đã hủy' : 'Không xác định'}">
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Danh sách sản phẩm -->
+        <h3 class="mt-4"><i class="bi bi-box-seam"></i> Danh Sách Sản Phẩm</h3>
+        <table class="table table-bordered table-hover mt-2">
+            <thead class="table-dark">
+                <tr>
+                    <th></th>
+                    <th><i class="bi bi-bag"></i> Tên Sản Phẩm</th>
+                    <th class="text-center"><i class="bi bi-hash"></i> Số Lượng</th>
+                    <th class="text-end"><i class="bi bi-currency-dollar"></i> Giá</th>
+                    <th class="text-end"><i class="bi bi-calculator"></i> Thành Tiền</th>
+                </tr>
+            </thead>
+           <tbody>
+                <!-- Danh sách sản phẩm -->
+                <tr th:each="item : ${order.orderDetails}">
+                    <td>
+                        <img th:if="${item.product != null}" 
+                            th:src="@{${item.product.imageUrl}}" 
+                            width="70" height="70" class="img-thumbnail table-img" 
+                            th:alt="${item.product.productName}" />
+                        <span th:if="${item.product == null}" class="text-danger">[Sản phẩm đã bị xóa]</span>
+                    </td>
+                    <td th:text="${item.product != null ? item.product.productName : '[Không có dữ liệu]'}"></td>
+                    <td class="text-center" th:text="${item.quantity}"></td>
+                    <td class="text-end" th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')} + ' $'"></td>
+                    <td class="text-end" 
+                        th:text="${#numbers.formatDecimal(item.price * item.quantity, 0, 'COMMA', 0, 'POINT')} + ' $'">
+                    </td>
+                </tr>
+
+                <!-- Các nút hành động - chỉ hiển thị một lần sau danh sách sản phẩm -->
+                <tr>
+                    <td colspan="5" class="text-end" data-aos="zoom-in">
+                        <div th:switch="${order.status}">
+                            <!-- Nếu đã hoàn tất -->
+                            <div th:case="'Completed'">
+                                <th:block th:each="item : ${order.orderDetails}">
+                                    <a th:if="${item.product != null}" 
+                                    th:href="@{'/products/detail/' + ${item.product.productId} + '#tab3'}" 
+                                    class="btn btn-success me-2">
+                                        <i class="bi bi-star-fill"></i> Đánh Giá
+                                    </a>
+                                    <form th:if="${item.product != null}"
+                                        th:action="@{'/cart/add/' + ${item.product.productId} + '?redirect=cart'}"
+                                        method="post" class="d-inline me-2">
+                                        <input type="hidden" name="quantity" value="1" />
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-cart-plus"></i> Mua lại
+                                        </button>
+                                    </form>
+                                </th:block>
+                            </div>
+
+                            <!-- Nếu đang chờ xử lý -->
+                            <div th:case="'Pending'">
+                                <form th:action="@{/order/cancel}" method="post" class="d-inline">
+                                    <input type="hidden" name="orderId" th:value="${order.orderId}" />
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-x-circle"></i> Hủy Đơn Hàng
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Nếu đã bị hủy -->
+                            <div th:case="'Cancelled'">
+                                <th:block th:each="item : ${order.orderDetails}">
+                                    <form th:if="${item.product != null}"
+                                        th:action="@{'/cart/add/' + ${item.product.productId} + '?redirect=cart'}"
+                                        method="post" class="d-inline me-2">
+                                        <input type="hidden" name="quantity" value="1" />
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-cart-plus"></i> Mua lại
+                                        </button>
+                                    </form>
+                                </th:block>
+                                <button class="btn btn-danger ms-2" disabled>
+                                    <i class="bi bi-x-circle"></i> Đơn hàng đã bị hủy
+                                </button>
+                            </div>
+
+                            <!-- Các trạng thái khác -->
+                            <div th:case="*">
+                                <button class="btn btn-secondary" disabled>
+                                    <i class="bi bi-x-circle"></i> Không thể thao tác
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a th:href="@{/order-history}" class="btn btn-secondary mt-3 btn-back">
+            <i class="bi bi-arrow-left-circle"></i> Quay Lại
+        </a>
+    </div>
+
+    <!-- FOOTER -->
+	<footer th:replace="~{fragments/footer :: page_footer}"></footer> 
+	<!-- /FOOTER -->
+
+    <script>
+		document.addEventListener("DOMContentLoaded", function () {
+				// Lấy URL hiện tại
+				let currentLocation = window.location.pathname;
+		
+				// Lấy tất cả các mục menu
+				let menuItems = document.querySelectorAll(".main-nav li");
+		
+				menuItems.forEach(item => {
+					let link = item.querySelector("a");
+					if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
+						// Xóa class "active" khỏi tất cả menu
+						menuItems.forEach(i => i.classList.remove("active"));
+						// Thêm class "active" vào mục phù hợp
+						item.classList.add("active");
+					}
+				});
+			});
+		</script>
+
+        <!-- <script th:inline="javascript">
+            document.querySelectorAll(".add-to-cart-form").forEach(function (form) {
+                form.onsubmit = function () {
+                    setTimeout(function () {
+                        window.location.href = /*[[@{/cart}]]*/ '/cart';
+                    }, 500);
+                };
+            });
+        </script> -->
+</body>
+</html>

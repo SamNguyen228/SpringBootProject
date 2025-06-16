@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: page_head}"></head>
+<body>
+    <div class="aside" th:fragment="page_categories">
+        <h3 class="aside-title">Danh Mục</h3>
+        <div class="checkbox-filter">
+            <div class="input-checkbox" th:each="item : ${categories}">
+                <a th:id="'category-' + ${item.maLoai}"
+                th:href="@{/products(loai=${item.maLoai})}">
+                    <label th:for="'category-' + ${item.maLoai}">
+                        <span th:text="${item.tenLoai}">Tên Loại</span>
+                    </label>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

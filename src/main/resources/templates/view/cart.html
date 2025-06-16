@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="fragments/head :: page_head('Giỏ Hàng')">
+    <title>Giỏ Hàng</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+<body>
+    <!-- HEADER -->
+	<header th:replace="~{fragments/header :: page_header}"></header>
+	<!-- /HEADER -->
+
+	<!-- NAVIGATION -->
+	<nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
+	<!-- /NAVIGATION -->
+
+    <br> <br>
+    <div class="container mt-4">
+        <h2 class="text-center">Giỏ Hàng Của Bạn</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Tên Sản Phẩm</th>
+                    <th>Giá</th>
+                    <th>Số Lượng</th>
+                    <th>Tổng</th>
+                    <th>Xóa</th>
+                </tr>
+                </thead>
+                <tbody id="cart-table">
+                <tr th:each="item : ${cartItems}" th:data-id="${item.maSP}">
+                    <td><img th:src="${item.hinhAnh}" th:alt="${item.tenSP}" width="100" /></td>
+                    <td th:text="${item.tenSP}"></td>
+                    <td class="price" th:data-price="${item.gia}" th:text="'$' + ${item.gia}"></td>
+                   <td>
+                        <input type="number" class="form-control quantity-input text-center"
+                            th:value="${item.soLuong}" min="1" style="width: 60px;" />
+                    </td>
+
+                    <td th:text="'$' + ${item.thanhTien}"></td>
+                    <td>
+                        <a th:href="@{/cart/remove/{id}(id=${item.maSP})}" class="btn btn-danger">Xóa</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="cart-summary mt-4 text-end">
+           <h3 class="text-right">
+                Total: $<span id="cart-total" th:text="${#numbers.formatDecimal(totalAmount, 1, 2)}"></span>
+            </h3>
+            <a class="btn btn-success" th:href="@{/checkout}">Tiến Hành Thanh Toán</a>
+        </div>
+    </div>
+    <br> <br>
+
+    <!-- FOOTER -->
+	<footer th:replace="~{fragments/footer :: page_footer}"></footer> 
+	<!-- /FOOTER -->
+
+    <script>
+		document.addEventListener("DOMContentLoaded", function () {
+			// Lấy URL hiện tại
+			let currentLocation = window.location.pathname;
+		
+			// Lấy tất cả các mục menu
+			let menuItems = document.querySelectorAll(".main-nav li");
+		
+			menuItems.forEach(item => {
+				let link = item.querySelector("a");
+				if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
+					// Xóa class "active" khỏi tất cả menu
+					menuItems.forEach(i => i.classList.remove("active"));
+					// Thêm class "active" vào mục phù hợp
+					item.classList.add("active");
+				}
+			});
+		});
+	</script>
+
+    <script>
+        document.querySelectorAll('.quantity-input').forEach(function(input) {
+            input.addEventListener('change', function() {
+                setTimeout(() => location.reload(), 1000);
+            });
+        });
+    </script>
+
+    <!-- Giỏ hàng AJAX -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                }
+            });
+
+            $(".quantity-input").on("change", function () {
+                var row = $(this).closest("tr");
+                var productId = row.data("id");
+                var newQuantity = $(this).val();
+
+                if (newQuantity < 1) {
+                    $(this).val(1);
+                    newQuantity = 1;
+                }
+
+                $.ajax({
+                    url: "/cart/update-quantity",
+                    type: "POST",
+                    data: { id: productId, quantity: newQuantity },
+                    success: function (response) {
+                        if (response.success) {
+                            // Cập nhật tổng tiền của từng sản phẩm
+                            var price = parseFloat(row.find(".price").data("price"));
+                            row.find(".total").text((price * newQuantity).toFixed(2));
+
+                            // Cập nhật tổng tiền giỏ hàng
+                            $("#cart-total").text(response.total);
+                        }
+                    },
+                    error: function () {
+                        alert("Cập nhật số lượng thất bại!");
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script th:if="${success}" th:inline="javascript">
+        alert('[[${success}]]');
+    </script>
+</body>
+</html>

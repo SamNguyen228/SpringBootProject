@@ -1,7 +1,6 @@
 package com.example.ecommerce.model;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class Product {
     private Integer categoryId;
 
     @Column(nullable = false)
-    private BigDecimal price;
+    private Double price;
 
     @Column(nullable = false)
     private Integer stockQuantity;
@@ -78,11 +77,11 @@ public class Product {
         this.categoryId = categoryId;
     }
 
-    public BigDecimal getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

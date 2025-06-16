@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: page_head('Danh Mục')}">
+    <meta charset="UTF-8">
+    <title>Product List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .aside { margin-bottom: 20px; }
+        .aside-title { font-size: 1.5rem; margin-bottom: 15px; }
+        .product-widget { display: flex; margin-bottom: 15px; }
+        .product-img { width: 80px; height: 80px; margin-right: 10px; }
+        .product-img img { width: 100%; height: 100%; object-fit: cover; }
+        .product-body { flex: 1; }
+        .product-category { font-size: 0.9rem; color: #888; }
+        .product-name { font-size: 1rem; margin: 5px 0; }
+        .product-price { font-size: 1rem; color: #e44d26; }
+        .store-filter { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
+        .store-sort { display: flex; gap: 15px; }
+        .store-pagination { display: flex; list-style: none; padding: 0; }
+        .store-pagination li { margin: 0 5px; }
+        .store-pagination li.active a { background-color: #007bff; color: white; }
+        .store-pagination li a { padding: 5px 10px; border: 1px solid #ddd; text-decoration: none; color: #007bff; }
+        .store-pagination li a:hover { background-color: #f8f9fa; }
+        .store-qty { font-size: 1rem; }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+	<header th:replace="~{fragments/header :: page_header}"></header>
+	<!-- /HEADER -->
+
+	<!-- NAVIGATION -->
+	<nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
+	<!-- /NAVIGATION -->
+
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <!-- ASIDE -->
+                <div id="aside" class="col-md-3">
+                    <!-- aside Widget: Categories -->
+                    <div class="aside" th:replace="~{fragments/categories :: page_categories}"></div>
+                    <!-- aside Widget: Top Selling -->
+                    <div class="aside">
+                        <h3 class="aside-title">Bán Chạy</h3>
+                        <div th:each="product, iterStat : ${products}" th:if="${iterStat.index < 3}" class="product-widget">
+                            <a th:href="@{/products/detail(id=${product.maSP})}" class="product-img">
+                                <img th:src="${product.hinhAnh}" alt="">
+                            </a>
+                            <div class="product-body">
+                                <p class="product-category" th:text="${product.tenLoai}"></p>
+                                <h3 class="product-name">
+                                    <a th:href="@{/products/detail(id=${product.maSP})}" th:text="${product.tenSP}"></a>
+                                </h3>
+                                <h4 class="product-price">$<span th:text="${product.gia}"></span></h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /aside Widget -->
+                </div>
+                <!-- /ASIDE -->
+                <!-- STORE -->
+                <div id="store" class="col-md-9">
+                    <!-- Store top filter -->
+                    <div class="store-filter clearfix">
+                        <div class="store-sort">
+                            <label>
+                                Sắp Xếp Theo:
+                                <select class="form-select" id="sortBy" onchange="updateFilter()">
+                                    <option value="popular" th:selected="${sortBy == 'popular'}">Mặc Định</option>
+                                    <option value="price_asc" th:selected="${sortBy == 'price_asc'}">Giá: Thấp Đến Cao</option>
+                                    <option value="price_desc" th:selected="${sortBy == 'price_desc'}">Giá: Cao Đến Thấp</option>
+                                </select>
+                            </label>
+                            <label>
+                                Hiển Thị:
+                                <select class="form-select" id="pageSize" onchange="updateFilter()">
+                                    <option value="6" th:selected="${pageSize == 6}">6</option>
+                                    <option value="9" th:selected="${pageSize == 9}">9</option>
+                                    <option value="12" th:selected="${pageSize == 12}">12</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- /store top filter -->
+                    <!-- store products -->
+                    <div class="row" th:replace="~{fragments/productList :: product_list(products=${products}, currentPage=${currentPage}, totalPages=${totalPages})}">
+                        <!-- <div class="col-md-4" th:each="product : ${products}">
+                            <div class="card mb-3">
+                                <img th:src="${product.hinhAnh}" class="card-img-top" alt="Product Image">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${product.tenSP}"></h5>
+                                    <p class="card-text" th:text="${product.moTa}"></p>
+                                    <p class="card-text"><strong>Price:</strong> $<span th:text="${product.gia}"></span></p>
+                                    <p class="card-text"><strong>Category:</strong> <span th:text="${product.tenLoai}"></span></p>
+                                    <a th:href="@{/products/detail(id=${product.maSP})}" class="btn btn-primary">View Details</a>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                    <!-- /store products -->
+                    <!-- store bottom filter -->
+                    <div class="store-filter clearfix">
+                        <span class="store-qty" th:text="'Trang ' + ${currentPage} + ' trên tổng ' + ${totalPages}"></span>
+                       <ul class="store-pagination" th:with="baseUrl=${query} != null ? '/product/search' : '/products'">
+                            <!-- Trang trước -->
+                            <li th:if="${currentPage > 1}">
+                                <a th:href="@{${baseUrl}(page=${currentPage - 1}, query=${query}, pageSize=${pageSize}, sortBy=${sortBy}, loai=${loai})}">
+                                    <i class="fa fa-angle-left"></i>
+                                </a>
+                            </li>
+
+                            <!-- Trang số -->
+                            <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+                                th:classappend="${i == currentPage} ? 'active'">
+                                <a th:href="@{${baseUrl}(page=${i}, query=${query}, pageSize=${pageSize}, sortBy=${sortBy}, loai=${loai})}"
+                                th:text="${i}"></a>
+                            </li>
+
+                            <!-- Trang sau -->
+                            <li th:if="${currentPage < totalPages}">
+                                <a th:href="@{${baseUrl}(page=${currentPage + 1}, query=${query}, pageSize=${pageSize}, sortBy=${sortBy}, loai=${loai})}">
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- /store bottom filter -->
+                </div>
+                <!-- /STORE -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+
+    <!-- FOOTER -->
+	<footer th:replace="~{fragments/footer :: page_footer}"></footer> 
+	<!-- /FOOTER -->
+
+    <script>
+        function updateFilter() {
+            const sortBy = document.getElementById('sortBy').value;
+            const pageSize = document.getElementById('pageSize').value;
+            const loai = /*[[${loai}]]*/ null;
+            const url = `/products?page=1&pageSize=${pageSize}&sortBy=${sortBy}` + (loai ? `&loai=${loai}` : '');
+            window.location.href = url;
+        }
+    </script>
+
+    <!-- Tìm kiếm -->
+		<script th:inline="javascript">
+			$(document).ready(function(){
+				$("#searchButton").click(function(){
+					let keyword = $("#searchText").val();
+					let url = /*[[@{/product/search(query=${keyword})}]]*/ "/product/search?query=" + keyword;
+					window.location.href = url;
+				});
+			});
+		</script>
+    
+    <script>
+			document.addEventListener("DOMContentLoaded", function () {
+				// Lấy URL hiện tại
+				let currentLocation = window.location.pathname;
+		
+				// Lấy tất cả các mục menu
+				let menuItems = document.querySelectorAll(".main-nav li");
+		
+				menuItems.forEach(item => {
+					let link = item.querySelector("a");
+					if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
+						// Xóa class "active" khỏi tất cả menu
+						menuItems.forEach(i => i.classList.remove("active"));
+						// Thêm class "active" vào mục phù hợp
+						item.classList.add("active");
+					}
+				});
+			});
+		</script>
+</body>
+</html>

@@ -1,7 +1,5 @@
 package com.example.ecommerce.model.viewmodel;
 
-import java.math.BigDecimal;
-
 public class ProductsVM {
     private Integer maLoai;
     private Integer maSP;
@@ -12,7 +10,7 @@ public class ProductsVM {
     private String tenLoai;
 
     // Constructor đầy đủ
-    public ProductsVM(Integer maLoai, Integer maSP, String tenSP, String hinhAnh, BigDecimal gia, String moTa, String tenLoai) {
+    public ProductsVM(Integer maLoai, Integer maSP, String tenSP, String hinhAnh, Double gia, String moTa, String tenLoai) {
         this.maLoai = maLoai;
         this.maSP = maSP;
         this.tenSP = tenSP;

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: page_head}">
+    <title>Kết quả tìm kiếm</title>
+</head>
+<body>
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <!-- ASIDE -->
+                <div id="aside" class="col-md-3">
+                    <!-- aside Widget: Categories -->
+                    <div class="aside" th:replace="~{fragments/categories :: page_categories}"></div>
+                    <!-- aside Widget: Top Selling -->
+                    <div class="aside">
+                        <h3 class="aside-title">Bán Chạy</h3>
+                        <div th:each="product, iterStat : ${products}" th:if="${iterStat.index < 3}" class="product-widget">
+                            <a th:href="@{/products/detail(id=${product.maSP})}" class="product-img">
+                                <img th:src="${product.hinhAnh}" alt="">
+                            </a>
+                            <div class="product-body">
+                                <p class="product-category" th:text="${product.tenLoai}"></p>
+                                <h3 class="product-name">
+                                    <a th:href="@{/products/detail(id=${product.maSP})}" th:text="${product.tenSP}"></a>
+                                </h3>
+                                <h4 class="product-price">$<span th:text="${product.gia}"></span></h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /aside Widget -->
+                </div>
+                <!-- /ASIDE -->
+                <!-- STORE -->
+                <div id="store" class="col-md-9">
+                    <!-- Store top filter -->
+                    <div class="store-filter clearfix">
+                        <div class="store-sort">
+                            <label>
+                                Sắp Xếp Theo:
+                                <select class="form-select" id="sortBy" onchange="updateFilter()">
+                                    <option value="popular" th:selected="${sortBy == 'popular'}">Mặc Định</option>
+                                    <option value="price_asc" th:selected="${sortBy == 'price_asc'}">Giá: Thấp Đến Cao</option>
+                                    <option value="price_desc" th:selected="${sortBy == 'price_desc'}">Giá: Cao Đến Thấp</option>
+                                </select>
+                            </label>
+                            <label>
+                                Hiển Thị:
+                                <select class="form-select" id="pageSize" onchange="updateFilter()">
+                                    <option value="6" th:selected="${pageSize == 6}">6</option>
+                                    <option value="9" th:selected="${pageSize == 9}">9</option>
+                                    <option value="12" th:selected="${pageSize == 12}">12</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- /store top filter -->
+                    <!-- store products -->
+                    <div class="row">
+                        <div class="col-md-4" th:each="product : ${products}">
+                            <div class="card mb-3">
+                                <img th:src="${product.hinhAnh}" class="card-img-top" alt="Product Image">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${product.tenSP}"></h5>
+                                    <p class="card-text" th:text="${product.moTa}"></p>
+                                    <p class="card-text"><strong>Price:</strong> $<span th:text="${product.gia}"></span></p>
+                                    <p class="card-text"><strong>Category:</strong> <span th:text="${product.tenLoai}"></span></p>
+                                    <a th:href="@{/products/detail(id=${product.maSP})}" class="btn btn-primary">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <!-- Gọi fragment đúng cách -->
+                        <div th:replace="this :: product_list"></div>
+                    <!-- /store products -->
+                    <!-- store bottom filter -->
+                    <div class="store-filter clearfix">
+                        <span class="store-qty" th:text="'Trang ' + ${currentPage} + ' trên tổng ' + ${totalPages}"></span>
+                        <ul class="store-pagination">
+                            <li th:if="${currentPage > 1}">
+                                <a th:href="@{/products(page=${currentPage - 1}, pageSize=${pageSize}, sortBy=${sortBy}, loai=${loai})}">
+                                    <i class="fa fa-angle-left"></i>
+                                </a>
+                            </li>
+                            <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+                                th:classappend="${i == currentPage} ? 'active'">
+                                <a th:href="@{/products(page=${i}, pageSize=${pageSize}, sortBy=${sortBy}, loai=${loai})}" th:text="${i}"></a>
+                            </li>
+                            <li th:if="${currentPage < totalPages}">
+                                <a th:href="@{/products(page=${currentPage + 1}, pageSize=${pageSize}, sortBy=${sortBy}, loai=${loai})}">
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- /store bottom filter -->
+                </div>
+                <!-- /STORE -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+
+
+    <!-- Fragment định nghĩa tại đây -->
+    <div class="row" th:fragment="product_list">
+        <div class="col-md-4 col-xs-6" th:each="item : ${products}">
+            <div class="product">
+                <a class="product-img" th:href="@{/products/detail/{id}(id=${item.maSP})}">
+                    <img th:src="@{${item.hinhAnh}}" alt="">
+                </a>
+                <div class="product-body">
+                    <p class="product-category" th:text="${item.tenLoai}">Loại</p>
+                    <h3 class="product-name">
+                        <a href="#" th:text="${item.tenSP}">Tên sản phẩm</a>
+                    </h3>
+                    <h4 class="product-price">
+                        <span th:text="'$' + ${item.gia}">0.00</span>
+                    </h4>
+                </div>
+                <div class="add-to-cart">
+                    <form th:action="@{/cart/add/{id}(id=${item.maSP})}" method="post">
+                        <button class="add-to-cart-btn">
+                            <i class="fa fa-shopping-cart"></i> Thêm vào giỏ
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
