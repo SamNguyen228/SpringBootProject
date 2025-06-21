@@ -1,0 +1,23 @@
+# Bỏ thư mục build
+target/
+
+# Bỏ các file Git
+.git
+.gitignore
+
+# IDE / Editor
+.idea/
+*.iml
+*.log
+
+# Hệ điều hành
+.DS_Store
+Thumbs.db
+
+# Maven Wrapper JAR
+.mvn/
+mvnw
+mvnw.cmd
+
+# Test output
+test-output/
