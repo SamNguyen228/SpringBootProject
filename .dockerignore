@@ -1,6 +1,3 @@
-# Bỏ thư mục build
-target/
-
 # Bỏ các file Git
 .git
 .gitignore
