@@ -41,11 +41,8 @@ public class ProductService {
     }
 
     public List<Product> getRelatedProducts(int productId, int categoryId) {   
-        // Lấy sản phẩm đang xem
         Product currentProduct = productRepository.findById(productId)
             .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        // Lấy 4 sản phẩm cùng danh mục (khác id hiện tại)
         return productRepository.findTop4ByCategoryAndProductIdNot(currentProduct.getCategory(), productId);
     }
 }

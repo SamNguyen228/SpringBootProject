@@ -23,12 +23,10 @@ public class Order {
 
     private BigDecimal discountAmount;
 
-    // Quan hệ N-1 với User
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // Quan hệ N-1 với Promotion
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;

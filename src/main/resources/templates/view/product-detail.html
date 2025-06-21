@@ -14,7 +14,6 @@
     <div class="section">
         <div class="container">
             <div class="row">
-                <!-- Hình ảnh chính -->
                 <div class="col-md-5 col-md-push-2">
                     <div id="product-main-img">
                         <div class="product-preview" th:each="i : ${#numbers.sequence(1, 4)}">
@@ -23,7 +22,6 @@
                     </div>
                 </div>
 
-                <!-- Thumbnail -->
                 <div class="col-md-2 col-md-pull-5">
                     <div id="product-imgs">
                         <div class="product-preview" th:each="i : ${#numbers.sequence(1, 4)}">
@@ -32,13 +30,11 @@
                     </div>
                 </div>
 
-                <!-- Thông tin sản phẩm -->
                 <div class="col-md-5">
                     <div class="product-details">
                         <h2 class="product-name" th:text="${productDetail.TenSP}"></h2>
 
                         <div>
-                            <!-- Đánh giá ở đây có thể là một fragment hoặc component sau -->
                             <div th:replace="~{fragments/partial-rating :: partialRating(${averageRating})}"></div>
                             <a class="review-link" href="#tab3" onclick="openTab('tab3')">| Thêm đánh giá |</a>
                         </div>
@@ -52,7 +48,6 @@
                         <p th:inline="text">Còn: <b>[[${productDetail.SoLuongTon}]]</b> sản phẩm.</p>
 
                         <div class="product-options">
-                            <!-- Dung Lượng -->
                            <label>
                                 Dung Lượng
                                 <select class="input-select">
@@ -65,7 +60,6 @@
                                 </select>
                             </label>
 
-                            <!-- Màu Sắc -->
                             <label>
                                 Màu Sắc
                                 <select class="input-select">
@@ -80,7 +74,7 @@
                         </div>
 
                         <div class="add-to-cart">
-                            <form th:action="@{/cart/add/{id}(id=${productDetail.MaSP})}" method="post">
+                            <form th:action="@{/user/cart/add/{id}(id=${productDetail.MaSP})}" method="post">
                                 <input type="hidden" name="id" th:value="${productDetail.MaSP}" />
                                 <div class="qty-label">
                                     Số lượng
@@ -159,7 +153,6 @@
                                 <div class="row">
                                     <!-- Rating & Reviews -->
                                    <div th:replace="~{fragments/review :: reviewFragment(${reviews}, ${averageRating}, ${starCounts}, ${totalReviews})}"></div>
-                                    <!-- <div th:replace="~{fragments/review :: reviewFragment}"></div> -->
                                     <!-- /Rating & Reviews -->
 
                                     <!-- Review Form -->
@@ -241,7 +234,7 @@
                             </div>
                         </div>
                         <div class="add-to-cart">
-                            <form th:action="@{/cart/add/{id}(id=${item.productId})}" method="post">
+                            <form th:action="@{/user/cart/add/{id}(id=${item.productId})}" method="post">
                                 <input type="hidden" name="id" th:value="${item.productId}" />
                                 <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Thêm vào giỏ</button>
                             </form>

@@ -17,10 +17,23 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    // public Integer getUserId() {
+    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    //     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    //     return userDetails.getUserId();
+    // }
+
     public Integer getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return userDetails.getUserId();
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof CustomUserDetails userDetails) {
+            return userDetails.getUserId();
+        } else if (principal instanceof CustomOAuth2User oAuth2User) {
+            return oAuth2User.getUserId();
+        }
+
+        return null;
     }
 
     public Integer getCurrentUserId() {

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -20,6 +21,7 @@ import com.example.ecommerce.service.UserService;
 import org.springframework.ui.Model;
 
 @Controller
+@RequestMapping("/user")
 @PreAuthorize("hasRole('CUSTOMER')")
 public class OrderController {
 
@@ -29,7 +31,6 @@ public class OrderController {
     @Autowired
     private UserService userService;
 
-    // Danh sách đơn hàng
     @GetMapping("/order-history")
     public String orderHistory(Model model) {
         Integer userId = userService.getUserId();
@@ -39,10 +40,9 @@ public class OrderController {
 
         List<Order> orders = orderRepository.findByUser_UserIdOrderByCreatedAtDesc(userId);
         model.addAttribute("orders", orders);
-        return "view/order-history";
+        return "view/user/order-history";
     }
 
-    // Chi tiết đơn hàng
     @GetMapping("/order-detail/{orderId}")
     public String orderDetails(@PathVariable("orderId") Integer orderId, Model model) {
         Integer userId = userService.getUserId();
@@ -56,12 +56,11 @@ public class OrderController {
         }
 
         model.addAttribute("order", orderOpt.get());
-        return "view/order-detail";
+        return "view/user/order-detail";
     }
 
 
     @PostMapping("/order/cancel")
-    @PreAuthorize("hasRole('CUSTOMER')")
     public String cancelOrder(@RequestParam("orderId") int orderId, RedirectAttributes redirectAttributes, Principal principal) {
         String Email = principal.getName();
         User user = userService.findByEmail(Email);

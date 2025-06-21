@@ -1,0 +1,57 @@
+<section xmlns:th="http://www.thymeleaf.org"
+         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+         layout:decorate="~{fragments/admin-layout}"
+         layout:fragment="body">
+
+    <div class="container mt-4">
+        <h2 class="mb-4">Quản lý đơn hàng</h2>
+
+        <table class="table table-bordered table-striped align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Trạng thái</th>
+                    <th>Tổng tiền</th>
+                    <th>Ngày tạo</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="order : ${ordersPage.content}">
+                    <td th:text="${order.orderId}"></td>
+                    <td>
+                        <span th:switch="${order.status}">
+                            <span th:case="'Pending'">Chờ xác nhận</span>
+                            <span th:case="'Processing'">Đang xử lý</span>
+                            <span th:case="'Shipped'">Đã giao hàng</span>
+                            <span th:case="'Completed'">Hoàn thành</span>
+                            <span th:case="'Cancelled'">Đã hủy</span>
+                            <span th:case="*">Không xác định</span>
+                        </span>
+                    </td>
+                    <td th:text="${order.totalAmount} + '$'"></td>
+                    <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td>
+                        <a th:href="@{'/admin/orders/' + ${order.orderId}}" class="btn btn-sm btn-primary">Xem / Cập nhật</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Phân trang -->
+        <nav th:if="${ordersPage.totalPages > 1}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${ordersPage.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/orders(page=${ordersPage.number - 1})}">&laquo;</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, ordersPage.totalPages - 1)}"
+                    th:classappend="${ordersPage.number == i} ? 'active'">
+                    <a class="page-link" th:href="@{/admin/orders(page=${i})}" th:text="${i + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${ordersPage.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/orders(page=${ordersPage.number + 1})}">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>

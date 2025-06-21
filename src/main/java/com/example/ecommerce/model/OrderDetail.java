@@ -1,7 +1,6 @@
 package com.example.ecommerce.model;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "Order_Details") 
@@ -15,12 +14,10 @@ public class OrderDetail {
 
     private double price;
 
-    // Quan hệ N-1 với Order
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    // Quan hệ N-1 với Product
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;

@@ -163,7 +163,7 @@
             </tbody>
         </table>
 
-        <a th:href="@{/order-history}" class="btn btn-secondary mt-3 btn-back">
+        <a th:href="@{/user/order-history}" class="btn btn-secondary mt-3 btn-back">
             <i class="bi bi-arrow-left-circle"></i> Quay Lại
         </a>
     </div>
@@ -173,33 +173,18 @@
 	<!-- /FOOTER -->
 
     <script>
-		document.addEventListener("DOMContentLoaded", function () {
-				// Lấy URL hiện tại
-				let currentLocation = window.location.pathname;
-		
-				// Lấy tất cả các mục menu
-				let menuItems = document.querySelectorAll(".main-nav li");
-		
-				menuItems.forEach(item => {
-					let link = item.querySelector("a");
-					if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
-						// Xóa class "active" khỏi tất cả menu
-						menuItems.forEach(i => i.classList.remove("active"));
-						// Thêm class "active" vào mục phù hợp
-						item.classList.add("active");
-					}
-				});
-			});
-		</script>
-
-        <!-- <script th:inline="javascript">
-            document.querySelectorAll(".add-to-cart-form").forEach(function (form) {
-                form.onsubmit = function () {
-                    setTimeout(function () {
-                        window.location.href = /*[[@{/cart}]]*/ '/cart';
-                    }, 500);
-                };
+        document.addEventListener("DOMContentLoaded", function () {
+            let currentLocation = window.location.pathname;
+            let menuItems = document.querySelectorAll(".main-nav li");
+            
+            menuItems.forEach(item => {
+                let link = item.querySelector("a");
+                if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
+                        menuItems.forEach(i => i.classList.remove("active"));
+                        item.classList.add("active");
+                    }
+                });
             });
-        </script> -->
+	</script>
 </body>
 </html>

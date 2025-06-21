@@ -36,7 +36,7 @@
             border: 1px solid #ccc;
             border-radius: 10px;
             max-width: 425px;
-            background-color: #f9f9f9;
+            background-color: #ccc;
         }
     </style>
 </head>
@@ -50,37 +50,50 @@
         </div>
 
         <div class="content-agile2">
-            <!-- Login Form -->
+           <!-- Login Form -->
             <div id="loginSection">
                 <form th:action="@{/login}" method="post" id="loginForm">
-                    <div th:if="${error != null}" style="color: red; text-align: center; margin-top: 10px;">
-                        <p th:text="${error}"></p>
+                    <!-- Hiển thị lỗi đăng nhập -->
+                    <div th:if="${param.error}" style="color: red; text-align: center; margin-top: 10px;">
+                        <p>Email hoặc mật khẩu không chính xác.</p>
+                    </div>
+                    <div th:if="${param.logout}" style="color: green; text-align: center; margin-top: 10px;">
+                        <p>Đăng xuất thành công.</p>
                     </div>
 
+                    <!-- Email -->
                     <div class="form-control w3layouts">
                         <input type="email" id="email" name="username" placeholder="Email" required />
                     </div>
 
+                    <!-- Mật khẩu -->
                     <div class="form-control w3layouts" style="position: relative;">
                         <input type="password" id="password" name="password" placeholder="Mật Khẩu" required />
                         <i id="togglePassword" class="fa fa-eye"
-                           style="position: absolute; right: 45px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888"></i>
+                        style="position: absolute; right: 45px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888;"></i>
                     </div>
 
+                    <!-- Nút Đăng nhập -->
                     <input type="submit" class="register" value="Đăng Nhập" />
 
+                    <!-- Link quên mật khẩu -->
                     <p class="wthree w3l">
                         <a href="javascript:void(0);" class="forgot-password" onclick="showForgotForm()">Quên mật khẩu?</a>
                     </p>
 
+                    <!-- OAuth2 Login -->
                     <p class="wthree w3l">Hoặc Đăng Nhập Bằng</p>
-                    <ul class="social-agileinfo wthree2">
-                        <li><a th:href="@{/externalLogin(provider='Facebook')}"><i class="fa fa-facebook"></i></a></li>
-                        <li><a th:href="@{/externalLogin(provider='Google')}"><i class="fa fa-google"></i></a></li>
+                    <ul class="social-agileinfo wthree2" style="display: flex; justify-content: center; gap: 15px; padding: 0;">
+                        <li>
+                            <a href="#" onclick="alert('Facebook chưa hỗ trợ'); return false;"><i class="fa fa-facebook"></i></a>
+                        </li>
+                        <li>
+                            <a th:href="@{/oauth2/authorization/google}"><i class="fa fa-google"></i></a>
+                        </li>
                     </ul>
 
-                    <br/>
-                    <p class="wthree w3l">Bạn chưa có tài khoản? <a th:href="@{/register}">Đăng kí ngay</a></p>
+                    <br />
+                    <p class="wthree w3l">Bạn chưa có tài khoản? <a th:href="@{/register}">Đăng ký ngay</a></p>
                 </form>
             </div>
 
@@ -92,7 +105,7 @@
                        id="forgotEmail"
                        placeholder="Nhập email của bạn"
                        required
-                       style="width: 92%; padding: 12px 15px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px;" />
+                       style="width: 92%; padding: 12px 15px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; background-color: rgb(220, 80, 80);" />
 
                 <button type="button"
                         onclick="submitForgotPassword()"
@@ -143,7 +156,7 @@
                 return;
             }
 
-            fetch('/Account/ForgotPassword', {
+            fetch('/account/forgot-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email })

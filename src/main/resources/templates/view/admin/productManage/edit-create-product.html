@@ -1,0 +1,57 @@
+<section xmlns:th="http://www.thymeleaf.org"
+         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+         layout:decorate="~{fragments/admin-layout}"
+         layout:fragment="body">
+
+    <div class="container mt-2 w-50">
+        <h2 th:text="${product.productId} != null ? 'Chỉnh sửa sản phẩm' : 'Tạo sản phẩm mới'" class="mb-4 text-center"></h2>
+
+        <form th:action="@{${product.productId} != null ? '/admin/products/edit/' + ${product.productId} : '/admin/products/create'}"
+            th:object="${product}" method="post">
+            <div class="mb-3">
+                <label class="form-label">Tên sản phẩm</label>
+                <input type="text" th:field="*{productName}" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Giá</label>
+                <input type="number" step="0.01" th:field="*{price}" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Số lượng</label>
+                <input type="number" th:field="*{stockQuantity}" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Dung lượng</label>
+                <input type="text" th:field="*{capacity}" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Màu sắc</label>
+                <input type="text" th:field="*{color}" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Hình ảnh (URL)</label>
+                <input type="text" th:field="*{imageUrl}" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Mô tả</label>
+                <textarea th:field="*{description}" class="form-control" rows="4"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Loại sản phẩm</label>
+                <select th:field="*{categoryId}" class="form-select">
+                    <option th:each="cat : ${categories}" th:value="${cat.categoryId}" th:text="${cat.categoryName}"></option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Lưu</button>
+            <a href="/admin/products" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</section>

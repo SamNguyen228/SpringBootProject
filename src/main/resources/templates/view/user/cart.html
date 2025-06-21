@@ -53,7 +53,7 @@
            <h3 class="text-right">
                 Total: $<span id="cart-total" th:text="${#numbers.formatDecimal(totalAmount, 1, 2)}"></span>
             </h3>
-            <a class="btn btn-success" th:href="@{/checkout}">Tiến Hành Thanh Toán</a>
+            <a class="btn btn-success" th:href="@{/user/checkout}">Tiến Hành Thanh Toán</a>
         </div>
     </div>
     <br> <br>
@@ -64,18 +64,13 @@
 
     <script>
 		document.addEventListener("DOMContentLoaded", function () {
-			// Lấy URL hiện tại
 			let currentLocation = window.location.pathname;
-		
-			// Lấy tất cả các mục menu
 			let menuItems = document.querySelectorAll(".main-nav li");
 		
 			menuItems.forEach(item => {
 				let link = item.querySelector("a");
 				if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
-					// Xóa class "active" khỏi tất cả menu
 					menuItems.forEach(i => i.classList.remove("active"));
-					// Thêm class "active" vào mục phù hợp
 					item.classList.add("active");
 				}
 			});

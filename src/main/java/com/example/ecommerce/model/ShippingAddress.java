@@ -14,7 +14,7 @@ public class ShippingAddress {
     @Column(name = "user_id", nullable = false)
     private Integer userId;
 
-    @Column(name = "address", nullable = false)
+    @Column(name = "address", nullable = false, columnDefinition = "NVARCHAR(255)")
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -54,4 +54,3 @@ public class ShippingAddress {
         this.user = user;
     }
 }
-

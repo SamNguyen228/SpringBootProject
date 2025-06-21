@@ -27,6 +27,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        String roleName = "ROLE_CUSTOMER";
+
+        if (user.getRoleId() == 1) {
+            roleName = "ROLE_ADMIN";
+        }
+        
         String role = switch (user.getRoleId()) {
             case 1 -> "ROLE_ADMIN";
             case 2 -> "ROLE_CUSTOMER";
@@ -55,7 +61,7 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
-    // Các phương thức khác trả về true
     public boolean isAccountNonExpired() { return true; }
     public boolean isCredentialsNonExpired() { return true; }
+
 }

@@ -24,12 +24,12 @@
 						</a>
 						<ul class="dropdown-menu">
 							<li>
-								<form th:action="@{/account/profile}" method="get">
+								<form th:action="@{/profile}" method="get">
 									<button type="submit" class="dropdown-item btn btn-link">Thông tin cá nhân</button>
 								</form>
 							</li>
 							<li>
-								<form th:action="@{/account/edit}" method="get">
+								<form th:action="@{/edit}" method="get">
 									<button type="submit" class="dropdown-item btn btn-link">Chỉnh sửa thông tin</button>
 								</form>
 							</li>
@@ -77,33 +77,54 @@
 					<!-- ACCOUNT AREA -->
 					<div class="col-md-3 clearfix">
 						<div class="header-ctn">
-							<!-- Nếu là Admin -->
 							<div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-								<!-- Thông báo -->
-								<div style="position: relative;">
-									<a href="#" id="notification-btn">
-										<i class="fa fa-bell-o" style="font-size: 20px;"></i>
-										<span>Thông Báo</span>
-										<div class="qty" id="notification-qty">0</div>
-									</a>
-									<div id="notification-list" style="display:none; background:#fff; width: 300px; padding: 15px; position:absolute; top:40px; right:-25px; border:1px solid #ccc; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index:999;">
-										<div class="notification-header" style="font-weight:bold; margin-bottom:10px;">Danh sách thông báo</div>
-										<div id="notification-content" style="max-height: 300px; overflow-y: auto;"></div>
-									</div>
-								</div>
+								<div style="display: flex; align-items: center; gap: 30px; position: relative;">
 
-								<!-- Dashboard -->
-								<div style="position: relative;">
-									<a th:href="@{/dashboard}" id="dashboard-btn">
-										<i class="fa fa-gauge" style="font-size: 20px;"></i>
-										<span>Dashboard</span>
-									</a>
+									<!-- Thông báo -->
+									<div style="position: relative;">
+										<a href="#" id="notification-btn"
+										style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: inherit; position: relative;">
+											<i class="fa fa-bell-o" style="font-size: 20px; position: relative; color: #fff"></i>
+
+											<!-- Số lượng thông báo -->
+											<div id="notification-qty"
+												style="position: absolute; top: -6px; right: 8px;
+														background: red; color: white; font-size: 11px;
+														width: 18px; height: 18px; border-radius: 50%;
+														display: flex; align-items: center; justify-content: center;">
+												0
+											</div>
+
+											<span style="font-size: 12px; margin-top: 4px; color: #fff">Thông Báo</span>
+										</a>
+
+										<!-- Danh sách thông báo -->
+										<div id="notification-list"
+											style="display:none; background:#fff; width: 300px; padding: 15px;
+													position:absolute; top:45px; right:-30px; border:1px solid #ccc;
+													border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index:999;">
+											<div class="notification-header"
+												style="font-weight:bold; margin-bottom:10px; font-size:16px;">Danh sách thông báo</div>
+											<div id="notification-content" style="max-height: 300px; overflow-y: auto;"></div>
+										</div>
+									</div>
+
+									<!-- Dashboard -->
+									<div>
+										<a th:href="@{/dashboard}" id="dashboard-btn"
+										style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: inherit;">
+											<i class="fa fa-gauge" style="font-size: 20px; color: #fff"></i>
+											<span style="font-size: 12px; margin-top: 4px; color: #fff">Dashboard</span>
+										</a>
+									</div>
 								</div>
 							</div>
 
 							<!-- Nếu không phải Admin -->
 							<div th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-								<!-- <div th:replace="~{fragments/cart-quick :: cartQuick}"></div> -->
+								<!-- Cart -->
+								<!-- <div th:replace="~{fragments/cart-quick :: cartQuickFragment}"></div> -->
+								<!-- /Cart -->
 							</div>
 
 							<!-- Menu Toggle -->

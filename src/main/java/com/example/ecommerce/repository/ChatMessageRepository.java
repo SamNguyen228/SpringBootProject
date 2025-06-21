@@ -11,5 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author fptshop
  */
-public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
+public interface ChatMessageRepository extends JpaRepository<ChatMessage, Integer> {
 }

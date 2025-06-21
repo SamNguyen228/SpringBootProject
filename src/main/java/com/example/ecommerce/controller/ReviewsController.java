@@ -51,7 +51,6 @@ public class ReviewsController {
             return ResponseEntity.badRequest().body("Người dùng không tồn tại.");
         }
 
-        // Kiểm tra đơn hàng đã hoàn tất
         boolean hasCompletedOrder = orderRepository
             .findByUser_UserIdAndStatus(user.getUserId(), "Completed")
             .stream()

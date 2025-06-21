@@ -162,8 +162,6 @@
                 alert("Vui lòng nhập mã giảm giá!");
                 return;
             }
-
-            // Gửi yêu cầu tới controller: /apply-promotion?code=...
             fetch('/apply-promotion?code=' + encodeURIComponent(promoCode))
                 .then(response => {
                     if (!response.ok) {
@@ -173,22 +171,17 @@
                 })
                 .then(data => {
                     if (data.success) {
-                        alert("✅ Áp dụng mã giảm giá thành công! Giảm: $" + data.discount.toLocaleString("en-US"));
+                        alert("Áp dụng mã giảm giá thành công! Giảm: $" + data.discount.toLocaleString("en-US"));
 
-                        // Hiển thị số tiền giảm giá
                         document.getElementById("discountAmount").innerText = "- $" + data.discount.toLocaleString("en-US");
-
-                        // Hiển thị tổng tiền sau khi giảm
                         document.getElementById("totalAmount").innerText = "$" + data.totalAmount.toLocaleString("en-US");
-
-                        // Gán promotionId vào hidden input
                         document.getElementById("promotionId").value = data.promotionId;
                     } else {
-                        alert("❌ " + data.message);
+                        alert(data.message);
                     }
                 })
                 .catch(err => {
-                    alert("⚠️ Đã xảy ra lỗi khi áp dụng mã giảm giá.");
+                    alert("Đã xảy ra lỗi khi áp dụng mã giảm giá.");
                     console.error("Apply promo error:", err);
                 });
         }

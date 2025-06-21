@@ -32,7 +32,7 @@
             <tr th:each="order : ${orders}">
                 <td th:text="${order.orderId}">1</td>
                 <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy')}"></td>
-                <td th:text="${#numbers.formatCurrency(order.totalAmount)}">0 VND</td>
+                <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 2, 'POINT')} + '$'">0$</td>
                 <td>
                     <span class="badge"
                         th:classappend="'bg-' + ${order.status == 'Pending' ? 'warning' :
@@ -48,7 +48,7 @@
                     </span>
                 </td>
                 <td>
-                    <a th:href="@{'/order-detail/' + ${order.orderId}}" class="btn btn-info btn-sm">
+                    <a th:href="@{'/user/order-detail/' + ${order.orderId}}" class="btn btn-info btn-sm">
                         <i class="bi bi-eye"></i>
                     </a>
                 </td>
@@ -63,18 +63,13 @@
 
     <script>
 		document.addEventListener("DOMContentLoaded", function () {
-				// Lấy URL hiện tại
 				let currentLocation = window.location.pathname;
-		
-				// Lấy tất cả các mục menu
 				let menuItems = document.querySelectorAll(".main-nav li");
 		
 				menuItems.forEach(item => {
 					let link = item.querySelector("a");
 					if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
-						// Xóa class "active" khỏi tất cả menu
 						menuItems.forEach(i => i.classList.remove("active"));
-						// Thêm class "active" vào mục phù hợp
 						item.classList.add("active");
 					}
 				});

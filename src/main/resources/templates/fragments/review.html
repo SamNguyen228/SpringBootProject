@@ -3,24 +3,19 @@
 <head></head>
 <body>
 <div th:fragment="reviewFragment(reviews, averageRating, starCounts, totalReviews)">
-    <!-- ⭐ Điểm trung bình và biểu tượng sao -->
     <div class="col-md-3">
         <div id="rating">
             <div class="rating-avg">
                 <span th:text="${#numbers.formatDecimal(averageRating, 1, 1)}">0.0</span>
                 <div class="rating-stars">
                     <th:block th:each="i : ${#numbers.sequence(1,5)}">
-                        <!-- ⭐ Sao đầy -->
                         <i class="fa fa-star" th:if="${i <= T(java.lang.Math).floor(averageRating)}"></i>
-                        <!-- 🌗 Sao nửa -->
                         <i class="fa fa-star-half-o" th:if="${i == T(java.lang.Math).ceil(averageRating) && (averageRating % 1) >= 0.5 && i > T(java.lang.Math).floor(averageRating)}"></i>
-                        <!-- ⚪ Sao trống -->
                         <i class="fa fa-star-o" th:if="${i > averageRating && (i != T(java.lang.Math).ceil(averageRating) || (averageRating % 1) < 0.5)}"></i>
                     </th:block>
                 </div>
             </div>
 
-            <!-- 📊 Phần trăm số sao -->
             <ul class="rating">
                 <th:block th:each="i : ${#numbers.sequence(5,1,-1)}">
                     <li>
@@ -40,7 +35,6 @@
         </div>
     </div>
 
-    <!-- 📝 Danh sách đánh giá -->
     <div class="col-md-6">
         <div id="reviews">
             <ul class="reviews" id="review-list">
@@ -48,7 +42,6 @@
                     <p th:if="${#lists.isEmpty(reviews)}">Không có đánh giá nào</p>
                     <div class="review-heading">
                         <h5 class="name" th:text="${item.tenKhachHang}">Tên</h5>
-                        <!-- Nếu ngày đăng tồn tại -->
                         <p class="date" th:if="${item.ngayDang != null}" th:text="${#temporals.format(item.ngayDang, 'dd/MM/yyyy')}"></p>
                         <p class="date" th:unless="${item.ngayDang != null}">Không rõ ngày</p>
                         <div class="review-rating">

@@ -22,7 +22,6 @@ public class Role {
 
     private LocalDateTime updatedAt;
 
-    // Quan hệ 1-N với User
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     private List<User> users;
 

@@ -9,7 +9,6 @@ public class ProductsVM {
     private String moTa;
     private String tenLoai;
 
-    // Constructor đầy đủ
     public ProductsVM(Integer maLoai, Integer maSP, String tenSP, String hinhAnh, Double gia, String moTa, String tenLoai) {
         this.maLoai = maLoai;
         this.maSP = maSP;
@@ -21,7 +20,6 @@ public class ProductsVM {
     }
 
     public ProductsVM() {
-        // Constructor mặc định (nếu cần)
     }
 
     // Getter và Setter

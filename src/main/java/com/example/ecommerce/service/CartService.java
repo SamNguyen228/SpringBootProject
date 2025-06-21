@@ -1,12 +1,12 @@
 package com.example.ecommerce.service;
 
+import com.example.ecommerce.model.Cart;
+import com.example.ecommerce.repository.CartRepository;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.example.ecommerce.model.viewmodel.CartItem;
-import com.example.ecommerce.repository.CartRepository;
 
 @Service
 public class CartService {
@@ -14,11 +14,18 @@ public class CartService {
     @Autowired
     private CartRepository cartRepository;
 
-    @Autowired
-    private UserService userService;
+    public List<Cart> getCartItemsByUserId(Integer userId) {
+        return cartRepository.findByUser_UserId(userId);
+    }
 
-    // public List<CartItem> getCartItemsByUserId(Integer userId) {
-    //     return cartRepository.findCartItemsByUserId(userId);
-    // }
+    public int getCartTotalQuantity(List<Cart> cartItems) {
+        return cartItems.stream().mapToInt(Cart::getQuantity).sum();
+    }
+
+    public double getCartTotalAmount(List<Cart> cartItems) {
+        return cartItems.stream()
+                .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
+                .sum();
+    }
 }
 

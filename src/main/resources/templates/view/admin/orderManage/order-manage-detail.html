@@ -1,0 +1,72 @@
+<section xmlns:th="http://www.thymeleaf.org"
+         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+         layout:decorate="~{fragments/admin-layout}"
+         layout:fragment="body">
+
+    <div class="container mt-4 w-50">
+        <h2 class="mb-3">Chi tiết đơn hàng</h2>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Mã đơn hàng: #<span th:text="${order.orderId}"></span></h5>
+                <p><strong>Trạng thái:</strong>
+                    <span th:switch="${order.status}">
+                        <span th:case="'Pending'" class="badge bg-warning text-dark">Chờ xác nhận</span>
+                        <span th:case="'Processing'" class="badge bg-primary">Đang xử lý</span>
+                        <span th:case="'Shipped'" class="badge bg-info text-dark">Đã giao hàng</span>
+                        <span th:case="'Completed'" class="badge bg-success">Hoàn thành</span>
+                        <span th:case="'Cancelled'" class="badge bg-danger">Đã hủy</span>
+                        <span th:case="*">Không xác định</span>
+                    </span>
+                </p>
+                <p><strong>Tổng tiền:</strong> <span th:text="${order.totalAmount} + '$'"></span></p>
+                <p><strong>Giảm giá:</strong>
+                    <span th:text="${order.discountAmount != null ? order.discountAmount + '$' : '0$'}"></span>
+                </p>
+                <p><strong>Người đặt:</strong> <span th:text="${order.user.fullName}"></span></p>
+                <p><strong>Ngày tạo:</strong>
+                    <span th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Thao tác -->
+        <div class="mb-4">
+            <form th:action="@{'/admin/orders/' + ${order.orderId} + '/next'}" method="post"
+                  th:if="${order.status != 'Completed' and order.status != 'Cancelled'}">
+                <button type="submit" class="btn btn-success me-2">Cập nhật bước tiếp theo</button>
+            </form>
+            <br>
+            <form th:action="@{'/admin/orders/' + ${order.orderId} + '/cancel'}" method="post"
+                  th:if="${order.status != 'Completed' and order.status != 'Cancelled'}"
+                  onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
+                <button type="submit" class="btn btn-danger">Hủy đơn hàng</button>
+            </form>
+        </div>
+
+        <!-- Chi tiết sản phẩm trong đơn -->
+        <div class="table-responsive">
+            <h4>Chi tiết đơn hàng</h4>
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${order.orderDetails}">
+                        <td th:text="${item.product.productName}"></td>
+                        <td th:text="${item.quantity}"></td>
+                        <td th:text="${item.price} + '$'"></td>
+                        <td th:text="${item.price * item.quantity} + '$'"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a th:href="@{/admin/orders}" class="btn btn-secondary mt-3">Quay lại danh sách</a>
+    </div>
+</section>

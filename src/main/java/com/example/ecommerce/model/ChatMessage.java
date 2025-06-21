@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "ChatMessages")
+@Table(name = "ChatMessages") 
 public class ChatMessage {
 
     @Id
@@ -12,19 +12,22 @@ public class ChatMessage {
     @Column(name = "message_id")
     private Integer messageId;
 
+    @Column(name = "name", columnDefinition = "NVARCHAR(255)")
     private String name;
 
+    @Column(name = "email", columnDefinition = "NVARCHAR(255)")
     private String email;
 
+    @Column(name = "message", columnDefinition = "NVARCHAR(MAX)")
     private String message;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "reply", columnDefinition = "NVARCHAR(MAX)")
     private String reply;
 
     // Getters and Setters
-
     public Integer getMessageId() {
         return messageId;
     }

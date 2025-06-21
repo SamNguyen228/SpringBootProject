@@ -10,6 +10,7 @@ import com.example.ecommerce.model.viewmodel.ProductsVM;
 import com.example.ecommerce.repository.ChatMessageRepository;
 import com.example.ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -106,7 +107,6 @@ public class HomeController {
     @GetMapping("/hotdeal")
     public String hotDeal(Model model) {
         List<Product> products = productRepository.findAll();
-        // Map products to a list of maps containing ProductsVM, discount, and oldPrice
         List<Map<String, Object>> result = products.stream().map(p -> {
             ProductsVM vm = new ProductsVM();
             vm.setMaLoai(p.getCategory().getCategoryId());
@@ -116,11 +116,11 @@ public class HomeController {
             vm.setGia(p.getPrice());
             vm.setMoTa(p.getDescription());
             vm.setTenLoai(p.getCategory().getCategoryName());
-            // Calculate random discount (10% to 50%) and old price
+
             Random random = new Random();
             int discount = random.nextInt(41) + 10;
             double oldPrice = p.getPrice() * (1 + discount / 100.0);
-            // Create a map for the product
+
             Map<String, Object> productMap = new HashMap<>();
             productMap.put("product", vm);
             productMap.put("discount", discount);
@@ -128,7 +128,6 @@ public class HomeController {
             return productMap;
         }).collect(Collectors.toList());
         
-        // Group by category and limit to 4 products per category
         Map<String, List<Map<String, Object>>> categoryMap = result.stream()
                 .collect(Collectors.groupingBy(
                         map -> ((ProductsVM) map.get("product")).getTenLoai(),
@@ -155,9 +154,10 @@ public class HomeController {
         return "redirect:/contact";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/dashboard")
     public String dashboard() {
-        return "dashboard"; 
+        return "view/admin/dashboard"; 
     }
 }
 

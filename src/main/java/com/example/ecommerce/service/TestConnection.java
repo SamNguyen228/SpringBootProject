@@ -14,15 +14,13 @@ import java.sql.SQLException;
 
 public class TestConnection {
     public static void main(String[] args) {
-        String jdbcURL = "jdbc:sqlserver://localhost:1433;databaseName=Website;instanceName=SQLEXPRESS;encrypt=true;trustServerCertificate=true";
-        String username = "sa";
-        String password = "SamIT6";
+        String jdbcURL = "jdbc:sqlserver://localhost:1433;databaseName=YOUR_DATABSE;instanceName=SQLEXPRESS;encrypt=true;trustServerCertificate=true";
+        String username = "YOUR_USERNAME";
+        String password = "YOUR_PASSWORD";
 
         try {
-            // Load driver
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
-            // Create connection
             Connection connection = DriverManager.getConnection(jdbcURL, username, password);
 
             System.out.println("Connect Successful!");

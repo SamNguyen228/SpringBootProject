@@ -129,7 +129,7 @@
                                             </h4>
                                         </div>
                                         <div class="add-to-cart">
-                                            <form th:action="@{/cart/add/{id}(id=${productMap.product.maSP})}" method="post">
+                                            <form th:action="@{/user/cart/add/{id}(id=${productMap.product.maSP})}" method="post">
                                                 <input type="hidden" name="quantity" value="1" />
                                                 <button class="add-to-cart-btn">
                                                     <i class="fa fa-shopping-cart"></i> Thêm vào giỏ
@@ -177,5 +177,11 @@
 		<script src="js/main.js"></script>
 		<script src="cart.js"></script>
         <script src="Wishlist.js"></script>
+        <!-- jQuery -->
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<!-- Bootstrap JS -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<!-- Slick Carousel JS -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 	</body>
 </html>

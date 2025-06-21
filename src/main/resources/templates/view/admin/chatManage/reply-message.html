@@ -1,0 +1,22 @@
+<section xmlns:th="http://www.thymeleaf.org"
+         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+         layout:decorate="~{fragments/admin-layout}"
+         layout:fragment="body">
+
+<div class="container mt-4">
+    <h2>Reply to Message</h2>
+    <div class="mb-3">
+        <strong>From:</strong> <span th:text="${message.name}"></span> (<span th:text="${message.email}"></span>)<br>
+        <strong>Message:</strong> <p th:text="${message.message}"></p>
+    </div>
+    <form th:action="@{'/admin/chat-messages/reply/' + ${message.messageId}}" method="post">
+        <div class="mb-3">
+            <label class="form-label">Reply</label>
+            <textarea name="reply" class="form-control" rows="3" required
+                      th:text="${message.reply}"></textarea>
+        </div>
+        <button class="btn btn-primary">Send Reply</button>
+        <a href="/admin/chat-messages" class="btn btn-secondary">Back</a>
+    </form>
+</div>
+</section>

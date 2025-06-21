@@ -1,7 +1,7 @@
 package com.example.ecommerce.controller;
 
 import java.security.Principal;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,31 +9,31 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.ecommerce.model.Cart;
 import com.example.ecommerce.model.Product;
-import com.example.ecommerce.model.UpdateCartRequest;
 import com.example.ecommerce.model.viewmodel.CartItem;
 import com.example.ecommerce.repository.CartRepository;
 import com.example.ecommerce.repository.ProductRepository;
+import com.example.ecommerce.service.CartService;
 import com.example.ecommerce.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/user")
+@PreAuthorize("hasRole('CUSTOMER')")
 public class CartController {
     @Autowired
     private CartRepository cartRepository;
@@ -44,63 +44,8 @@ public class CartController {
     @Autowired
     private ProductRepository productRepository;
 
-    // @GetMapping("/cart-quick")
-    // public String cartQuickView(Model model, Principal principal) {
-    //     Integer userId = userService.getUserId();
-
-    //     List<Cart> carts = cartRepository.findByUser_UserId(userId);
-    //     List<CartItem> cartItems = carts.stream().map(c -> {
-    //         Product p = c.getProduct();
-    //         CartItem item = new CartItem();
-    //         item.setMaSP(p.getProductId());
-    //         item.setTenSP(p.getProductName());
-    //         item.setGia(p.getPrice());
-    //         item.setHinhAnh(p.getImageUrl());
-    //         item.setSoLuong(c.getQuantity());
-    //         return item;
-    //     }).toList();
-
-    //     int totalQuantity = cartItems.stream()
-    //         .mapToInt(CartItem::getSoLuong)
-    //         .sum();
-
-    //     double totalPrice = cartItems.stream()
-    //         .mapToDouble(item -> item.getSoLuong() * item.getGia())
-    //         .sum();
-
-    //     model.addAttribute("cartItems", cartItems);
-    //     model.addAttribute("totalQuantity", totalQuantity);
-    //     model.addAttribute("totalPrice", totalPrice);
-    //     model.addAttribute("userId", userId);
-
-    //     model.addAttribute("cartItems", cartItems);
-    //     return "fragments/cart-quick";
-    // }
-
-    // @ModelAttribute("cartItems")
-    // public List<CartItem> getCartItems() {
-    //     Integer userId = userService.getUserId();
-    //     if (userId == null) return new ArrayList<>();
-    //     return cartRepository.findByUser_UserId(userId)
-    //             .stream()
-    //             .map(c -> new CartItem(
-    //                     c.getProduct().getProductId(),
-    //                     c.getProduct().getImageUrl(),
-    //                     c.getProduct().getProductName(),
-    //                     c.getProduct().getPrice(),
-    //                     c.getQuantity()
-    //             )).toList();
-    // }
-
-    // @ModelAttribute("cartTotalQuantity")
-    // public int getTotalQuantity() {
-    //     return getCartItems().stream().mapToInt(CartItem::getSoLuong).sum();
-    // }
-
-    // @ModelAttribute("cartTotalAmount")
-    // public double getTotalAmount() {
-    //     return getCartItems().stream().mapToDouble(CartItem::getThanhTien).sum();
-    // }
+    @Autowired
+    private CartService cartService;
 
     @GetMapping("/cart")
     public String showCart(Model model) {
@@ -126,10 +71,11 @@ public class CartController {
         model.addAttribute("userId", userId);
 
         model.addAttribute("cartItems", cartItems);
-        return "view/cart";
+        return "view/user/cart";
     }
 
     @PostMapping("/cart/add/{id}")
+    @PreAuthorize("hasRole('CUSTOMER')")
     public String addToCart(@PathVariable("id") int productId,
                             @RequestParam(value = "quantity", defaultValue = "1") int quantity,
                             @RequestParam(value = "redirect", required = false) String redirectTarget,
@@ -174,9 +120,8 @@ public class CartController {
         return "redirect:" + request.getHeader("Referer");
     }
 
-
     @GetMapping("/cart/remove/{id}")
-    // @PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("hasRole('CUSTOMER')")
     public String removeCartItem(@PathVariable("id") int productId,
                                 RedirectAttributes redirectAttributes) {
         Integer userId = userService.getUserId();
@@ -188,7 +133,7 @@ public class CartController {
         return "redirect:/cart";
     }
 
-   @PostMapping("/cart/update-quantity")
+    @PostMapping("/cart/update-quantity")
     @ResponseBody
     public Map<String, Object> updateQuantity(@RequestParam int id,
                                             @RequestParam int quantity,
@@ -202,7 +147,6 @@ public class CartController {
             cartRepository.save(cartItem);
         }
 
-        // Tính tổng tiền giỏ hàng
         List<Cart> cartItems = cartRepository.findByUser_UserId(userId);
         double total = cartItems.stream()
                 .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
@@ -212,5 +156,28 @@ public class CartController {
         response.put("success", true);
         response.put("total", String.format("%.2f", total));
         return response;
+    }
+
+    @GetMapping("/cart-quick")
+    public String quickCart(Model model, Principal principal) {
+        if (principal == null) {
+            model.addAttribute("cartItems", Collections.emptyList());
+            model.addAttribute("cartCount", 0);
+            model.addAttribute("cartTotal", 0.0);
+            return "fragments/cart-quick"; 
+        }
+
+        Integer userId = Integer.parseInt(((UsernamePasswordAuthenticationToken) principal)
+                .getPrincipal().toString());
+
+        List<Cart> cartItems = cartService.getCartItemsByUserId(userId);
+        int cartCount = cartService.getCartTotalQuantity(cartItems);
+        double cartTotal = cartService.getCartTotalAmount(cartItems);
+
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("cartCount", cartCount);
+        model.addAttribute("cartTotal", cartTotal);
+
+        return "fragments/cart-quick"; 
     }
 }

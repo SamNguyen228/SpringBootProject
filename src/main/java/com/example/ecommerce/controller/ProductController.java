@@ -3,7 +3,6 @@ package com.example.ecommerce.controller;
 import com.example.ecommerce.model.Product;
 import com.example.ecommerce.model.User;
 import com.example.ecommerce.service.CategoryService;
-import com.example.ecommerce.service.CustomUserDetails;
 import com.example.ecommerce.service.OrderDetailService;
 import com.example.ecommerce.service.ProductService;
 import com.example.ecommerce.service.ReviewService;
@@ -20,8 +19,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -120,10 +117,8 @@ public class ProductController {
                 @RequestParam(defaultValue = "popular") String sortBy,
                 Model model) {
 
-            // Spring dùng chỉ mục từ 0
             page = page - 1;
 
-            // Sắp xếp
             Sort sort;
             switch (sortBy) {
                 case "price_asc":
@@ -143,18 +138,14 @@ public class ProductController {
 
             if (query != null && !query.isEmpty()) {
                 if (loai != null) {
-                    // Có lọc theo tên và loại
                     productPage = productRepository.findByProductNameContainingIgnoreCaseAndCategoryId(query, loai, pageable);
                 } else {
-                    // Chỉ tìm theo tên
                     productPage = productRepository.findByProductNameContainingIgnoreCase(query, pageable);
                 }
             } else {
                 if (loai != null) {
-                    // Chỉ lọc theo loại
                     productPage = productRepository.findByCategoryId(loai, pageable);
                 } else {
-                    // Không lọc gì cả (toàn bộ)
                     productPage = productRepository.findAll(pageable);
                 }
             }
@@ -193,13 +184,9 @@ public class ProductController {
             return "redirect:/404";
         }
 
-        // Lấy sản phẩm liên quan (cùng loại)
         List<Product> relatedProducts = productService.getRelatedProducts(id, product.getCategory().getCategoryId());
-
-        // Lấy danh sách review
         List<ReviewVM> reviews = reviewService.getReviewsByProductId(id);
 
-        // Tính điểm đánh giá trung bình
         double averageRating = 0;
         int[] starCounts = new int[5];
         if (!reviews.isEmpty()) {

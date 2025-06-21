@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -48,7 +49,7 @@ import com.example.ecommerce.service.UserService;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-// @RequestMapping("/checkout")
+@RequestMapping("/user")
 @PreAuthorize("hasRole('CUSTOMER')")
 public class CheckoutController {
 
@@ -61,13 +62,9 @@ public class CheckoutController {
     @Autowired private OrderDetailRepository orderDetailRepository;
     @Autowired private NotificationRepository notificationRepository;
     @Autowired private EmailService emailService;
+    @Autowired private ShippingAddressRepository shippingAddressRepository;
 
-
-    CheckoutViewModel checkoutModel = new CheckoutViewModel();
-    
-    @Autowired
-    private ShippingAddressRepository shippingAddressRepository;
-
+    @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping("/checkout")
     public String index(Model model, Principal principal, HttpSession session) {
         Integer userId = userService.getUserId();
@@ -91,7 +88,7 @@ public class CheckoutController {
             .mapToDouble(item -> item.getGia() * item.getSoLuong())
             .sum();
 
-        User user = userRepository.findById(userId.longValue()).orElse(null);
+        User user = userRepository.findById(userId.intValue()).orElse(null);
         var shippingAddress = shippingAddressRepository.findFirstByUserId(userId);
 
         CheckoutViewModel checkoutModel = new CheckoutViewModel();
@@ -103,10 +100,11 @@ public class CheckoutController {
         checkoutModel.setTotalAmount(totalAmount); 
 
         model.addAttribute("checkoutModel", checkoutModel);
-        return "view/checkout";
+        return "view/user/checkout";
     }
 
-   @PostMapping("/process")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @PostMapping("/process")
     public String processOrder(@RequestParam(required = false) Integer promotionId,
                             @ModelAttribute("user") User userForm,
                             HttpSession session,
@@ -119,7 +117,7 @@ public class CheckoutController {
             return "redirect:/login";
         }
 
-        Optional<User> userOpt = userRepository.findById(Long.valueOf(userId));
+        Optional<User> userOpt = userRepository.findById(Integer.valueOf(userId));
         if (userOpt.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Người dùng không tồn tại.");
             return "redirect:/cart";
@@ -212,15 +210,17 @@ public class CheckoutController {
         return "redirect:/orders/confirmation/" + order.getOrderId();
     }
 
+    @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping("/orders/confirmation/{orderId}")
     public String orderConfirmation(@PathVariable int orderId, Model model) {
         Optional<Order> orderOpt = orderRepository.findByIdWithDetails(orderId);
         if (orderOpt.isEmpty()) return "redirect:/";
 
         model.addAttribute("order", orderOpt.get());
-        return "view/confirmation";
+        return "view/user/confirmation";
     }
 
+    @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping("/apply-promotion")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> applyPromotion(@RequestParam("code") String code, Principal principal) {

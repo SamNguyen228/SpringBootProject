@@ -10,6 +10,14 @@
 		<nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
 		<!-- /NAVIGATION -->
 
+		<!-- SLOGAN -->
+            <div class="slogan">
+                <h1>Welcome to Smartbuy</h1> <br>
+                <p>Experience the future of technology</p> <br>
+               <a id="explore" th:href="@{/products}">Explore</a>
+            </div>
+		<!-- /SLOGAN -->
+
 		<!-- SECTION -->
 		<div class="section">
 			<!-- container -->
@@ -76,14 +84,6 @@
 					<div class="col-md-12">
 						<div class="section-title">
 							<h3 class="title">Sản Phẩm Mới</h3>
-							<!-- <div class="section-nav">
-								<ul class="section-tab-nav tab-nav">
-									<li class="active"><a data-toggle="tab" href="#tab1">Laptops</a></li>
-									<li><a data-toggle="tab" href="#tab1">Smartphones</a></li>
-									<li><a data-toggle="tab" href="#tab1">Cameras</a></li>
-									<li><a data-toggle="tab" href="#tab1">Accessories</a></li>
-								</ul>
-							</div> -->
 						</div>
 					</div>
 					<!-- /section title -->
@@ -113,29 +113,10 @@
 												<h4 class="product-price">
 													<span th:text="${product.Gia + '$'}"></span>
 												</h4>
-												<!-- <div class="product-rating">
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-												</div>
-												<div class="product-btns">
-													<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">Yêu thích</span></button>
-													<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">So sánh</span></button>
-													<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">Xem nhanh</span></button>
-												</div> -->
 											</div>
 
 											<div class="add-to-cart">
-												<!-- <button class="add-to-cart-btn"
-														th:attr="data-id=${product.MaSP},
-															data-name=${product.TenSP},
-															data-price=${product.Gia},
-															data-img=@{'/images/' + ${product.HinhAnh}}">
-													<i class="fa fa-shopping-cart"></i> Thêm vào giỏ
-												</button> -->
-												<form th:action="@{/cart/add/{id}(id=${product.maSP})}" method="post">
+												<form th:action="@{/user/cart/add/{id}(id=${product.maSP})}" method="post">
 													<input type="hidden" name="quantity" value="1" />
 													<button class="add-to-cart-btn">
 														<i class="fa fa-shopping-cart"></i> Thêm vào giỏ
@@ -196,7 +177,7 @@
 							</ul>
 							<h2 class="text-uppercase">ưu đãi tuần này</h2>
 							<p>Giảm Giá Đến 50% </p>
-							<a class="primary-btn cta-btn" asp-controller="Home" asp-action="HotDeal">Mua Hàng Ngay</a>
+							<a class="primary-btn cta-btn" th:href="@{/products}">Mua Hàng Ngay</a>
 						</div>
 					</div>
 				</div>
@@ -217,14 +198,6 @@
 					<div class="col-md-12">
 						<div class="section-title">
 							<h3 class="title">Top selling</h3>
-							<!-- <div class="section-nav">
-								<ul class="section-tab-nav tab-nav">
-									<li class="active"><a data-toggle="tab" href="#tab2">Laptops</a></li>
-									<li><a data-toggle="tab" href="#tab2">Smartphones</a></li>
-									<li><a data-toggle="tab" href="#tab2">Cameras</a></li>
-									<li><a data-toggle="tab" href="#tab2">Accessories</a></li>
-								</ul>
-							</div> -->
 						</div>
 					</div>
 					<!-- /section title -->
@@ -255,7 +228,7 @@
 													</h4>
 												</div>
 												<div class="add-to-cart">
-													<form th:action="@{/cart/add/{id}(id=${item.maSP})}" method="post">
+													<form th:action="@{/user/cart/add/{id}(id=${item.maSP})}" method="post">
 														<button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Thêm vào giỏ</button>
 													</form>
 												</div>
@@ -902,7 +875,7 @@
 		<script>
 			function loadNotifications() {
 				$.ajax({
-					url: '/Order/GetAdminNotifications',
+					url: '/admin/notifications',
 					method: 'GET',
 					success: function (response) {
 						// Cập nhật số lượng

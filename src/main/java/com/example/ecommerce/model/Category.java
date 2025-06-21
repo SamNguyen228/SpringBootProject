@@ -17,10 +17,8 @@ public class Category {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Product> products;
 
-    // Constructor mặc định (bắt buộc cho JPA)
     public Category() {}
 
-    // Constructor có tham số (tuỳ chọn)
     public Category(String categoryName) {
         this.categoryName = categoryName;
     }

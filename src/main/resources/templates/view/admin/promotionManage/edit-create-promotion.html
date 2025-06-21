@@ -1,0 +1,53 @@
+<section xmlns:th="http://www.thymeleaf.org"
+         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+         layout:decorate="~{fragments/admin-layout}"
+         layout:fragment="body">
+
+    <div class="container mt-4 w-50">
+        <h2 th:text="${promotion.promotionId == null ? 'Thêm khuyến mãi' : 'Chỉnh sửa khuyến mãi'}"></h2>
+
+        <form th:action="@{/admin/promotions/save}" th:object="${promotion}" method="post">
+            <input type="hidden" th:field="*{promotionId}" />
+
+            <div class="mb-3">
+                <label class="form-label">Tên khuyến mãi</label>
+                <input type="text" class="form-control" th:field="*{promotionName}" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Phần trăm giảm (%)</label>
+                <input type="number" step="0.01" class="form-control" th:field="*{discountPercentage}" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Số tiền giảm ($)</label>
+                <input type="number" step="1000" class="form-control" th:field="*{discountAmount}" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Ngày bắt đầu</label>
+                <input type="datetime-local" class="form-control"
+                       th:field="*{startDate}" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Ngày kết thúc</label>
+                <input type="datetime-local" class="form-control"
+                       th:field="*{endDate}" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Giá trị đơn tối thiểu</label>
+                <input type="number" class="form-control" th:field="*{minOrderValue}" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Giảm tối đa</label>
+                <input type="number" class="form-control" th:field="*{maxDiscount}" />
+            </div>
+
+            <button type="submit" class="btn btn-success">Lưu</button>
+            <a th:href="@{/admin/promotions}" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</section>
