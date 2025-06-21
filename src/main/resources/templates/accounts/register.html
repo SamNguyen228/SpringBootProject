@@ -2,12 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Đăng Ký</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta charset="UTF-8" />
-    <link href="https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Monoton" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css2/font-awesome.min.css}" type="text/css" />
-    <link rel="stylesheet" th:href="@{/css2/style.css}" type="text/css" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Monoton" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css2/font-awesome.min.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css2/style.css}" type="text/css"/>
 </head>
 <body>
 <h1 class="w3ls" th:text="${title}">Đăng Ký</h1>
@@ -22,48 +22,46 @@
             <span th:text="${error}"></span>
         </div>
 
-        <form th:action="@{/account/register}" method="post">
+        <form th:action="@{/register}" method="post">
             <div class="form-control w3layouts">
-                <input type="text" name="fullName" id="password" placeholder="Họ và Tên" required />
+                <input type="text" name="fullName" id="email" placeholder="Họ và Tên" required minlength="2"/>
             </div>
 
             <div class="form-control w3layouts">
-                <input type="email" name="email" id="password" placeholder="Email" required />
+                <input type="email" name="email" id="email" placeholder="Email" required/>
             </div>
 
             <div class="form-control agileinfo" style="position: relative;">
-                <input type="password" class="lock" name="password" id="password" placeholder="Mật Khẩu" required />
-                <i id="togglePassword" class="fa fa-eye" style="position: absolute; right: 110px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888"></i>
+                <input type="password" class="lock" name="password" id="password" placeholder="Mật Khẩu" required minlength="6"/>
+                <i id="togglePassword" class="fa fa-eye"
+                   style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888"></i>
             </div>
 
             <div class="form-control agileinfo">
-                <input type="text" class="lock" name="phone" id="password" placeholder="Số Điện Thoại" required />
+                <input type="text" class="lock" name="phone" id="email" placeholder="Số Điện Thoại" required pattern="\d{10}"/>
             </div>
 
             <div class="form-control agileinfo">
-                <input type="text" class="lock" name="address" id="password" placeholder="Địa Chỉ" required />
+                <input type="text" class="lock" name="address" id="email" placeholder="Địa Chỉ" required/>
             </div>
 
-            <input type="submit" class="register" value="Đăng Ký" />
+            <input type="submit" class="register" value="Đăng Ký"/>
             <p class="wthree w3l">Bạn đã có tài khoản? <a th:href="@{/login}">Đăng nhập</a></p>
         </form>
-
     </div>
     <div class="clear"></div>
 </div>
 
 <script>
     const togglePassword = document.getElementById('togglePassword');
-    const password = document.getElementById('password');
+    const passwordInput = document.getElementById('password');
 
     togglePassword.addEventListener('click', function () {
-        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-        password.setAttribute('type', type);
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
         this.classList.toggle('fa-eye');
         this.classList.toggle('fa-eye-slash');
     });
 </script>
-
 </body>
 </html>
-

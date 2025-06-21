@@ -4,8 +4,10 @@
  */
 package com.example.ecommerce.controller;
 
+import com.example.ecommerce.model.Role;
 import com.example.ecommerce.model.User;
 import com.example.ecommerce.model.viewmodel.ForgotPasswordModel;
+import com.example.ecommerce.repository.RoleRepository;
 import com.example.ecommerce.repository.UserRepository;
 import com.example.ecommerce.service.UserService;
 
@@ -46,6 +48,8 @@ public class AccountController {
     
     @Autowired 
     private JavaMailSender mailSender;
+
+    @Autowired RoleRepository roleRepository;
 
     @GetMapping("/login")
     public String showLoginForm(HttpSession session) {
@@ -150,7 +154,9 @@ public class AccountController {
         newUser.setAddress(address);
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setIsLocked(false);
-        newUser.setRoleId(2);
+        Role role = roleRepository.findById(2)
+        .orElseThrow(() -> new RuntimeException("Không tìm thấy role với ID = 2"));
+        newUser.setRole(role); 
 
         userRepository.save(newUser);
         return "redirect:/login";
