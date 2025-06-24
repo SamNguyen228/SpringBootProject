@@ -1,6 +1,11 @@
 package com.example.ecommerce.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,10 +20,24 @@ public class User {
     @Column(name = "roleId", insertable = false, updatable = false)
     private Integer roleId;
 
+    @NotBlank(message = "Tên không được để trống")
+    @Size(min = 2, message = "Tên phải có ít nhất 2 ký tự")
     private String fullName;
+
+    @Email(message = "Email không hợp lệ")
+    @NotBlank(message = "Email không được để trống")
     private String email;
+
+    @Pattern(
+        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-={}|\\[\\]:\";'<>?,./]).{6,}$",
+        message = "Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt"
+    )
     private String passwordHash;
+
+    @Pattern(regexp = "\\d{10}", message = "Số điện thoại phải có 10 chữ số")
     private String phone;
+
+    @NotBlank(message = "Địa chỉ không được để trống")
     private String address;
     private LocalDateTime createdAt;
     private Boolean isLocked;

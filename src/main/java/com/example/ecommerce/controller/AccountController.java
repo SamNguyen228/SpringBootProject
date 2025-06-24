@@ -14,6 +14,7 @@ import com.example.ecommerce.service.UserService;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -133,11 +135,14 @@ public class AccountController {
         }
 
         if (!StringUtils.hasText(password) || password.length() < 6 ||
-                !password.chars().anyMatch(Character::isLetter) ||
-                !password.chars().anyMatch(Character::isDigit)) {
-            model.addAttribute("error", "Mật khẩu phải có ít nhất 6 ký tự và bao gồm cả chữ và số!");
+            !password.chars().anyMatch(Character::isLetter) ||
+            !password.chars().anyMatch(Character::isDigit) ||
+            password.chars().noneMatch(c -> "!@#$%^&*()_+-=[]{}|;':\",.<>?/`~".indexOf(c) >= 0)) {
+
+            model.addAttribute("error", "Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ, số và ký tự đặc biệt!");
             return "accounts/register";
         }
+
 
         if (!StringUtils.hasText(phone) || phone.length() != 10 || !phone.chars().allMatch(Character::isDigit)) {
             model.addAttribute("error", "Số điện thoại phải gồm đúng 10 chữ số!");
@@ -208,29 +213,40 @@ public class AccountController {
     }
 
     @PostMapping("/edit")
-    public String updateProfile(@ModelAttribute("user") User formUser,
+    public String updateProfile(@Valid @ModelAttribute("user") User formUser,
+                                BindingResult bindingResult,
                                 @RequestParam(required = false) String newPassword,
                                 Principal principal,
                                 RedirectAttributes redirectAttributes) {
 
-         Integer userId = userService.getUserId();
+        Integer userId = userService.getUserId();
         Optional<User> userOpt = userRepository.findById(userId);
 
         if (userOpt.isEmpty()) {
             return "redirect:/login";
         }
 
-        User user = userOpt.get();
+        if (bindingResult.hasErrors()) {
+            return "accounts/edit";
+        }
 
+        User user = userOpt.get();
         user.setFullName(formUser.getFullName());
         user.setEmail(formUser.getEmail());
         user.setPhone(formUser.getPhone());
         user.setAddress(formUser.getAddress());
 
         if (newPassword != null && !newPassword.isBlank()) {
+            String pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-={}\\[\\]:\";'<>?,./]).{6,}$";
+
+           if (!newPassword.matches(pattern)) {
+                redirectAttributes.addFlashAttribute("passwordError", "Mật khẩu phải có ít nhất 6 ký tự gồm chữ hoa, thường, số và ký tự đặc biệt.");
+                return "redirect:/edit";
+            }
+
             user.setPasswordHash(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
         }
-
+        
         userRepository.save(user);
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin thành công!");
         return "redirect:/";
