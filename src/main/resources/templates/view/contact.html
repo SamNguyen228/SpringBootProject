@@ -45,6 +45,8 @@
         </div>
     </div>
 
+    <div th:replace="fragments/chat-popup :: chatPopupFragment"></div>
+
     <br> <br> 
     <!-- FOOTER -->
 	<footer th:replace="~{fragments/footer :: page_footer}"></footer> 
@@ -64,6 +66,11 @@
 			});
 		});
 	</script>
+
+    <script th:if="${successMessage}" th:inline="javascript">
+        alert('[[${successMessage}]]');
+    </script>
+
     <!-- jQuery Plugins -->
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>

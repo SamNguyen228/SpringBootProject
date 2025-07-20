@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.RequestParam;
+
 import com.example.ecommerce.repository.ProductRepository;
 import com.example.ecommerce.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +29,30 @@ public class ProductManageController {
 
     @GetMapping
     public String listProducts(Model model,
-                            @RequestParam(defaultValue = "0") int page,
-                            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long categoryId) {
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("productId").ascending());
-        Page<Product> productsPage = productRepository.findAll(pageable);
+        Page<Product> productsPage;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            productsPage = productRepository.searchByProductNameContainingIgnoreCase(keyword, pageable);
+        } else if (categoryId != null) {
+            productsPage = productRepository.findByCategory_CategoryId(categoryId, pageable);
+        } else {
+            productsPage = productRepository.findAll(pageable);
+        }
 
         model.addAttribute("productsPage", productsPage);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", productsPage.getTotalPages());
         model.addAttribute("pageTitle", "Quản lí sản phẩm");
+
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("categories", categoryRepository.findAll());
 
         return "view/admin/productManage/product-manage";
     }

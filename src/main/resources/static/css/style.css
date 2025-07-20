@@ -698,7 +698,7 @@ textarea.input {
   border-top: 3px solid var(--web-color);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 20;
 }
 
 /*----------------------------*\
@@ -723,8 +723,7 @@ textarea.input {
   display: block;
   width: 0%;
   height: 2px;
-  /* background-color: var(--web-color); */
-  background-image: linear-gradient(to right, #43e97b 0%, #38f9d7 100%);
+  background-color: var(--web-color);
   -webkit-transition: 0.2s all;
   transition: 0.2s all;
 }

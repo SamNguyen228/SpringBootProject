@@ -19,7 +19,7 @@
         <div class="section">
             <div class="container">
                 <div class="row">
-                    <form th:action="@{/process}" method="post" id="checkoutForm">
+                    <form th:action="@{/user/process}" method="post" id="checkoutForm">
                         <input type="hidden" name="promotionId" id="promotionId" value="" />
                         <div class="col-md-7">
                             <div class="billing-details">
@@ -75,16 +75,16 @@
                                     <button type="button" class="primary-btn" onclick="applyPromo()">Áp dụng</button>
                                 </div>  
                                 <div class="order-col">
-                                    <div>Giao Hàng:</div>
-                                    <span th:text="'Miễn phí'"></span>
+                                    <div><strong>Giao Hàng:</strong></div>
+                                    <div><span th:text="'Miễn phí'"></span></div>
                                 </div>
                                 <div class="order-col">
-                                    <div>Giảm giá:</div> 
-                                    <span id="discountAmount">- $0.00</span>
+                                    <div><strong>Giảm giá:</strong></div> 
+                                    <div><span id="discountAmount">- $0.00</span></div>
                                 </div>
                                 <div class="order-col">
                                     <div><strong>Tổng cộng:</strong></div>  
-                                    <div><strong class="order-total" id="totalAmount" th:text="'$' + ${#numbers.formatDecimal(checkoutModel.totalAmount, 0, 'COMMA', 0, 'POINT')}"></strong></div>
+                                    <div><strong class="order-total" id="totalAmount" th:text="'$' + ${#numbers.formatDecimal(checkoutModel.totalAmount, 1, 'COMMA', 2, 'POINT')}"></strong></div>
                                 </div>
                             </div>
                             <div class="payment-method">
@@ -162,7 +162,7 @@
                 alert("Vui lòng nhập mã giảm giá!");
                 return;
             }
-            fetch('/apply-promotion?code=' + encodeURIComponent(promoCode))
+            fetch('/user/apply-promotion?code=' + encodeURIComponent(promoCode))
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Lỗi khi gọi server: " + response.status);

@@ -3,7 +3,6 @@ package com.example.ecommerce.controller;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +11,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,20 +50,30 @@ import jakarta.servlet.http.HttpSession;
 @PreAuthorize("hasRole('CUSTOMER')")
 public class CheckoutController {
 
-    @Autowired private UserService userService;
-    @Autowired private UserRepository userRepository;
-    @Autowired private CartRepository cartRepository;
-    @Autowired private ProductRepository productRepository;
-    @Autowired private PromotionRepository promotionRepository;
-    @Autowired private OrderRepository orderRepository;
-    @Autowired private OrderDetailRepository orderDetailRepository;
-    @Autowired private NotificationRepository notificationRepository;
-    @Autowired private EmailService emailService;
-    @Autowired private ShippingAddressRepository shippingAddressRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private CartRepository cartRepository;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private PromotionRepository promotionRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private ShippingAddressRepository shippingAddressRepository;
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping("/checkout")
-    public String index(Model model, Principal principal, HttpSession session) {
+    public String index(Model model, Principal principal, HttpSession session, RedirectAttributes redirectAttributes) {
         Integer userId = userService.getUserId();
 
         List<CartItem> cartItems = cartRepository.findByUser_UserId(userId).stream().map(c -> {
@@ -80,13 +87,28 @@ public class CheckoutController {
         }).toList();
 
         if (cartItems.isEmpty()) {
-            session.setAttribute("Error", "Giỏ hàng của bạn đang trống.");
-            return "redirect:/cart";
+            redirectAttributes.addFlashAttribute("cartEmpty", "Giỏ hàng của bạn đang trống.");
+            return "redirect:/user/cart";
+        }
+
+        // Kiểm tra tồn kho
+        for (CartItem item : cartItems) {
+            Product product = productRepository.findById(item.getMaSP()).orElse(null);
+            if (product == null) {
+                redirectAttributes.addFlashAttribute("cartError", "Sản phẩm không tồn tại: " + item.getTenSP());
+                return "redirect:/user/cart";
+            }
+
+            if (item.getSoLuong() > product.getStockQuantity()) {
+                redirectAttributes.addFlashAttribute("cartError",
+                        "Sản phẩm " + item.getTenSP() + " chỉ còn " + product.getStockQuantity() + " sản phẩm trong kho.");
+                return "redirect:/user/cart";
+            }
         }
 
         double totalAmount = cartItems.stream()
-            .mapToDouble(item -> item.getGia() * item.getSoLuong())
-            .sum();
+                .mapToDouble(item -> item.getGia() * item.getSoLuong())
+                .sum();
 
         User user = userRepository.findById(userId.intValue()).orElse(null);
         var shippingAddress = shippingAddressRepository.findFirstByUserId(userId);
@@ -97,7 +119,7 @@ public class CheckoutController {
         checkoutModel.setPhone(user != null ? user.getPhone() : "Chưa cập nhật");
         checkoutModel.setAddress(shippingAddress != null ? shippingAddress.getAddress() : "");
         checkoutModel.setCartItems(cartItems);
-        checkoutModel.setTotalAmount(totalAmount); 
+        checkoutModel.setTotalAmount(totalAmount);
 
         model.addAttribute("checkoutModel", checkoutModel);
         return "view/user/checkout";
@@ -106,10 +128,10 @@ public class CheckoutController {
     @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/process")
     public String processOrder(@RequestParam(required = false) Integer promotionId,
-                            @ModelAttribute("user") User userForm,
-                            HttpSession session,
-                            Model model,
-                            RedirectAttributes redirectAttributes) {
+            @ModelAttribute("user") User userForm,
+            HttpSession session,
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
         Integer userId = userService.getCurrentUserId();
         if (userId == null) {
@@ -136,22 +158,22 @@ public class CheckoutController {
         }
 
         Map<Integer, Product> productMap = carts.stream()
-            .map(Cart::getProduct)
-            .collect(Collectors.toMap(Product::getProductId, p -> p));
+                .map(Cart::getProduct)
+                .collect(Collectors.toMap(Product::getProductId, p -> p));
 
         for (Cart cart : carts) {
             Product product = productMap.get(cart.getProduct().getProductId());
             if (product.getStockQuantity() < cart.getQuantity()) {
                 redirectAttributes.addFlashAttribute("error",
-                    "Sản phẩm '" + product.getProductName() + "' không đủ hàng.");
+                        "Sản phẩm " + product.getProductName() + " không đủ hàng.");
                 return "redirect:/cart";
             }
         }
 
         BigDecimal totalAmount = carts.stream()
-            .map(c -> BigDecimal.valueOf(c.getProduct().getPrice().doubleValue())
-                .multiply(BigDecimal.valueOf(c.getQuantity())))
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(c -> BigDecimal.valueOf(c.getProduct().getPrice().doubleValue())
+                        .multiply(BigDecimal.valueOf(c.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal discountAmount = BigDecimal.ZERO;
         Promotion promotion = null;
@@ -159,11 +181,14 @@ public class CheckoutController {
         if (promotionId != null) {
             promotion = promotionRepository.findValidPromotion(promotionId, LocalDateTime.now());
             if (promotion != null &&
-                (promotion.getMinOrderValue() == null || totalAmount.compareTo(promotion.getMinOrderValue()) >= 0)) {
+                    (promotion.getMinOrderValue() == null
+                            || totalAmount.compareTo(promotion.getMinOrderValue()) >= 0)) {
 
-                BigDecimal discountByAmount = promotion.getDiscountAmount() != null ? promotion.getDiscountAmount() : BigDecimal.ZERO;
-                BigDecimal discountByPercentage = promotion.getDiscountPercentage() != null ?
-                    totalAmount.multiply(promotion.getDiscountPercentage().divide(BigDecimal.valueOf(100))) : BigDecimal.ZERO;
+                BigDecimal discountByAmount = promotion.getDiscountAmount() != null ? promotion.getDiscountAmount()
+                        : BigDecimal.ZERO;
+                BigDecimal discountByPercentage = promotion.getDiscountPercentage() != null
+                        ? totalAmount.multiply(promotion.getDiscountPercentage().divide(BigDecimal.valueOf(100)))
+                        : BigDecimal.ZERO;
 
                 discountAmount = promotion.getDiscountAmount() != null ? discountByAmount : discountByPercentage;
                 if (promotion.getMaxDiscount() != null) {
@@ -206,15 +231,16 @@ public class CheckoutController {
         notification.setRead(false);
         notificationRepository.save(notification);
 
-        redirectAttributes.addFlashAttribute("success", "Đặt hàng thành công!");
-        return "redirect:/orders/confirmation/" + order.getOrderId();
+        redirectAttributes.addFlashAttribute("orderSuccess", "Đặt hàng thành công! Đơn hàng đã được tạo!");
+        return "redirect:/user/orders/confirmation/" + order.getOrderId();
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping("/orders/confirmation/{orderId}")
     public String orderConfirmation(@PathVariable int orderId, Model model) {
         Optional<Order> orderOpt = orderRepository.findByIdWithDetails(orderId);
-        if (orderOpt.isEmpty()) return "redirect:/";
+        if (orderOpt.isEmpty())
+            return "redirect:/";
 
         model.addAttribute("order", orderOpt.get());
         return "view/user/confirmation";
@@ -250,9 +276,9 @@ public class CheckoutController {
         }
 
         BigDecimal totalAmount = cartItems.stream()
-            .map(item -> BigDecimal.valueOf(item.getProduct().getPrice())
-                .multiply(BigDecimal.valueOf(item.getQuantity())))
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(item -> BigDecimal.valueOf(item.getProduct().getPrice())
+                        .multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal discountAmount;
 
@@ -260,8 +286,7 @@ public class CheckoutController {
             discountAmount = promotion.getDiscountAmount();
         } else {
             discountAmount = totalAmount.multiply(
-                promotion.getDiscountPercentage().divide(BigDecimal.valueOf(100))
-            );
+                    promotion.getDiscountPercentage().divide(BigDecimal.valueOf(100)));
         }
 
         if (promotion.getMaxDiscount() != null) {

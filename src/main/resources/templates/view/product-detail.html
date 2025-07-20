@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head th:insert="~{fragments/head :: page_head('Chi Tiết Sản Phẩm')}"></head>
+
 <body>
     <!-- HEADER -->
-	<header th:replace="~{fragments/header :: page_header}"></header>
-	<!-- /HEADER -->
+    <header th:replace="~{fragments/header :: page_header}"></header>
+    <!-- /HEADER -->
 
-	<!-- NAVIGATION -->
-	<nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
-	<!-- /NAVIGATION -->
+    <!-- NAVIGATION -->
+    <nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
+    <!-- /NAVIGATION -->
 
     <!-- SECTION -->
     <div class="section">
@@ -48,7 +50,7 @@
                         <p th:inline="text">Còn: <b>[[${productDetail.SoLuongTon}]]</b> sản phẩm.</p>
 
                         <div class="product-options">
-                           <label>
+                            <label>
                                 Dung Lượng
                                 <select class="input-select">
                                     <th:block th:if="${#lists.isEmpty(capacities)}">
@@ -84,14 +86,16 @@
                                         <button class="qty-down" type="button">-</button>
                                     </div>
                                 </div>
-                                <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Thêm vào giỏ</button>
+                                <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Thêm
+                                    vào giỏ</button>
                             </form>
                         </div>
 
                         <ul class="product-links">
                             <li>Danh mục:</li>
                             <li>
-                                <a th:href="@{/products(loai=${productDetail.MaLoai})}" th:text="${productDetail.TenLoai}"></a>
+                                <a th:href="@{/products(loai=${productDetail.MaLoai})}"
+                                    th:text="${productDetail.TenLoai}"></a>
                             </li>
                         </ul>
 
@@ -152,7 +156,9 @@
                             <div id="tab3" class="tab-pane fade">
                                 <div class="row">
                                     <!-- Rating & Reviews -->
-                                   <div th:replace="~{fragments/review :: reviewFragment(${reviews}, ${averageRating}, ${starCounts}, ${totalReviews})}"></div>
+                                    <div
+                                        th:replace="~{fragments/review :: reviewFragment(${reviews}, ${averageRating}, ${starCounts}, ${totalReviews})}">
+                                    </div>
                                     <!-- /Rating & Reviews -->
 
                                     <!-- Review Form -->
@@ -161,18 +167,27 @@
                                             <div th:if="${productDetail.choPhepDanhGia}">
                                                 <div id="review-form">
                                                     <form class="review-form" th:action="@{/api/reviews}" method="post">
-                                                        <input class="input" type="text" id="name" name="name" placeholder="Your Name" required />
-                                                        <input class="input" type="email" id="email" name="email" placeholder="Your Email" required />
-                                                        <textarea class="input" id="review" name="review" placeholder="Your Review" required></textarea>
-                                                        <input type="hidden" id="productId" name="productId" th:value="${productDetail.maSP}" />
+                                                        <input class="input" type="text" id="name" name="name"
+                                                            placeholder="Your Name" required />
+                                                        <input class="input" type="email" id="email" name="email"
+                                                            placeholder="Your Email" required />
+                                                        <textarea class="input" id="review" name="review"
+                                                            placeholder="Your Review" required></textarea>
+                                                        <input type="hidden" id="productId" name="productId"
+                                                            th:value="${productDetail.maSP}" />
                                                         <div class="input-rating">
                                                             <span>Your Rating: </span>
                                                             <div class="stars">
-                                                                <input id="star5" name="rating" value="5" type="radio"><label for="star5"></label>
-                                                                <input id="star4" name="rating" value="4" type="radio"><label for="star4"></label>
-                                                                <input id="star3" name="rating" value="3" type="radio"><label for="star3"></label>
-                                                                <input id="star2" name="rating" value="2" type="radio"><label for="star2"></label>
-                                                                <input id="star1" name="rating" value="1" type="radio"><label for="star1"></label>
+                                                                <input id="star5" name="rating" value="5"
+                                                                    type="radio"><label for="star5"></label>
+                                                                <input id="star4" name="rating" value="4"
+                                                                    type="radio"><label for="star4"></label>
+                                                                <input id="star3" name="rating" value="3"
+                                                                    type="radio"><label for="star3"></label>
+                                                                <input id="star2" name="rating" value="2"
+                                                                    type="radio"><label for="star2"></label>
+                                                                <input id="star1" name="rating" value="1"
+                                                                    type="radio"><label for="star1"></label>
                                                             </div>
                                                         </div>
                                                         <button type="submit" class="primary-btn">Submit</button>
@@ -180,11 +195,13 @@
                                                 </div>
                                             </div>
                                             <div th:unless="${productDetail.choPhepDanhGia}">
-                                                <p class="text-success font-weight-bold">Bạn đã đánh giá sản phẩm này. Mua thêm để được đánh giá tiếp.</p>
+                                                <p class="text-success font-weight-bold">Bạn đã đánh giá sản phẩm này.
+                                                    Mua thêm để được đánh giá tiếp.</p>
                                             </div>
                                         </div>
                                         <div th:unless="${productDetail.daMuaHang}">
-                                            <p class="text-danger font-weight-bold">Bạn cần mua sản phẩm này để có thể đánh giá.</p>
+                                            <p class="text-danger font-weight-bold">Bạn cần mua sản phẩm này để có thể
+                                                đánh giá.</p>
                                         </div>
                                     </div>
                                     <!-- /Review Form -->
@@ -215,28 +232,33 @@
 
                 <div class="col-md-3 col-xs-6" th:each="item : ${relatedProducts}">
                     <div class="product">
-                        <a class="product-img" th:href="@{/product/detail/{id}(id=${item.productId})}">
+                        <a class="product-img" th:href="@{/products/detail/{id}(id=${item.productId})}">
                             <img th:src="@{${item.imageUrl}}" alt="">
                         </a>
                         <div class="product-body">
                             <p class="product-category" th:text="${item.category.categoryName}">Category</p>
                             <h3 class="product-name">
-                                <a th:href="@{/product/detail/{id}(id=${item.productId})}" th:text="${item.productName}">Tên sản phẩm</a>
+                                <a th:href="@{/products/detail/{id}(id=${item.productId})}"
+                                    th:text="${item.productName}">Tên sản phẩm</a>
                             </h3>
                             <h4 class="product-price">
                                 <span th:text="'$' + ${item.price}">$0.00</span>
                                 <del class="product-old-price">$990.00</del>
                             </h4>
                             <div class="product-btns">
-                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add
+                                        to wishlist</span></button>
+                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add
+                                        to compare</span></button>
+                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick
+                                        view</span></button>
                             </div>
                         </div>
                         <div class="add-to-cart">
                             <form th:action="@{/user/cart/add/{id}(id=${item.productId})}" method="post">
                                 <input type="hidden" name="id" th:value="${item.productId}" />
-                                <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Thêm vào giỏ</button>
+                                <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Thêm
+                                    vào giỏ</button>
                             </form>
                         </div>
                     </div>
@@ -251,8 +273,8 @@
     <!-- /Section -->
 
     <!-- FOOTER -->
-	<footer th:replace="~{fragments/footer :: page_footer}"></footer> 
-	<!-- /FOOTER -->
+    <footer th:replace="~{fragments/footer :: page_footer}"></footer>
+    <!-- /FOOTER -->
 
     <script>
         function openTab(tabId) {
@@ -265,25 +287,25 @@
         }
 
         // Mặc định mở tab mô tả
-        openTab('tab1'); 
+        openTab('tab1');
         document.addEventListener("DOMContentLoaded", function () {
-			// Lấy URL hiện tại
-			let currentLocation = window.location.pathname;
-		
-			// Lấy tất cả các mục menu
-			let menuItems = document.querySelectorAll(".main-nav li");
-		
-			menuItems.forEach(item => {
-				let link = item.querySelector("a");
-				if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
-					// Xóa class "active" khỏi tất cả menu
-					menuItems.forEach(i => i.classList.remove("active"));
-					// Thêm class "active" vào mục phù hợp
-					item.classList.add("active");
-				}
-			});
-		});
-	</script>
+            // Lấy URL hiện tại
+            let currentLocation = window.location.pathname;
+
+            // Lấy tất cả các mục menu
+            let menuItems = document.querySelectorAll(".main-nav li");
+
+            menuItems.forEach(item => {
+                let link = item.querySelector("a");
+                if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
+                    // Xóa class "active" khỏi tất cả menu
+                    menuItems.forEach(i => i.classList.remove("active"));
+                    // Thêm class "active" vào mục phù hợp
+                    item.classList.add("active");
+                }
+            });
+        });
+    </script>
 
     <!-- Thêm/Giảm SP  -->
     <script>
@@ -363,20 +385,29 @@
         });
     </script>
 
+    <script th:if="${addSuccess}" th:inline="javascript">
+        alert('[[${addSuccess}]]');
+    </script>
+
+    <script th:if="${addError}" th:inline="javascript">
+        alert('[[${addError}]]');
+    </script>
+
     <!-- jQuery -->
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<!-- Bootstrap JS -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<!-- Slick Carousel JS -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
-	<!-- Custom JS -->
-	<script src="/js/main.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Slick Carousel JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
     <!-- jQuery Plugins -->
-	<script src="/js/jquery.min.js"></script>
-	<script src="/js/bootstrap.min.js"></script>
-	<script src="/js/slick.min.js"></script>
-	<script src="/js/nouislider.min.js"></script>
-	<script src="/js/jquery.zoom.min.js"></script>
-	<script src="/js/main.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/slick.min.js"></script>
+    <script src="/js/nouislider.min.js"></script>
+    <script src="/js/jquery.zoom.min.js"></script>
+    <script src="/js/main.js"></script>
 </body>
+
 </html>

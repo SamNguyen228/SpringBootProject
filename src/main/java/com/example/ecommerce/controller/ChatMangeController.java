@@ -103,7 +103,7 @@ public class ChatMangeController {
         helper.setSubject(subject);
         helper.setText(body, true);
         try {
-            helper.setFrom(fromEmail, "Apple Store");
+            helper.setFrom(fromEmail, "SmartBuy Store");
             mailSender.send(mimeMessage);
         } catch (UnsupportedEncodingException e) {
             System.out.println("Lỗi encoding tên người gửi: " + e.getMessage());

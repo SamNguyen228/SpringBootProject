@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.example.ecommerce.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -27,7 +28,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
+       http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/", "/index", "/hotdeal", "/products", "/product/search", "/contact",
@@ -35,6 +36,7 @@ public class SecurityConfig {
                     "/css/**", "/css2/**", "/images/**", "/img/**", "/js/**",
                     "/fonts/**", "/webjars/**"
                 ).permitAll()
+                .requestMatchers(HttpMethod.POST, "/sendChat/submit").hasRole("CUSTOMER")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/user/**").hasAnyRole("ADMIN", "CUSTOMER")
                 .requestMatchers("/account/**", "/order/**", "/cart/**", "/profile?**").authenticated()

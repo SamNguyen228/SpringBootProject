@@ -47,18 +47,20 @@ public class AccountController {
 
     @Autowired
     private UserService userService;
-    
-    @Autowired 
+
+    @Autowired
     private JavaMailSender mailSender;
 
-    @Autowired RoleRepository roleRepository;
+    @Autowired
+    RoleRepository roleRepository;
 
     @GetMapping("/login")
-    public String showLoginForm(HttpSession session) {
+    public String showLoginForm(HttpSession session, RedirectAttributes redirectAttributes) {
         if (session.getAttribute("userId") != null) {
-            return "redirect:/index"; 
+            redirectAttributes.addFlashAttribute("loginSuccess", "Đăng nhập thành công!");
+            return "redirect:/index";
         }
-        return "accounts/login"; 
+        return "accounts/login";
     }
 
     @PostMapping("/login")
@@ -66,7 +68,8 @@ public class AccountController {
             @RequestParam String email,
             @RequestParam String password,
             Model model,
-            HttpSession session) {
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
 
         User user = userRepository.findByEmail(email);
 
@@ -92,11 +95,8 @@ public class AccountController {
 
         session.setMaxInactiveInterval(60 * 60);
 
-        if ("ADMIN".equals(roleName)) {
-            return "redirect:/admin/dashboard";
-        } else {
-            return "redirect:/index";
-        }
+        redirectAttributes.addFlashAttribute("loginSuccess", "Đăng nhập thành công!");
+        return "redirect:/index";
     }
 
     @GetMapping("/register")
@@ -111,8 +111,8 @@ public class AccountController {
             @RequestParam String password,
             @RequestParam String phone,
             @RequestParam String address,
-            Model model
-    ) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
         if (userRepository.existsByEmail(email)) {
             model.addAttribute("error", "Email đã được sử dụng!");
             return "accounts/register";
@@ -135,14 +135,13 @@ public class AccountController {
         }
 
         if (!StringUtils.hasText(password) || password.length() < 6 ||
-            !password.chars().anyMatch(Character::isLetter) ||
-            !password.chars().anyMatch(Character::isDigit) ||
-            password.chars().noneMatch(c -> "!@#$%^&*()_+-=[]{}|;':\",.<>?/`~".indexOf(c) >= 0)) {
+                !password.chars().anyMatch(Character::isLetter) ||
+                !password.chars().anyMatch(Character::isDigit) ||
+                password.chars().noneMatch(c -> "!@#$%^&*()_+-=[]{}|;':\",.<>?/`~".indexOf(c) >= 0)) {
 
             model.addAttribute("error", "Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ, số và ký tự đặc biệt!");
             return "accounts/register";
         }
-
 
         if (!StringUtils.hasText(phone) || phone.length() != 10 || !phone.chars().allMatch(Character::isDigit)) {
             model.addAttribute("error", "Số điện thoại phải gồm đúng 10 chữ số!");
@@ -160,20 +159,21 @@ public class AccountController {
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setIsLocked(false);
         Role role = roleRepository.findById(2)
-        .orElseThrow(() -> new RuntimeException("Không tìm thấy role với ID = 2"));
-        newUser.setRole(role); 
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy role với ID = 2"));
+        newUser.setRole(role);
 
         userRepository.save(newUser);
+        redirectAttributes.addFlashAttribute("registerSuccess", "Đăng ký tạo tài khoản thành công!");
         return "redirect:/login";
     }
 
     @PostMapping("/logout")
-    public String logout(HttpServletRequest request) {
+    public String logout(HttpServletRequest request, RedirectAttributes redirectAttributes) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
-        request.setAttribute("logoutSuccess", "Đăng xuất thành công!");
+        redirectAttributes.addFlashAttribute("logoutSuccess", "Đăng xuất thành công!");
         return "redirect:/";
     }
 
@@ -192,16 +192,16 @@ public class AccountController {
 
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty()) {
-            return "error/404"; 
+            return "error/404";
         }
 
         model.addAttribute("user", userOptional.get());
-        return "accounts/profile"; 
+        return "accounts/profile";
     }
 
     @GetMapping("/edit")
     public String editProfile(Model model, Principal principal) {
-         Integer userId = userService.getUserId();
+        Integer userId = userService.getUserId();
         Optional<User> userOpt = userRepository.findById(userId);
 
         if (userOpt.isEmpty()) {
@@ -214,10 +214,10 @@ public class AccountController {
 
     @PostMapping("/edit")
     public String updateProfile(@Valid @ModelAttribute("user") User formUser,
-                                BindingResult bindingResult,
-                                @RequestParam(required = false) String newPassword,
-                                Principal principal,
-                                RedirectAttributes redirectAttributes) {
+            BindingResult bindingResult,
+            @RequestParam(required = false) String newPassword,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
 
         Integer userId = userService.getUserId();
         Optional<User> userOpt = userRepository.findById(userId);
@@ -239,20 +239,21 @@ public class AccountController {
         if (newPassword != null && !newPassword.isBlank()) {
             String pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-={}\\[\\]:\";'<>?,./]).{6,}$";
 
-           if (!newPassword.matches(pattern)) {
-                redirectAttributes.addFlashAttribute("passwordError", "Mật khẩu phải có ít nhất 6 ký tự gồm chữ hoa, thường, số và ký tự đặc biệt.");
+            if (!newPassword.matches(pattern)) {
+                redirectAttributes.addFlashAttribute("passwordError",
+                        "Mật khẩu phải có ít nhất 6 ký tự gồm chữ hoa, thường, số và ký tự đặc biệt.");
                 return "redirect:/edit";
             }
 
             user.setPasswordHash(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
         }
-        
+
         userRepository.save(user);
-        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin thành công!");
+        redirectAttributes.addFlashAttribute("updateSuccess", "Cập nhật thông tin thành công!");
         return "redirect:/";
     }
 
-   @PostMapping("/forgot-password")
+    @PostMapping("/forgot-password")
     @ResponseBody
     public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordModel model, HttpServletRequest request) {
         User user = userRepository.findByEmail(model.getEmail());
@@ -286,9 +287,9 @@ public class AccountController {
 
     @PostMapping("/reset-password")
     public String resetPasswordSubmit(@RequestParam String token,
-                                    @RequestParam String newPassword,
-                                    @RequestParam String confirmPassword,
-                                    Model model) {
+            @RequestParam String newPassword,
+            @RequestParam String confirmPassword,
+            Model model) {
         if (!newPassword.equals(confirmPassword)) {
             model.addAttribute("error", "Mật khẩu xác nhận không khớp.");
             model.addAttribute("token", token);
@@ -328,4 +329,3 @@ public class AccountController {
         }
     }
 }
-

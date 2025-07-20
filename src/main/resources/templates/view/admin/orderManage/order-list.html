@@ -1,10 +1,37 @@
-<section xmlns:th="http://www.thymeleaf.org"
-         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-         layout:decorate="~{fragments/admin-layout}"
-         layout:fragment="body">
+<section xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragments/admin-layout}" layout:fragment="body">
 
     <div class="container mt-4">
-        <h2 class="mb-4">Quản lý đơn hàng</h2>
+        <h2 class="mb-4 text-center">Quản lý đơn hàng</h2>
+        <div class="row g-3 mb-4">
+            <!-- Form tìm kiếm theo mã đơn -->
+            <div class="col-md-6">
+                <form th:action="@{/admin/orders}" method="get" class="d-flex">
+                    <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm mã đơn hàng"
+                        class="form-control me-2 w-auto" />
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Form lọc theo trạng thái -->
+            <div class="col-md-6">
+                <form th:action="@{/admin/orders}" method="get" class="d-flex justify-content-end">
+                    <select name="filterStatus" class="form-select w-auto me-2">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="Pending" th:selected="${filterStatus == 'Pending'}">Chờ xác nhận</option>
+                        <option value="Processing" th:selected="${filterStatus == 'Processing'}">Đang xử lý</option>
+                        <option value="Shipped" th:selected="${filterStatus == 'Shipped'}">Đã giao hàng</option>
+                        <option value="Completed" th:selected="${filterStatus == 'Completed'}">Hoàn thành</option>
+                        <option value="Cancelled" th:selected="${filterStatus == 'Cancelled'}">Đã hủy</option>
+                    </select>
+                    <button type="submit" class="btn btn-outline-success">
+                        <i class="bi bi-filter"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
 
         <table class="table table-bordered table-striped align-middle text-center">
             <thead class="table-light">
@@ -32,7 +59,8 @@
                     <td th:text="${order.totalAmount} + '$'"></td>
                     <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
                     <td>
-                        <a th:href="@{'/admin/orders/' + ${order.orderId}}" class="btn btn-sm btn-primary">Xem / Cập nhật</a>
+                        <a th:href="@{'/admin/orders/' + ${order.orderId}}" class="btn btn-sm btn-primary">Xem / Cập
+                            nhật</a>
                     </td>
                 </tr>
             </tbody>
@@ -41,17 +69,31 @@
         <!-- Phân trang -->
         <nav th:if="${ordersPage.totalPages > 1}">
             <ul class="pagination justify-content-center">
+                <!-- Nút Prev -->
                 <li class="page-item" th:classappend="${ordersPage.first} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/orders(page=${ordersPage.number - 1})}">&laquo;</a>
+                    <a class="page-link"
+                        th:href="@{|/admin/orders?page=${ordersPage.number - 1}${keyword != null ? '&keyword=' + keyword : ''}${filterStatus != null ? '&filterStatus=' + filterStatus : ''}|}">
+                        &laquo;
+                    </a>
                 </li>
+
+                <!-- Các số trang -->
                 <li class="page-item" th:each="i : ${#numbers.sequence(0, ordersPage.totalPages - 1)}"
                     th:classappend="${ordersPage.number == i} ? 'active'">
-                    <a class="page-link" th:href="@{/admin/orders(page=${i})}" th:text="${i + 1}"></a>
+                    <a class="page-link"
+                        th:href="@{|/admin/orders?page=${i}${keyword != null ? '&keyword=' + keyword : ''}${filterStatus != null ? '&filterStatus=' + filterStatus : ''}|}"
+                        th:text="${i + 1}"></a>
                 </li>
+
+                <!-- Nút Next -->
                 <li class="page-item" th:classappend="${ordersPage.last} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/orders(page=${ordersPage.number + 1})}">&raquo;</a>
+                    <a class="page-link"
+                        th:href="@{|/admin/orders?page=${ordersPage.number + 1}${keyword != null ? '&keyword=' + keyword : ''}${filterStatus != null ? '&filterStatus=' + filterStatus : ''}|}">
+                        &raquo;
+                    </a>
                 </li>
             </ul>
         </nav>
+
     </div>
 </section>

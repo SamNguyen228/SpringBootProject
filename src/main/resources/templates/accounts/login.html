@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Đăng Nhập</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta charset="UTF-8" />
-    <link href="https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Monoton" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css2/font-awesome.min.css}" type="text/css" media="all" />
+   <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Monoton" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css2/font-awesome.min.css}" type="text/css" />
     <link rel="stylesheet" th:href="@{/css2/style.css}" type="text/css" />
 
     <style>
@@ -40,8 +41,9 @@
         }
     </style>
 </head>
+
 <body>
-    <h1 class="w3ls"></h1>
+    <h1 class="w3ls" th:text="${title}">Đăng Nhập</h1>
 
     <div class="content-w3ls">
         <div class="content-agile1">
@@ -50,7 +52,7 @@
         </div>
 
         <div class="content-agile2">
-           <!-- Login Form -->
+            <!-- Login Form -->
             <div id="loginSection">
                 <form th:action="@{/login}" method="post" id="loginForm">
                     <!-- Hiển thị lỗi đăng nhập -->
@@ -70,7 +72,7 @@
                     <div class="form-control w3layouts" style="position: relative;">
                         <input type="password" id="password" name="password" placeholder="Mật Khẩu" required />
                         <i id="togglePassword" class="fa fa-eye"
-                        style="position: absolute; right: 45px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888;"></i>
+                            style="position: absolute; right: 45px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888;"></i>
                     </div>
 
                     <!-- Nút Đăng nhập -->
@@ -78,14 +80,17 @@
 
                     <!-- Link quên mật khẩu -->
                     <p class="wthree w3l">
-                        <a href="javascript:void(0);" class="forgot-password" onclick="showForgotForm()">Quên mật khẩu?</a>
+                        <a href="javascript:void(0);" class="forgot-password" onclick="showForgotForm()">Quên mật
+                            khẩu?</a>
                     </p>
 
                     <!-- OAuth2 Login -->
                     <p class="wthree w3l">Hoặc Đăng Nhập Bằng</p>
-                    <ul class="social-agileinfo wthree2" style="display: flex; justify-content: center; gap: 15px; padding: 0;">
+                    <ul class="social-agileinfo wthree2"
+                        style="display: flex; justify-content: center; gap: 15px; padding: 0;">
                         <li>
-                            <a href="#" onclick="alert('Facebook chưa hỗ trợ'); return false;"><i class="fa fa-facebook"></i></a>
+                            <a href="#" onclick="alert('Facebook chưa hỗ trợ'); return false;"><i
+                                    class="fa fa-facebook"></i></a>
                         </li>
                         <li>
                             <a th:href="@{/oauth2/authorization/google}"><i class="fa fa-google"></i></a>
@@ -101,21 +106,16 @@
             <div id="forgotForm">
                 <h4 style="margin-bottom: 20px; color: #333; text-align: center;">🔒 Khôi phục mật khẩu</h4>
 
-                <input type="email"
-                       id="forgotEmail"
-                       placeholder="Nhập email của bạn"
-                       required
-                       style="width: 92%; padding: 12px 15px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; background-color: rgb(220, 80, 80);" />
+                <input type="email" id="forgotEmail" placeholder="Nhập email của bạn" required
+                    style="width: 92%; padding: 12px 15px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; background-color: rgb(251, 197, 197);" />
 
-                <button type="button"
-                        onclick="submitForgotPassword()"
-                        style="width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-bottom: 10px;">
+                <button type="button" onclick="submitForgotPassword()"
+                    style="width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-bottom: 10px;">
                     Gửi yêu cầu
                 </button>
 
-                <button type="button"
-                        onclick="backToLogin()"
-                        style="width: 100%; padding: 12px; background-color: #6c757d; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                <button type="button" onclick="backToLogin()"
+                    style="width: 100%; padding: 12px; background-color: #6c757d; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
                     Quay lại
                 </button>
 
@@ -161,18 +161,27 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email })
             })
-            .then(response => response.json())
-            .then(data => {
-                const msg = document.getElementById('forgotMsg');
-                if (data.success) {
-                    msg.style.color = 'green';
-                    msg.innerText = "Một liên kết đặt lại mật khẩu đã được gửi đến email.";
-                } else {
-                    msg.style.color = 'red';
-                    msg.innerText = data.message || "Không thể gửi yêu cầu.";
-                }
-            });
+                .then(response => response.json())
+                .then(data => {
+                    const msg = document.getElementById('forgotMsg');
+                    if (data.success) {
+                        msg.style.color = 'green';
+                        msg.innerText = "Một liên kết đặt lại mật khẩu đã được gửi đến email.";
+                    } else {
+                        msg.style.color = 'red';
+                        msg.innerText = data.message || "Không thể gửi yêu cầu.";
+                    }
+                });
         }
     </script>
+
+    <script th:if="${registerSuccess}" th:inline="javascript">
+        alert('[[${registerSuccess}]]');
+    </script>
+
+    <script th:if="${logoutSuccess}" th:inline="javascript">
+        alert('[[${logoutSuccess}]]');
+    </script>
 </body>
+
 </html>

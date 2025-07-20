@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
@@ -144,13 +145,16 @@ public class HomeController {
     }
 
     @PostMapping("/submitForm")
-    public String submitForm(@Valid ChatMessage chatMessage, BindingResult result, Model model) {
+    public String submitForm(@Valid ChatMessage chatMessage, 
+                            BindingResult result, 
+                            Model model,
+                            RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "view/contact";
         }
         chatMessage.setCreatedAt(LocalDateTime.now());
         chatMessageRepository.save(chatMessage);
-        model.addAttribute("successMessage", "Tin nhắn đã được gửi thành công!");
+        redirectAttributes.addFlashAttribute("successMessage", "Tin nhắn đã được gửi thành công! Chúng tôi sẽ sớm phản hồi lại bạn!");
         return "redirect:/contact";
     }
 

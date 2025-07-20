@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:insert="fragments/head :: page_head('Giỏ Hàng')">
     <title>Giỏ Hàng</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
+
 <body>
     <!-- HEADER -->
-	<header th:replace="~{fragments/header :: page_header}"></header>
-	<!-- /HEADER -->
+    <header th:replace="~{fragments/header :: page_header}"></header>
+    <!-- /HEADER -->
 
-	<!-- NAVIGATION -->
-	<nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
-	<!-- /NAVIGATION -->
+    <!-- NAVIGATION -->
+    <nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
+    <!-- /NAVIGATION -->
 
     <br> <br>
     <div class="container mt-4">
@@ -21,36 +23,36 @@
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th>Tên Sản Phẩm</th>
-                    <th>Giá</th>
-                    <th>Số Lượng</th>
-                    <th>Tổng</th>
-                    <th>Xóa</th>
-                </tr>
+                    <tr>
+                        <th></th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Giá</th>
+                        <th>Số Lượng</th>
+                        <th>Tổng</th>
+                        <th>Xóa</th>
+                    </tr>
                 </thead>
                 <tbody id="cart-table">
-                <tr th:each="item : ${cartItems}" th:data-id="${item.maSP}">
-                    <td><img th:src="${item.hinhAnh}" th:alt="${item.tenSP}" width="100" /></td>
-                    <td th:text="${item.tenSP}"></td>
-                    <td class="price" th:data-price="${item.gia}" th:text="'$' + ${item.gia}"></td>
-                   <td>
-                        <input type="number" class="form-control quantity-input text-center"
-                            th:value="${item.soLuong}" min="1" style="width: 60px;" />
-                    </td>
+                    <tr th:each="item : ${cartItems}" th:data-id="${item.maSP}">
+                        <td><img th:src="${item.hinhAnh}" th:alt="${item.tenSP}" width="100" /></td>
+                        <td th:text="${item.tenSP}"></td>
+                        <td class="price" th:data-price="${item.gia}" th:text="'$' + ${item.gia}"></td>
+                        <td>
+                            <input type="number" class="form-control quantity-input text-center"
+                                th:value="${item.soLuong}" min="1" style="width: 60px;" />
+                        </td>
 
-                    <td th:text="'$' + ${item.thanhTien}"></td>
-                    <td>
-                        <a th:href="@{/cart/remove/{id}(id=${item.maSP})}" class="btn btn-danger">Xóa</a>
-                    </td>
-                </tr>
+                        <td th:text="'$' + ${item.thanhTien}"></td>
+                        <td>
+                            <a th:href="@{/user/cart/remove/{id}(id=${item.maSP})}" class="btn btn-danger">Xóa</a>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
 
         <div class="cart-summary mt-4 text-end">
-           <h3 class="text-right">
+            <h3 class="text-right">
                 Total: $<span id="cart-total" th:text="${#numbers.formatDecimal(totalAmount, 1, 2)}"></span>
             </h3>
             <a class="btn btn-success" th:href="@{/user/checkout}">Tiến Hành Thanh Toán</a>
@@ -59,34 +61,34 @@
     <br> <br>
 
     <!-- FOOTER -->
-	<footer th:replace="~{fragments/footer :: page_footer}"></footer> 
-	<!-- /FOOTER -->
+    <footer th:replace="~{fragments/footer :: page_footer}"></footer>
+    <!-- /FOOTER -->
 
     <script>
-		document.addEventListener("DOMContentLoaded", function () {
-			let currentLocation = window.location.pathname;
-			let menuItems = document.querySelectorAll(".main-nav li");
-		
-			menuItems.forEach(item => {
-				let link = item.querySelector("a");
-				if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
-					menuItems.forEach(i => i.classList.remove("active"));
-					item.classList.add("active");
-				}
-			});
-		});
-	</script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let currentLocation = window.location.pathname;
+            let menuItems = document.querySelectorAll(".main-nav li");
+
+            menuItems.forEach(item => {
+                let link = item.querySelector("a");
+                if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
+                    menuItems.forEach(i => i.classList.remove("active"));
+                    item.classList.add("active");
+                }
+            });
+        });
+    </script>
 
     <script>
-        document.querySelectorAll('.quantity-input').forEach(function(input) {
-            input.addEventListener('change', function() {
+        document.querySelectorAll('.quantity-input').forEach(function (input) {
+            input.addEventListener('change', function () {
                 setTimeout(() => location.reload(), 1000);
             });
         });
     </script>
 
     <!-- Giỏ hàng AJAX -->
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -110,10 +112,11 @@
                 }
 
                 $.ajax({
-                    url: "/cart/update-quantity",
+                    url: "/user/cart/update-quantity",
                     type: "POST",
                     data: { id: productId, quantity: newQuantity },
                     success: function (response) {
+                        alert("Cập nhật số lượng thành công!");
                         if (response.success) {
                             // Cập nhật tổng tiền của từng sản phẩm
                             var price = parseFloat(row.find(".price").data("price"));
@@ -131,8 +134,30 @@
         });
     </script>
 
-    <script th:if="${success}" th:inline="javascript">
-        alert('[[${success}]]');
+    <script th:if="${deleteSuccess}" th:inline="javascript">
+        alert('[[${deleteSuccess}]]');
     </script>
+
+    <script th:if="${cartEmpty}" th:inline="javascript">
+        alert('[[${cartEmpty}]]');
+    </script>
+
+    <script th:if="${cartError}" th:inline="javascript">
+        alert('[[${cartError}]]');
+    </script>
+
+    <script th:if="${error}" th:inline="javascript">
+        alert('[[${error}]]');
+    </script>
+
+    <script th:if="${addSuccess}" th:inline="javascript">
+        alert('[[${addSuccess}]]');
+    </script>
+
+    <script th:if="${addError}" th:inline="javascript">
+        alert('[[${addError}]]');
+    </script>
+
 </body>
+
 </html>

@@ -8,11 +8,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Controller
@@ -23,15 +25,34 @@ public class PromotionManageController {
 
     @GetMapping
     public String listPromotions(Model model,
-                                @RequestParam(defaultValue = "0") int page,
-                                @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("promotionId").descending());
-        Page<Promotion> promotionsPage = promotionRepository.findAll(pageable);
+
+        Page<Promotion> promotionsPage;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            promotionsPage = promotionRepository.findByPromotionNameContainingIgnoreCase(keyword, pageable);
+        } else if (startDate != null && endDate != null) {
+            promotionsPage = promotionRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqual(
+                    startDate.atStartOfDay(),
+                    endDate.atTime(23, 59, 59),
+                    pageable);
+        } else {
+            promotionsPage = promotionRepository.findAll(pageable);
+        }
 
         model.addAttribute("promotionsPage", promotionsPage);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", promotionsPage.getTotalPages());
         model.addAttribute("pageTitle", "Quản lí khuyến mãi");
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
 
         return "view/admin/promotionManage/promotion-list";
     }

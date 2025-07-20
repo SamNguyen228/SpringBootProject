@@ -1,67 +1,77 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Đăng Ký</title>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link href="https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css?family=Monoton" rel="stylesheet"/>
-    <link rel="stylesheet" th:href="@{/css2/font-awesome.min.css}" type="text/css"/>
-    <link rel="stylesheet" th:href="@{/css2/style.css}" type="text/css"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Monoton" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css2/font-awesome.min.css}" type="text/css" />
+    <link rel="stylesheet" th:href="@{/css2/style.css}" type="text/css" />
 </head>
-<body>
-<h1 class="w3ls" th:text="${title}">Đăng Ký</h1>
 
-<div class="content-w3ls">
-    <div class="content-agile1">
-        <h2 class="agileits1">Official</h2>
-        <p class="agileits2">Chào mừng người dùng mới.</p>
-    </div>
-    <div class="content-agile2">
-        <div th:if="${error != null}" style="color: red; text-align: center; margin-bottom: 3px;">
-            <span th:text="${error}"></span>
+<body>
+    <h1 class="w3ls" th:text="${title}">Đăng Ký</h1>
+
+    <div class="content-w3ls">
+        <div class="content-agile1">
+            <h2 class="agileits1">Official</h2>
+            <p class="agileits2">Chào mừng người dùng mới.</p>
         </div>
 
-        <form th:action="@{/register}" method="post">
-            <div class="form-control w3layouts">
-                <input type="text" name="fullName" id="email" placeholder="Họ và Tên" required minlength="2"/>
+        <div class="content-agile2">
+            <div th:if="${error != null}" style="color: red; text-align: center; margin-bottom: 3px;">
+                <span th:text="${error}"></span>
             </div>
 
-            <div class="form-control w3layouts">
-                <input type="email" name="email" id="email" placeholder="Email" required/>
-            </div>
+            <form th:action="@{/register}" method="post">
+                <div class="form-control w3layouts">
+                    <input type="text" name="fullName" id="email" placeholder="Họ và Tên" required minlength="2" />
+                </div>
 
-            <div class="form-control agileinfo" style="position: relative;">
-                <input type="password" class="lock" name="password" id="password" placeholder="Mật Khẩu" required minlength="6"/>
-                <i id="togglePassword" class="fa fa-eye"
-                   style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888"></i>
-            </div>
+                <div class="form-control w3layouts">
+                    <input type="email" name="email" id="email" placeholder="Email" required />
+                </div>
 
-            <div class="form-control agileinfo">
-                <input type="text" class="lock" name="phone" id="email" placeholder="Số Điện Thoại" required pattern="\d{10}"/>
-            </div>
+                <div class="form-control agileinfo" style="position: relative;">
+                    <input type="password" class="lock" name="password" id="password" placeholder="Mật Khẩu" required
+                        minlength="6" />
+                    <i id="togglePassword" class="fa fa-eye"
+                        style="position: absolute; right: 110px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888"></i>
+                </div>
 
-            <div class="form-control agileinfo">
-                <input type="text" class="lock" name="address" id="email" placeholder="Địa Chỉ" required/>
-            </div>
+                <div class="form-control agileinfo">
+                    <input type="text" class="lock" name="phone" id="email" placeholder="Số Điện Thoại" required
+                        pattern="\d{10}" />
+                </div>
 
-            <input type="submit" class="register" value="Đăng Ký"/>
-            <p class="wthree w3l">Bạn đã có tài khoản? <a th:href="@{/login}">Đăng nhập</a></p>
-        </form>
+                <div class="form-control agileinfo">
+                    <input type="text" class="lock" name="address" id="email" placeholder="Địa Chỉ" required />
+                </div>
+
+                <input type="submit" class="register" value="Đăng Ký" />
+                <p class="wthree w3l">Bạn đã có tài khoản? <a th:href="@{/login}">Đăng nhập</a></p>
+            </form>
+        </div>
+        <div class="clear"></div>
     </div>
-    <div class="clear"></div>
-</div>
 
-<script>
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('password');
+    <script>
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
 
-    togglePassword.addEventListener('click', function () {
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        this.classList.toggle('fa-eye');
-        this.classList.toggle('fa-eye-slash');
-    });
-</script>
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
+
+    <script th:if="${error}" th:inline="javascript">
+        alert('[[${error}]]');
+    </script>
 </body>
+
 </html>

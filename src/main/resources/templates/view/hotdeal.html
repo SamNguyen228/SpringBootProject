@@ -1,62 +1,62 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org">
-	<head th:replace="~{fragments/head :: page_head('Ưu Đãi')}"></head>
-    <head>
-        <!-- CSS Styling -->
-<style>
-    /* Header */
-    .hot-deal-header {
-        background: linear-gradient(45deg, #ff5722, #ff9800);
-        color: white;
-        padding: 40px 0;
-        text-align: center;
-    }
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-    .hot-deal-title {
-        font-size: 36px;
-        font-weight: bold;
-    }
+<head th:replace="~{fragments/head :: page_head('Ưu Đãi')}"></head>
 
-    /* Countdown Flash Sale */
-    .flash-sale-text {
-        font-size: 22px;
-        font-weight: bold;
-        color: #ffffff;
-        text-transform: uppercase;
-        background: linear-gradient(45deg, #ff0000, #ff9800, #ff0000);
-        padding: 10px 15px;
-        display: inline-block;
-        border-radius: 8px;
-        box-shadow: 0px 4px 10px rgba(255, 0, 0, 0.6);
-        margin-top: 10px;
-        animation: blinkText 1s infinite alternate;
-    }
+<head>
+    <!-- CSS Styling -->
+    <style>
+        /* Header */
+        .hot-deal-header {
+            background: linear-gradient(45deg, #ff5722, #ff9800);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
 
-    .hot-deal-banner {
-        width: 80%;
-        max-width: 800px;
-        margin-top: 15px;
-        border-radius: 10px;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    }
+        .hot-deal-title {
+            font-size: 36px;
+            font-weight: bold;
+        }
 
-    .countdown-timer {
-        font-size: 28px;
-        font-weight: bold;
-        color: #fff;
-        background: #ff0000;
-        padding: 10px 20px;
-        border-radius: 10px;
-        display: inline-block;
-        margin-top: 15px;
-        box-shadow: 0px 4px 10px rgba(255, 0, 0, 0.6);
-    }
+        /* Countdown Flash Sale */
+        .flash-sale-text {
+            font-size: 22px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #ff0000, #ff9800, #ff0000);
+            padding: 10px 15px;
+            display: inline-block;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(255, 0, 0, 0.6);
+            margin-top: 10px;
+            animation: blinkText 1s infinite alternate;
+        }
 
-</style>
+        .hot-deal-banner {
+            width: 80%;
+            max-width: 800px;
+            margin-top: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .countdown-timer {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            background: #ff0000;
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 15px;
+            box-shadow: 0px 4px 10px rgba(255, 0, 0, 0.6);
+        }
+    </style>
 
     <!-- JavaScript -->
     <script>
-
         // Đồng hồ đếm ngược Flash Sale
         function startCountdown(duration) {
             let timer = duration, hours, minutes, seconds;
@@ -82,106 +82,127 @@
             startCountdown(86400);
         };
     </script>
-    </head>
-	<body>
-		<!-- HEADER -->
-		<header th:replace="~{fragments/header :: page_header}"></header>
-		<!-- /HEADER -->
+</head>
 
-		<!-- NAVIGATION -->
-		<nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
-		<!-- /NAVIGATION -->
+<body>
+    <!-- HEADER -->
+    <header th:replace="~{fragments/header :: page_header}"></header>
+    <!-- /HEADER -->
 
-		<!-- HOT DEAL HEADER -->
-        <div class="hot-deal-header">
-            <div class="container text-center">
-                <h1 class="hot-deal-title">🔥 HOT DEALS - GIẢM GIÁ CỰC SỐC 🔥</h1>
-                <p class="flash-sale-text">Flash Sale kết thúc trong:</p>
-                <span id="countdown" class="countdown-timer"></span>
-                <img src="https://www.macthai.com/wp-content/uploads/2023/11/trade-in-og-202205.jpeg" alt="Hot Deals Banner" class="hot-deal-banner">
-            </div>
+    <!-- NAVIGATION -->
+    <nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
+    <!-- /NAVIGATION -->
+
+    <!-- HOT DEAL HEADER -->
+    <div class="hot-deal-header">
+        <div class="container text-center">
+            <h1 class="hot-deal-title">🔥 HOT DEALS - GIẢM GIÁ CỰC SỐC 🔥</h1>
+            <p class="flash-sale-text">Flash Sale kết thúc trong:</p>
+            <span id="countdown" class="countdown-timer"></span>
+            <img src="https://www.macthai.com/wp-content/uploads/2023/11/trade-in-og-202205.jpeg" alt="Hot Deals Banner"
+                class="hot-deal-banner">
         </div>
-        
-        <!-- HOT DEAL PRODUCT LIST -->
-        <div class="hot-deal-products section">
-            <div class="container">
-                <!-- Danh mục sản phẩm -->
-                <th:block th:each="categoryEntry : ${categoryMap}">
-                    <div class="hot-deal-category">
-                        <h2 class="category-title">📱 <span th:text="${categoryEntry.key}"></span> - Giảm Giá Cực Sốc 📱</h2>
-                        <div class="row">
-                            <th:block th:each="productMap : ${categoryEntry.value}">
-                                <div class="col-lg-3 col-md-4 col-sm-6">
-                                    <div class="product flash-product">
-                                        <div class="product-img">
-                                            <a class="product-img" th:href="@{/products/detail/{id}(id=${productMap.product.maSP})}">
-                                                <img th:src="${productMap.product.hinhAnh}" th:alt="${productMap.product.tenSP}">
-                                            </a>
-                                            <div class="product-label">
-                                                <span class="sale" th:text="'-' + ${productMap.discount} + '%'"></span>
-                                            </div>
-                                        </div>
-                                        <div class="product-body">
-                                            <h3 class="product-name"><a th:href="@{/products/detail/{id}(id=${productMap.product.maSP})}" th:text="${productMap.product.tenSP}"></a></h3>
-                                            <h4 class="product-price">
-                                                $<span th:text="${productMap.product.gia}"></span>
-                                                <del class="product-old-price" th:text="'$' + ${#numbers.formatDecimal(productMap.oldPrice, 1, 2)}"></del>
-                                            </h4>
-                                        </div>
-                                        <div class="add-to-cart">
-                                            <form th:action="@{/user/cart/add/{id}(id=${productMap.product.maSP})}" method="post">
-                                                <input type="hidden" name="quantity" value="1" />
-                                                <button class="add-to-cart-btn">
-                                                    <i class="fa fa-shopping-cart"></i> Thêm vào giỏ
-                                                </button>
-                                            </form>
+    </div>
+
+    <!-- HOT DEAL PRODUCT LIST -->
+    <div class="hot-deal-products section">
+        <div class="container">
+            <!-- Danh mục sản phẩm -->
+            <th:block th:each="categoryEntry : ${categoryMap}">
+                <div class="hot-deal-category">
+                    <h2 class="category-title">📱 <span th:text="${categoryEntry.key}"></span> - Giảm Giá Cực Sốc 📱
+                    </h2>
+                    <div class="row">
+                        <th:block th:each="productMap : ${categoryEntry.value}">
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                                <div class="product flash-product">
+                                    <div class="product-img">
+                                        <a class="product-img"
+                                            th:href="@{/products/detail/{id}(id=${productMap.product.maSP})}">
+                                            <img th:src="${productMap.product.hinhAnh}"
+                                                th:alt="${productMap.product.tenSP}">
+                                        </a>
+                                        <div class="product-label">
+                                            <span class="sale" th:text="'-' + ${productMap.discount} + '%'"></span>
                                         </div>
                                     </div>
+                                    <div class="product-body">
+                                        <h3 class="product-name"><a
+                                                th:href="@{/products/detail/{id}(id=${productMap.product.maSP})}"
+                                                th:text="${productMap.product.tenSP}"></a></h3>
+                                        <h4 class="product-price">
+                                            $<span th:text="${productMap.product.gia}"></span>
+                                            <del class="product-old-price"
+                                                th:text="'$' + ${#numbers.formatDecimal(productMap.oldPrice, 1, 2)}"></del>
+                                        </h4>
+                                    </div>
+                                    <div class="add-to-cart">
+                                        <form th:action="@{/user/cart/add/{id}(id=${productMap.product.maSP})}"
+                                            method="post">
+                                            <input type="hidden" name="quantity" value="1" />
+                                            <button class="add-to-cart-btn">
+                                                <i class="fa fa-shopping-cart"></i> Thêm vào giỏ
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
-                            </th:block>
-                        </div>
+                            </div>
+                        </th:block>
                     </div>
-                </th:block>
-            </div>
+                </div>
+            </th:block>
         </div>
+    </div>
 
-		<!-- FOOTER -->
-		<footer th:replace="~{fragments/footer :: page_footer}"></footer>
-		<!-- /FOOTER -->
+    <div th:replace="fragments/chat-popup :: chatPopupFragment"></div>
 
-        <script>
-			document.addEventListener("DOMContentLoaded", function () {
-				// Lấy URL hiện tại
-				let currentLocation = window.location.pathname;
-		
-				// Lấy tất cả các mục menu
-				let menuItems = document.querySelectorAll(".main-nav li");
-		
-				menuItems.forEach(item => {
-					let link = item.querySelector("a");
-					if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
-						// Xóa class "active" khỏi tất cả menu
-						menuItems.forEach(i => i.classList.remove("active"));
-						// Thêm class "active" vào mục phù hợp
-						item.classList.add("active");
-					}
-				});
-			});
-		</script>
-		<!-- jQuery Plugins -->
-		<script src="js/jquery.min.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-		<script src="js/slick.min.js"></script>
-		<script src="js/nouislider.min.js"></script>
-		<script src="js/jquery.zoom.min.js"></script>
-		<script src="js/main.js"></script>
-		<script src="cart.js"></script>
-        <script src="Wishlist.js"></script>
-        <!-- jQuery -->
-		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-		<!-- Bootstrap JS -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<!-- Slick Carousel JS -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
-	</body>
+    <!-- FOOTER -->
+    <footer th:replace="~{fragments/footer :: page_footer}"></footer>
+    <!-- /FOOTER -->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Lấy URL hiện tại
+            let currentLocation = window.location.pathname;
+
+            // Lấy tất cả các mục menu
+            let menuItems = document.querySelectorAll(".main-nav li");
+
+            menuItems.forEach(item => {
+                let link = item.querySelector("a");
+                if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
+                    // Xóa class "active" khỏi tất cả menu
+                    menuItems.forEach(i => i.classList.remove("active"));
+                    // Thêm class "active" vào mục phù hợp
+                    item.classList.add("active");
+                }
+            });
+        });
+    </script>
+
+    <script th:if="${addSuccess}" th:inline="javascript">
+        alert('[[${addSuccess}]]');
+    </script>
+
+    <script th:if="${addError}" th:inline="javascript">
+        alert('[[${addError}]]');
+    </script>
+    
+    <!-- jQuery Plugins -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/slick.min.js"></script>
+    <script src="js/nouislider.min.js"></script>
+    <script src="js/jquery.zoom.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="cart.js"></script>
+    <script src="Wishlist.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Slick Carousel JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+</body>
+
 </html>

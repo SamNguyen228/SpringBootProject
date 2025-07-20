@@ -1,7 +1,10 @@
 package com.example.ecommerce.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +19,9 @@ public interface PromotionRepository extends JpaRepository<Promotion, Integer> {
 
     @Query("SELECT p FROM Promotion p WHERE p.promotionName = :code AND :now BETWEEN p.startDate AND p.endDate")
     Promotion findValidByCode(@Param("code") String code, @Param("now") LocalDateTime now);
+
+    Page<Promotion> findByPromotionNameContainingIgnoreCase(String keyword, Pageable pageable);
+
+    Page<Promotion> findByStartDateGreaterThanEqualAndEndDateLessThanEqual(
+            LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 }

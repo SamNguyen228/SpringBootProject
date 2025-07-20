@@ -1,166 +1,165 @@
-<section xmlns:th="http://www.thymeleaf.org"
-         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-         layout:decorate="~{fragments/admin-layout}"
-         layout:fragment="body">
-<body>
-<div class="container mt-4">
-    <h2 class="text-center mb-4">Báo cáo thống kê</h2>
+<section xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragments/admin-layout}" layout:fragment="body">
 
-    <!-- Bộ lọc ngày -->
-    <form id="filterForm" class="row g-3 align-items-end mb-4">
-        <div class="col-md-4">
-            <label for="fromDate" class="form-label">Từ ngày</label>
-            <input type="date" id="fromDate" class="form-control" name="fromDate">
-        </div>
-        <div class="col-md-4">
-            <label for="toDate" class="form-label">Đến ngày</label>
-            <input type="date" id="toDate" class="form-control" name="toDate">
-        </div>
-        <div class="col-md-4">
-            <button type="submit" class="btn btn-primary">Lọc</button>
-        </div>
-    </form>
+    <body>
+        <div class="container mt-4">
+            <h2 class="text-center mb-4">Báo cáo thống kê</h2>
 
-    <!-- Tổng quan -->
-    <div class="row text-center mb-4">
-        <div class="col-md-4">
-            <div class="card p-3 shadow-sm border-start border-success border-4">
-                <h5><i class="bi bi-box-seam me-2 text-success"></i> Tổng sản phẩm đã bán</h5>
-                <strong class="fs-4 text-dark" id="totalProducts">0</strong>
+            <!-- Bộ lọc ngày -->
+            <form id="filterForm" class="row g-3 align-items-end mb-4">
+                <div class="col-md-4">
+                    <label for="fromDate" class="form-label">Từ ngày</label>
+                    <input type="date" id="fromDate" class="form-control" name="fromDate">
+                </div>
+                <div class="col-md-4">
+                    <label for="toDate" class="form-label">Đến ngày</label>
+                    <input type="date" id="toDate" class="form-control" name="toDate">
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary">Lọc</button>
+                </div>
+            </form>
+
+            <!-- Tổng quan -->
+            <div class="row text-center mb-4">
+                <div class="col-md-4">
+                    <div class="card p-3 shadow-sm border-start border-success border-4">
+                        <h5><i class="bi bi-box-seam me-2 text-success"></i> Tổng sản phẩm đã bán</h5>
+                        <strong class="fs-4 text-dark" id="totalProducts">0</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 shadow-sm border-start border-primary border-4">
+                        <h5><i class="bi bi-currency-dollar me-2 text-primary"></i> Tổng doanh thu</h5>
+                        <strong class="fs-4 text-dark" id="totalRevenue">$0</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 shadow-sm border-start border-warning border-4">
+                        <h5><i class="bi bi-people-fill me-2 text-warning"></i> Tổng số khách hàng</h5>
+                        <strong class="fs-4 text-dark" id="totalCustomers">0</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-5">
+                <!-- Doanh thu theo tháng -->
+                <div class="col-md-6">
+                    <div class="card p-3 shadow-sm border-start border-success border-2">
+                        <h5 class="text-center">Doanh thu theo tháng</h5>
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Sản phẩm theo danh mục -->
+                <div class="col-md-6">
+                    <div class="card p-3 shadow-sm border-start border-success border-2">
+                        <h5 class="text-center">Sản phẩm bán theo danh mục</h5>
+                        <canvas id="categoryChart" style="max-height: 276px;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Danh sách khách hàng -->
+            <div class="mb-5">
+                <h5 class="text-center mb-3">Danh sách khách hàng mua hàng</h5>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-bordered table-hover text-center">
+                        <thead>
+                            <tr>
+                                <th>Họ tên</th>
+                                <th>Email</th>
+                                <th>Số đơn hàng</th>
+                                <th>Tổng chi tiêu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customerTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Danh sách sản phẩm -->
+            <div class="mb-5">
+                <h5 class="text-center mb-3">Danh sách sản phẩm đã bán</h5>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-bordered table-hover text-center">
+                        <thead>
+                            <tr>
+                                <th>Tên sản phẩm</th>
+                                <th>Danh mục</th>
+                                <th>Số lượng bán</th>
+                                <th>Tổng doanh thu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productTableBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card p-3 shadow-sm border-start border-primary border-4">
-                <h5><i class="bi bi-currency-dollar me-2 text-primary"></i> Tổng doanh thu</h5>
-                <strong class="fs-4 text-dark" id="totalRevenue">$0</strong>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-3 shadow-sm border-start border-warning border-4">
-                <h5><i class="bi bi-people-fill me-2 text-warning"></i> Tổng số khách hàng</h5>
-                <strong class="fs-4 text-dark" id="totalCustomers">0</strong>
-            </div>
-        </div>
-    </div>
 
-    <div class="row mb-5">
-        <!-- Doanh thu theo tháng -->
-        <div class="col-md-6">
-            <div class="card p-3 shadow-sm border-start border-success border-2">
-                <h5 class="text-center">Doanh thu theo tháng</h5>
-                <canvas id="revenueChart"></canvas>
-            </div>
-        </div>
+        <script>
+            async function loadReport(fromDate = '', toDate = '') {
+                try {
+                    let url = `/admin/reports/sales-report`;
+                    if (fromDate && toDate) {
+                        url += `?fromDate=${fromDate}&toDate=${toDate}`;
+                    }
 
-        <!-- Sản phẩm theo danh mục -->
-        <div class="col-md-6">
-            <div class="card p-3 shadow-sm border-start border-success border-2">
-                <h5 class="text-center">Sản phẩm bán theo danh mục</h5>
-               <canvas id="categoryChart" style="max-height: 276px;"></canvas>
-            </div>
-        </div>
-    </div>
+                    const response = await fetch(url);
+                    const data = await response.json();
 
-    <!-- Danh sách khách hàng -->
-    <div class="mb-5">
-        <h5 class="text-center mb-3">Danh sách khách hàng mua hàng</h5>
-        <div style="max-height: 300px; overflow-y: auto;">
-            <table class="table table-bordered table-hover text-center">
-                <thead>
-                    <tr>
-                        <th>Họ tên</th>
-                        <th>Email</th>
-                        <th>Số đơn hàng</th>
-                        <th>Tổng chi tiêu</th>
-                    </tr>
-                </thead>
-                <tbody id="customerTableBody"></tbody>
-            </table>
-        </div>
-    </div>
+                    // Tổng quan
+                    document.getElementById('totalProducts').textContent = data.totalProductsSold;
+                    document.getElementById('totalRevenue').textContent = Number(data.totalRevenue).toLocaleString('en-Us') + ' $';
+                    document.getElementById('totalCustomers').textContent = data.totalCustomers;
 
-    <!-- Danh sách sản phẩm -->
-    <div class="mb-5">
-        <h5 class="text-center mb-3">Danh sách sản phẩm đã bán</h5>
-        <div style="max-height: 300px; overflow-y: auto;">
-            <table class="table table-bordered table-hover text-center">
-                <thead>
-                    <tr>
-                        <th>Tên sản phẩm</th>
-                        <th>Danh mục</th>
-                        <th>Số lượng bán</th>
-                        <th>Tổng doanh thu</th>
-                    </tr>
-                </thead>
-                <tbody id="productTableBody"></tbody>
-            </table>
-        </div>
-    </div>
-</div>
+                    // Biểu đồ doanh thu (cột)
+                    const monthLabels = data.salesOverTime.map(e => `${e.month}/${e.year}`);
+                    const revenues = data.salesOverTime.map(e => e.revenue);
 
-<script>
-    async function loadReport(fromDate = '', toDate = '') {
-        try {
-            let url = `/admin/reports/sales-report`;
-            if (fromDate && toDate) {
-                url += `?fromDate=${fromDate}&toDate=${toDate}`;
-            }
-
-            const response = await fetch(url);
-            const data = await response.json();
-
-            // Tổng quan
-            document.getElementById('totalProducts').textContent = data.totalProductsSold;
-            document.getElementById('totalRevenue').textContent = Number(data.totalRevenue).toLocaleString('en-Us') + ' $';
-            document.getElementById('totalCustomers').textContent = data.totalCustomers;
-
-            // Biểu đồ doanh thu (cột)
-            const monthLabels = data.salesOverTime.map(e => `${e.month}/${e.year}`);
-            const revenues = data.salesOverTime.map(e => e.revenue);
-
-            new Chart(document.getElementById('revenueChart'), {
-                type: 'bar',
-                data: {
-                    labels: monthLabels,
-                    datasets: [{
-                        label: 'Doanh thu ($)',
-                        data: revenues,
-                        backgroundColor: '#42a5f5'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: val => val.toLocaleString('en-Us') + '$'
+                    new Chart(document.getElementById('revenueChart'), {
+                        type: 'bar',
+                        data: {
+                            labels: monthLabels,
+                            datasets: [{
+                                label: 'Doanh thu ($)',
+                                data: revenues,
+                                backgroundColor: '#42a5f5'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: val => val.toLocaleString('en-Us') + '$'
+                                    }
+                                }
                             }
                         }
-                    }
-                }
-            });
+                    });
 
-            // Biểu đồ sản phẩm theo danh mục (tròn)
-            const categories = Object.keys(data.salesByCategory);
-            const values = Object.values(data.salesByCategory);
+                    // Biểu đồ sản phẩm theo danh mục (tròn)
+                    const categories = Object.keys(data.salesByCategory);
+                    const values = Object.values(data.salesByCategory);
 
-            new Chart(document.getElementById('categoryChart'), {
-                type: 'pie',
-                data: {
-                    labels: categories,
-                    datasets: [{
-                        data: values,
-                        backgroundColor: ['#66bb6a', '#ffa726', '#42a5f5', '#ab47bc', '#ef5350']
-                    }]
-                }
-            });
+                    new Chart(document.getElementById('categoryChart'), {
+                        type: 'pie',
+                        data: {
+                            labels: categories,
+                            datasets: [{
+                                data: values,
+                                backgroundColor: ['#66bb6a', '#ffa726', '#42a5f5', '#ab47bc', '#ef5350']
+                            }]
+                        }
+                    });
 
-            // Bảng khách hàng
-            const customerBody = document.getElementById("customerTableBody");
-            customerBody.innerHTML = "";
-            data.customerDetails.forEach(c => {
-                customerBody.innerHTML += `
+                    // Bảng khách hàng
+                    const customerBody = document.getElementById("customerTableBody");
+                    customerBody.innerHTML = "";
+                    data.customerDetails.forEach(c => {
+                        customerBody.innerHTML += `
                     <tr>
                         <td>${c.name}</td>
                         <td>${c.email}</td>
@@ -168,13 +167,13 @@
                         <td>${Number(c.totalSpent).toLocaleString('en-Us')}$</td>
                     </tr>
                 `;
-            });
+                    });
 
-            // Bảng sản phẩm
-            const productBody = document.getElementById("productTableBody");
-            productBody.innerHTML = "";
-            data.productDetails.forEach(p => {
-                productBody.innerHTML += `
+                    // Bảng sản phẩm
+                    const productBody = document.getElementById("productTableBody");
+                    productBody.innerHTML = "";
+                    data.productDetails.forEach(p => {
+                        productBody.innerHTML += `
                     <tr>
                         <td>${p.productName}</td>
                         <td>${p.category}</td>
@@ -182,23 +181,23 @@
                         <td>${Number(p.totalRevenue).toLocaleString('en-Us')}$</td>
                     </tr>
                 `;
+                    });
+
+                } catch (err) {
+                    console.error("Lỗi khi tải dữ liệu báo cáo:", err);
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                loadReport();
+
+                document.getElementById('filterForm').addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const from = document.getElementById('fromDate').value;
+                    const to = document.getElementById('toDate').value;
+                    loadReport(from, to);
+                });
             });
-
-        } catch (err) {
-            console.error("Lỗi khi tải dữ liệu báo cáo:", err);
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        loadReport();
-
-        document.getElementById('filterForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const from = document.getElementById('fromDate').value;
-            const to = document.getElementById('toDate').value;
-            loadReport(from, to);
-        });
-    });
-</script>
-</body>
+        </script>
+    </body>
 </section>

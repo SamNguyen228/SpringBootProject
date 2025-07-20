@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -27,17 +28,21 @@ public class EmailService {
     @Autowired
     private OrderDetailRepository orderDetailRepository;
 
-     public void sendOrderConfirmationEmail(String userEmailForm, String fullNameForm, String phoneForm, String addressForm, Order order) {
+    public void sendOrderConfirmationEmail(String userEmailForm, String fullNameForm, String phoneForm, String addressForm, Order order) {
         User user = order.getUser();
-        if (user == null) return;
+        if (user == null && !StringUtils.hasText(userEmailForm)) {
+            System.out.println("Không có thông tin người dùng hoặc email để gửi.");
+            return;
+        }
 
-        String userEmail = StringUtils.hasText(userEmailForm) ? userEmailForm : user.getEmail();
-        String fullName = StringUtils.hasText(fullNameForm) ? fullNameForm : user.getFullName();
-        String phone = StringUtils.hasText(phoneForm) ? phoneForm : user.getPhone();
-        String address = StringUtils.hasText(addressForm) ? addressForm : user.getAddress();
+        // Ưu tiên thông tin nhập từ form
+        String userEmail = StringUtils.hasText(userEmailForm) ? userEmailForm : (user != null ? user.getEmail() : null);
+        String fullName = StringUtils.hasText(fullNameForm) ? fullNameForm : (user != null ? user.getFullName() : "Khách hàng");
+        String phone = StringUtils.hasText(phoneForm) ? phoneForm : (user != null ? user.getPhone() : "N/A");
+        String address = StringUtils.hasText(addressForm) ? addressForm : (user != null ? user.getAddress() : "N/A");
 
         if (!StringUtils.hasText(userEmail)) {
-            System.out.println("Không có email để gửi.");
+            System.out.println("Không có địa chỉ email để gửi xác nhận.");
             return;
         }
 
@@ -57,9 +62,9 @@ public class EmailService {
             ));
         }
 
-        String subject = "Xác nhận đơn hàng - Apple Store";
+        String subject = "Xác nhận đơn hàng - SmartBuy Store";
         String body = String.format(
-            "<h2 style='color:#2d89ef;'>Cảm ơn bạn đã đặt hàng tại Apple Store!</h2>" +
+            "<h2 style='color:#2d89ef;'>Cảm ơn bạn đã đặt hàng tại SmartBuy Store!</h2>" +
             "<p><strong>Mã đơn hàng:</strong> #%d</p>" +
             "<p><strong>Ngày đặt hàng:</strong> %s</p>" +
             "<p><strong>Tổng tiền:</strong> %,.0f $</p>" +
@@ -91,12 +96,14 @@ public class EmailService {
             helper.setTo(userEmail);
             helper.setSubject(subject);
             helper.setText(body, true);
-            helper.setFrom("duonghoangsamet@gmail.com", "Apple Store");
+
+            helper.setFrom("duonghoangsamet@gmail.com", "SmartBuy Store");
 
             mailSender.send(message);
-        } catch (MessagingException | UnsupportedEncodingException e) {
+            System.out.println("Đã gửi email xác nhận đơn hàng tới: " + userEmail);
+        } catch (MessagingException | UnsupportedEncodingException | MailException e) {
+            System.err.println("Lỗi khi gửi email xác nhận đơn hàng:");
             e.printStackTrace();
         }
     }
 }
-

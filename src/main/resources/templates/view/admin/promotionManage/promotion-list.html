@@ -1,13 +1,36 @@
-<section xmlns:th="http://www.thymeleaf.org"
-         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-         layout:decorate="~{fragments/admin-layout}"
-         layout:fragment="body">
+<section xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragments/admin-layout}" layout:fragment="body">
 
     <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>Danh sách khuyến mãi</h2>
-            <a th:href="@{/admin/promotions/create}" class="btn btn-primary">Thêm khuyến mãi</a>
+        <h2 class="mb-4 text-center">Danh sách khuyến mãi</h2>
+
+        <!-- Dòng chứa: Tìm kiếm, Lọc, Thêm -->
+        <div class="d-flex flex-wrap gap-2 align-items-end mb-4">
+
+            <!-- Form tìm kiếm -->
+            <form class="d-flex" method="get" th:action="@{/admin/promotions}">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="keyword" placeholder="Tìm theo tên"
+                        th:value="${keyword}">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="bi bi-search"></i> 
+                    </button>
+                </div>
+            </form>
+
+            <!-- Form lọc theo ngày -->
+            <form class="d-flex gap-2" method="get" th:action="@{/admin/promotions}">
+                <input type="date" name="startDate" class="form-control" th:value="${startDate}">
+                <input type="date" name="endDate" class="form-control" th:value="${endDate}">
+                <button class="btn btn-outline-primary" type="submit">
+                    <i class="bi bi-filter"></i>
+                </button>
+            </form>
+
+            <!-- Nút thêm khuyến mãi -->
+            <a th:href="@{/admin/promotions/create}" class="btn btn-primary ms-auto">Thêm khuyến mãi</a>
         </div>
+
 
         <table class="table table-bordered table-hover text-center">
             <thead class="table-light">
@@ -30,10 +53,11 @@
                     <td th:text="${#temporals.format(promo.startDate, 'dd/MM/yyyy')}"></td>
                     <td th:text="${#temporals.format(promo.endDate, 'dd/MM/yyyy')}"></td>
                     <td>
-                        <a th:href="@{'/admin/promotions/edit/' + ${promo.promotionId}}" class="btn btn-sm btn-warning">Sửa</a>
+                        <a th:href="@{'/admin/promotions/edit/' + ${promo.promotionId}}"
+                            class="btn btn-sm btn-warning">Sửa</a>
                         <a th:href="@{'/admin/promotions/delete/' + ${promo.promotionId}}"
-                           onclick="return confirm('Bạn có chắc chắn muốn xóa?');"
-                           class="btn btn-sm btn-danger">Xóa</a>
+                            onclick="return confirm('Bạn có chắc chắn muốn xóa?');"
+                            class="btn btn-sm btn-danger">Xóa</a>
                     </td>
                 </tr>
             </tbody>

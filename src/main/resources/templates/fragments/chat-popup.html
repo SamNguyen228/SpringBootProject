@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+    <div th:fragment="chatPopupFragment">
+        <meta name="_csrf" th:content="${_csrf.token}" />
+        <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+        <!-- Popup Chat -->
+        <div id="chat-popup" class="chat-popup" style="display: none;">
+            <div class="chat-header">
+                <span class="chat-title">Liên hệ với chúng tôi</span>
+                <button class="close-btn" onclick="closeChat()">X</button>
+            </div>
+            <div class="chat-body">
+                <textarea id="message" placeholder="Nhập tin nhắn của bạn..." rows="4"></textarea>
+                <button class="send-btn" onclick="sendMessage()">Gửi</button>
+            </div>
+        </div>
+
+        <!-- Chỉ hiển thị nếu đăng nhập và có vai trò CUSTOMER -->
+        <div th:if="${#authorization.expression('isAuthenticated() and hasRole(''CUSTOMER'')')}">
+            <button id="chat-button" class="chat-button" onclick="openChat()">
+                <i class="fa fa-comment-dots"></i>
+            </button>
+        </div>
+
+        <script>
+            function openChat() {
+                document.getElementById('chat-popup').style.display = 'block';
+                document.getElementById('chat-button').style.display = 'none';
+            }
+
+            function closeChat() {
+                document.getElementById('chat-popup').style.display = 'none';
+                document.getElementById('chat-button').style.display = 'block';
+            }
+
+            function sendMessage() {
+                const message = document.getElementById('message').value;
+                if (!message.trim()) {
+                    alert('Vui lòng nhập tin nhắn của bạn.');
+                    return;
+                }
+
+                const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+                fetch('/sendChat/submit', {
+                    method: 'POST',
+                    headers: {
+                        [csrfHeader]: csrfToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Gửi tin nhắn thành công. Chúng tôi sẽ sớm phản hồi!");
+                        document.getElementById('message').value = "";
+                        closeChat();
+                    } else {
+                        console.error("Gửi thất bại:", data.message);
+                    }
+                })
+                .catch(error => console.error("Lỗi:", error));
+            }
+        </script>
+    </div>
+</body>
+</html>

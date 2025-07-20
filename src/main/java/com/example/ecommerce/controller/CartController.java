@@ -46,7 +46,7 @@ public class CartController {
 
     @Autowired
     private CartService cartService;
-
+ 
     @GetMapping("/cart")
     public String showCart(Model model) {
         Integer userId = userService.getUserId();
@@ -85,14 +85,18 @@ public class CartController {
         Optional<Product> productOpt = productRepository.findById(productId);
 
         if (productOpt.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Sản phẩm không tồn tại");
+            redirectAttributes.addFlashAttribute("addError", "Sản phẩm không tồn tại");
             return "redirect:" + request.getHeader("Referer");
+        }
+
+        if ("cart".equals(redirectTarget)) {
+            return "redirect:/user/cart";
         }
 
         Product product = productOpt.get();
 
         if (product.getStockQuantity() < quantity) {
-            redirectAttributes.addFlashAttribute("error", "Sản phẩm đã hết hàng hoặc số lượng không đủ!");
+            redirectAttributes.addFlashAttribute("addError", "Sản phẩm đã hết hàng hoặc số lượng không đủ!");
             return "redirect:" + request.getHeader("Referer");
         }
 
@@ -104,17 +108,17 @@ public class CartController {
         } else {
             cartItem = cartOpt.get();
             if (cartItem.getQuantity() + quantity > product.getStockQuantity()) {
-                redirectAttributes.addFlashAttribute("error", "Số lượng sản phẩm trong giỏ hàng vượt quá tồn kho!");
+                redirectAttributes.addFlashAttribute("addError", "Số lượng sản phẩm trong giỏ hàng vượt quá tồn kho!");
                 return "redirect:" + request.getHeader("Referer");
             }
             cartItem.setQuantity(cartItem.getQuantity() + quantity);
         }
 
         cartRepository.save(cartItem);
-        redirectAttributes.addFlashAttribute("success", "Sản phẩm đã được thêm vào giỏ hàng!");
+        redirectAttributes.addFlashAttribute("addSuccess", "Sản phẩm đã được thêm vào giỏ hàng!");
 
-        if ("cart".equals(redirectTarget)) {
-            return "redirect:/cart";
+        if (redirectTarget != null && !redirectTarget.isBlank()) {
+            return "redirect:" + redirectTarget;
         }
 
         return "redirect:" + request.getHeader("Referer");
@@ -129,8 +133,8 @@ public class CartController {
 
         cartItem.ifPresent(cartRepository::delete);
 
-        redirectAttributes.addFlashAttribute("success", "Sản phẩm đã được xóa khỏi giỏ hàng!");
-        return "redirect:/cart";
+        redirectAttributes.addFlashAttribute("deleteSuccess", "Sản phẩm đã được xóa khỏi giỏ hàng!");
+        return "redirect:/user/cart";
     }
 
     @PostMapping("/cart/update-quantity")

@@ -1,577 +1,591 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-	<head th:insert="~{fragments/head :: page_head('Trang Chủ')}"></head>
-	<body>
-		<!-- HEADER -->
-		<header th:replace="~{fragments/header :: page_header}"></header>
-		<!-- /HEADER -->
 
-		<!-- NAVIGATION -->
-		<nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
-		<!-- /NAVIGATION -->
+<head th:insert="~{fragments/head :: page_head('Trang Chủ')}"></head>
 
-		<!-- SLOGAN -->
-            <div class="slogan">
-                <h1>Welcome to Smartbuy</h1> <br>
-                <p>Experience the future of technology</p> <br>
-               <a id="explore" th:href="@{/products}">Explore</a>
-            </div>
-		<!-- /SLOGAN -->
+<body>
+	<!-- HEADER -->
+	<header th:replace="~{fragments/header :: page_header}"></header>
+	<!-- /HEADER -->
 
-		<!-- SECTION -->
-		<div class="section">
-			<!-- container -->
-			<div class="container">
-				<!-- row -->
-				<div class="row">
-					<!-- Banner iPhone -->
-					<div class="col-md-4 col-xs-6">
-						<div class="shop">
-							<div class="shop-img">
-								<img src="https://media.vneconomy.vn/w800/images/upload/2024/09/10/apple-iphone-16-pro-series.jpg" alt="">
-							</div>
-							<div class="shop-body">
-								<h3>Bộ Sưu Tập<br>iPhone</h3>
-								<a th:href="@{/products(loai=1)}" class="cta-btn">
-									Mua Hàng Ngay <i class="fa fa-arrow-circle-right"></i>
-								</a>
-							</div>
+	<!-- NAVIGATION -->
+	<nav th:replace="~{fragments/navbar :: page_navbar}"></nav>
+	<!-- /NAVIGATION -->
+
+	<!-- SLOGAN -->
+	<div class="slogan">
+		<h1>Chào mừng đến với Smartbuy</h1> <br>
+		<p>Trải nghiệm công nghệ của tương lai</p> <br>
+		<a id="explore" th:href="@{/products}">Khám phá</a>
+	</div>
+	<!-- /SLOGAN -->
+
+	<!-- SECTION -->
+	<div class="section">
+		<!-- container -->
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+				<!-- Banner iPhone -->
+				<div class="col-md-4 col-xs-6">
+					<div class="shop">
+						<div class="shop-img">
+							<img src="https://media.vneconomy.vn/w800/images/upload/2024/09/10/apple-iphone-16-pro-series.jpg"
+								alt="">
+						</div>
+						<div class="shop-body">
+							<h3>Bộ Sưu Tập<br>iPhone</h3>
+							<a th:href="@{/products(loai=1)}" class="cta-btn">
+								Mua Hàng Ngay <i class="fa fa-arrow-circle-right"></i>
+							</a>
 						</div>
 					</div>
-
-					<!-- shop -->
-					<div class="col-md-4 col-xs-6">
-						<div class="shop">
-							<div class="shop-img">
-								<img src="https://cdn.hoanghamobile.com/Uploads/2024/09/09/macbook-air-13-in-m3-chip-starlight-pure-front-screen-usen.jpg" alt="">
-							</div>
-							<div class="shop-body">
-								<h3>Bộ Sưu Tập<br>MacBook</h3>
-								<a th:href="@{/products(loai=2)}" class="cta-btn">Mua Hàng Ngay <i class="fa fa-arrow-circle-right"></i></a>
-							</div>
-						</div>
-					</div>
-					<!-- /shop -->
-
-					<!-- shop -->
-					<div class="col-md-4 col-xs-6">
-						<div class="shop">
-							<div class="shop-img">
-								<img src="https://cdn.thewirecutter.com/wp-content/media/2024/09/applewatch-2048px-4495.jpg?auto=webp&quality=75&width=1024" alt="">
-							</div>
-							<div class="shop-body">
-								<h3>Bộ Sưu Tập<br>Apple Watch</h3>
-								<a th:href="@{/products(loai=5)}" class="cta-btn">Mua Hàng Ngay <i class="fa fa-arrow-circle-right"></i></a>
-							</div>
-						</div>
-					</div>
-					<!-- /shop -->
 				</div>
-				<!-- /row -->
-			</div>
-			<!-- /container -->
-		</div>
-		<!-- /SECTION -->
 
-		<!-- SECTION -->
-		<div class="section">
-			<!-- container -->
-			<div class="container">
-				<!-- row -->
-				<div class="row">
-
-					<!-- section title -->
-					<div class="col-md-12">
-						<div class="section-title">
-							<h3 class="title">Sản Phẩm Mới</h3>
+				<!-- shop -->
+				<div class="col-md-4 col-xs-6">
+					<div class="shop">
+						<div class="shop-img">
+							<img src="https://cdn.hoanghamobile.com/Uploads/2024/09/09/macbook-air-13-in-m3-chip-starlight-pure-front-screen-usen.jpg"
+								alt="">
+						</div>
+						<div class="shop-body">
+							<h3>Bộ Sưu Tập<br>MacBook</h3>
+							<a th:href="@{/products(loai=2)}" class="cta-btn">Mua Hàng Ngay <i
+									class="fa fa-arrow-circle-right"></i></a>
 						</div>
 					</div>
-					<!-- /section title -->
+				</div>
+				<!-- /shop -->
 
-					<!-- Products tab & slick -->
-					<div class="col-md-12">
-						<div class="row">
-							<div class="products-tabs">
-								<!-- tab -->
-								<div id="tab1" class="tab-pane active">
-									<div class="products-slick" data-nav="#slick-nav-1">
-										<!-- product -->
-										<!-- product -->
-										<div class="product" th:each="product : ${products}">
-											<a class="product-img" th:href="@{/products/detail/{id}(id=${product.maSP})}">
-												<img th:if="${product.HinhAnh != null}" th:src="@{${product.HinhAnh}}" alt="Hình ảnh" />
+				<!-- shop -->
+				<div class="col-md-4 col-xs-6">
+					<div class="shop">
+						<div class="shop-img">
+							<img src="https://cdn.thewirecutter.com/wp-content/media/2024/09/applewatch-2048px-4495.jpg?auto=webp&quality=75&width=1024"
+								alt="">
+						</div>
+						<div class="shop-body">
+							<h3>Bộ Sưu Tập<br>Apple Watch</h3>
+							<a th:href="@{/products(loai=5)}" class="cta-btn">Mua Hàng Ngay <i
+									class="fa fa-arrow-circle-right"></i></a>
+						</div>
+					</div>
+				</div>
+				<!-- /shop -->
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /SECTION -->
+
+	<!-- SECTION -->
+	<div class="section">
+		<!-- container -->
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+
+				<!-- section title -->
+				<div class="col-md-12">
+					<div class="section-title">
+						<h3 class="title">Sản Phẩm Mới</h3>
+					</div>
+				</div>
+				<!-- /section title -->
+
+				<!-- Products tab & slick -->
+				<div class="col-md-12">
+					<div class="row">
+						<div class="products-tabs">
+							<!-- tab -->
+							<div id="tab1" class="tab-pane active">
+								<div class="products-slick" data-nav="#slick-nav-1">
+									<!-- product -->
+									<!-- product -->
+									<div class="product" th:each="product : ${products}">
+										<a class="product-img" th:href="@{/products/detail/{id}(id=${product.maSP})}">
+											<img th:if="${product.HinhAnh != null}" th:src="@{${product.HinhAnh}}"
+												alt="Hình ảnh" />
+											<div class="product-label">
+												<span class="new">NEW</span>
+											</div>
+										</a>
+
+										<div class="product-body">
+											<p class="product-category" th:text="${product.TenLoai}"></p>
+											<h3 class="product-name">
+												<a th:href="@{/products/detail/{id}(id=${product.maSP})}"
+													th:text="${product.TenSP}"></a>
+											</h3>
+											<h4 class="product-price">
+												<span th:text="${product.Gia + '$'}"></span>
+											</h4>
+										</div>
+
+										<div class="add-to-cart">
+											<form th:action="@{/user/cart/add/{id}(id=${product.maSP})}" method="post">
+												<input type="hidden" name="quantity" value="1" />
+												<button class="add-to-cart-btn">
+													<i class="fa fa-shopping-cart"></i> Thêm vào giỏ
+												</button>
+											</form>
+										</div>
+									</div>
+									<!-- /product -->
+									<!-- /product -->
+								</div>
+								<div id="slick-nav-1" class="products-slick-nav"></div>
+							</div>
+							<!-- /tab -->
+						</div>
+					</div>
+				</div>
+				<!-- Products tab & slick -->
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /SECTION -->
+
+	<!-- HOT DEAL SECTION -->
+	<div id="hot-deal" class="section">
+		<!-- container -->
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+				<div class="col-md-12">
+					<div class="hot-deal">
+						<ul class="hot-deal-countdown">
+							<li>
+								<div>
+									<h3 id="days">00</h3>
+									<span>Days</span>
+								</div>
+							</li>
+							<li>
+								<div>
+									<h3 id="hours">00</h3>
+									<span>Hours</span>
+								</div>
+							</li>
+							<li>
+								<div>
+									<h3 id="minutes">00</h3>
+									<span>Mins</span>
+								</div>
+							</li>
+							<li>
+								<div>
+									<h3 id="seconds">00</h3>
+									<span>Secs</span>
+								</div>
+							</li>
+						</ul>
+						<h2 class="text-uppercase">ưu đãi tuần này</h2>
+						<p>Giảm Giá Đến 50% </p>
+						<a class="primary-btn cta-btn" th:href="@{/products}">Mua Hàng Ngay</a>
+					</div>
+				</div>
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /HOT DEAL SECTION -->
+
+	<!-- SECTION -->
+	<div class="section">
+		<!-- container -->
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+
+				<!-- section title -->
+				<div class="col-md-12">
+					<div class="section-title">
+						<h3 class="title">Top selling</h3>
+					</div>
+				</div>
+				<!-- /section title -->
+
+				<!-- Products tab & slick -->
+				<div class="col-md-12">
+					<div class="row">
+						<div class="products-tabs">
+							<!-- tab -->
+							<div id="tab2" class="tab-pane fade in active">
+								<div class="products-slick" data-nav="#slick-nav-2">
+									<!-- product -->
+									<div th:each="entry : ${appleProducts}" class="product">
+										<div
+											th:with="item=${entry.product}, discount=${entry.discount}, oldPrice=${entry.oldPrice}">
+											<a class="product-img" th:href="@{/products/detail/{id}(id=${item.maSP})}">
+												<img th:src="${item.hinhAnh}" alt="">
 												<div class="product-label">
+													<span class="sale" th:text="'-' + ${discount} + '%'">-30%</span>
 													<span class="new">NEW</span>
 												</div>
 											</a>
-
 											<div class="product-body">
-												<p class="product-category" th:text="${product.TenLoai}"></p>
-												<h3 class="product-name">
-													<a th:href="@{/products/detail/{id}(id=${product.maSP})}" th:text="${product.TenSP}"></a>
-												</h3>
+												<p class="product-category" th:text="${item.tenLoai}">Category</p>
+												<h3 class="product-name"><a
+														th:href="@{/products/detail/{id}(id=${item.maSP})}"
+														th:text="${item.tenSP}">Product</a></h3>
 												<h4 class="product-price">
-													<span th:text="${product.Gia + '$'}"></span>
+													$<span th:text="${item.gia}"></span>
+													<del class="product-old-price"
+														th:text="${#numbers.formatDecimal(oldPrice, 1, 2)}"></del>
 												</h4>
 											</div>
-
 											<div class="add-to-cart">
-												<form th:action="@{/user/cart/add/{id}(id=${product.maSP})}" method="post">
-													<input type="hidden" name="quantity" value="1" />
-													<button class="add-to-cart-btn">
-														<i class="fa fa-shopping-cart"></i> Thêm vào giỏ
-													</button>
+												<form th:action="@{/user/cart/add/{id}(id=${item.maSP})}" method="post">
+													<button class="add-to-cart-btn" type="submit"><i
+															class="fa fa-shopping-cart"></i> Thêm vào giỏ</button>
 												</form>
 											</div>
 										</div>
-										<!-- /product -->
-										<!-- /product -->
 									</div>
-									<div id="slick-nav-1" class="products-slick-nav"></div>
+									<!-- /product -->
 								</div>
-								<!-- /tab -->
+								<div id="slick-nav-2" class="products-slick-nav"></div>
 							</div>
-						</div>
-					</div>
-					<!-- Products tab & slick -->
-				</div>
-				<!-- /row -->
-			</div>
-			<!-- /container -->
-		</div>
-		<!-- /SECTION -->
-
-		<!-- HOT DEAL SECTION -->
-		<div id="hot-deal" class="section">
-			<!-- container -->
-			<div class="container">
-				<!-- row -->
-				<div class="row">
-					<div class="col-md-12">
-						<div class="hot-deal">
-							<ul class="hot-deal-countdown">
-								<li>
-									<div>
-										<h3 id="days">00</h3>
-										<span>Days</span>
-									</div>
-								</li>
-								<li>
-									<div>
-										<h3 id="hours">00</h3>
-										<span>Hours</span>
-									</div>
-								</li>
-								<li>
-									<div>
-										<h3 id="minutes">00</h3>
-										<span>Mins</span>
-									</div>
-								</li>
-								<li>
-									<div>
-										<h3 id="seconds">00</h3>
-										<span>Secs</span>
-									</div>
-								</li>
-							</ul>
-							<h2 class="text-uppercase">ưu đãi tuần này</h2>
-							<p>Giảm Giá Đến 50% </p>
-							<a class="primary-btn cta-btn" th:href="@{/products}">Mua Hàng Ngay</a>
+							<!-- /tab -->
 						</div>
 					</div>
 				</div>
-				<!-- /row -->
+				<!-- /Products tab & slick -->
 			</div>
-			<!-- /container -->
+			<!-- /row -->
 		</div>
-		<!-- /HOT DEAL SECTION -->
+		<!-- /container -->
+	</div>
+	<!-- /SECTION -->
 
-		<!-- SECTION -->
-		<div class="section">
-			<!-- container -->
-			<div class="container">
-				<!-- row -->
-				<div class="row">
-
-					<!-- section title -->
-					<div class="col-md-12">
-						<div class="section-title">
-							<h3 class="title">Top selling</h3>
-						</div>
-					</div>
-					<!-- /section title -->
-
-					<!-- Products tab & slick -->
-					<div class="col-md-12">
-						<div class="row">
-							<div class="products-tabs">
-								<!-- tab -->
-								<div id="tab2" class="tab-pane fade in active">
-									<div class="products-slick" data-nav="#slick-nav-2">
-										<!-- product -->
-										<div th:each="entry : ${appleProducts}" class="product">
-											<div th:with="item=${entry.product}, discount=${entry.discount}, oldPrice=${entry.oldPrice}">
-												<a class="product-img" th:href="@{/products/detail/{id}(id=${item.maSP})}">
-													<img th:src="${item.hinhAnh}" alt="">
-													<div class="product-label">
-														<span class="sale" th:text="'-' + ${discount} + '%'">-30%</span>
-														<span class="new">NEW</span>
-													</div>
-												</a>
-												<div class="product-body">
-													<p class="product-category" th:text="${item.tenLoai}">Category</p>
-													<h3 class="product-name"><a th:href="@{/products/detail/{id}(id=${item.maSP})}"th:text="${item.tenSP}">Product</a></h3>
-													<h4 class="product-price">
-														$<span th:text="${item.gia}"></span>
-														<del class="product-old-price" th:text="${#numbers.formatDecimal(oldPrice, 1, 2)}"></del>
-													</h4>
-												</div>
-												<div class="add-to-cart">
-													<form th:action="@{/user/cart/add/{id}(id=${item.maSP})}" method="post">
-														<button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Thêm vào giỏ</button>
-													</form>
-												</div>
-											</div>
-										</div>
-										<!-- /product -->
-									</div>
-									<div id="slick-nav-2" class="products-slick-nav"></div>
-								</div>
-								<!-- /tab -->
-							</div>
-						</div>
-					</div>
-					<!-- /Products tab & slick -->
-				</div>
-				<!-- /row -->
-			</div>
-			<!-- /container -->
-		</div>
-		<!-- /SECTION -->
-
-		<!-- SECTION -->
-		<div class="section">
-			<!-- container -->
-			<div class="container">
-				<!-- row -->
-				<div class="row">
-					<div class="col-md-4 col-xs-6">
-						<div class="section-title">
-							<h4 class="title">Top selling</h4>
-							<div class="section-nav">
-								<div id="slick-nav-3" class="products-slick-nav"></div>
-							</div>
-						</div>
-
-						<div class="products-widget-slick" data-nav="#slick-nav-3">
-							<div>
-								<!-- product widget -->
-								<div th:each="product : ${macbookTop3}" class="product-widget">
-									<!-- Product Image -->
-									<a class="product-img" th:href="@{/products/detail/{id}(id=${product.maSP})}">
-										<img th:src="${product.hinhAnh}" alt="">
-									</a>
-
-									<!-- Product Body -->
-									<div class="product-body">
-										<p class="product-category" th:text="${product.tenLoai}">Category</p>
-										<h3 class="product-name">
-											<a th:href="@{/products/detail/{id}(id=${product.maSP})}" th:text="${product.tenSP}">Product Name</a>
-										</h3>
-										<h4 class="product-price" th:text="'$' + ${product.gia}">Price</h4>
-									</div>
-								</div>
-								<!-- product widget -->
-							</div>
-
-							<div>
-								<!-- product widget -->
-								<div th:each="product : ${airpodsTop3}" class="product-widget">
-									<!-- Product Image -->
-									<a class="product-img" th:href="@{/products/detail/{id}(id=${product.maSP})}">
-										<img th:src="${product.hinhAnh}" alt="">
-									</a>
-
-									<!-- Product Body -->
-									<div class="product-body">
-										<p class="product-category" th:text="${product.tenLoai}">Category</p>
-										<h3 class="product-name">
-											<a th:href="@{/products/detail/{id}(id=${product.maSP})}" th:text="${product.tenSP}">Product Name</a>
-										</h3>
-										<h4 class="product-price" th:text="'$' + ${product.gia}">Price</h4>
-									</div>
-								</div>
-								<!-- product widget -->
-							</div>
+	<!-- SECTION -->
+	<div class="section">
+		<!-- container -->
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+				<div class="col-md-4 col-xs-6">
+					<div class="section-title">
+						<h4 class="title">Top selling</h4>
+						<div class="section-nav">
+							<div id="slick-nav-3" class="products-slick-nav"></div>
 						</div>
 					</div>
 
-					<div class="col-md-4 col-xs-6">
-						<div class="section-title">
-							<h4 class="title">Top selling</h4>
-							<div class="section-nav">
-								<div id="slick-nav-4" class="products-slick-nav"></div>
+					<div class="products-widget-slick" data-nav="#slick-nav-3">
+						<div>
+							<!-- product widget -->
+							<div th:each="product : ${macbookTop3}" class="product-widget">
+								<!-- Product Image -->
+								<a class="product-img" th:href="@{/products/detail/{id}(id=${product.maSP})}">
+									<img th:src="${product.hinhAnh}" alt="">
+								</a>
+
+								<!-- Product Body -->
+								<div class="product-body">
+									<p class="product-category" th:text="${product.tenLoai}">Category</p>
+									<h3 class="product-name">
+										<a th:href="@{/products/detail/{id}(id=${product.maSP})}"
+											th:text="${product.tenSP}">Product Name</a>
+									</h3>
+									<h4 class="product-price" th:text="'$' + ${product.gia}">Price</h4>
+								</div>
 							</div>
+							<!-- product widget -->
 						</div>
 
-						<div class="products-widget-slick" data-nav="#slick-nav-4">
-							<div>
-								<!-- product widget -->
-								<div th:each="product : ${iphoneTop3}" class="product-widget">
-									<!-- Product Image -->
-									<a class="product-img" th:href="@{/products/detail/{id}(id=${product.maSP})}">
-										<img th:src="${product.hinhAnh}" alt="">
-									</a>
+						<div>
+							<!-- product widget -->
+							<div th:each="product : ${airpodsTop3}" class="product-widget">
+								<!-- Product Image -->
+								<a class="product-img" th:href="@{/products/detail/{id}(id=${product.maSP})}">
+									<img th:src="${product.hinhAnh}" alt="">
+								</a>
 
-									<!-- Product Body -->
-									<div class="product-body">
-										<p class="product-category" th:text="${product.tenLoai}">Category</p>
-										<h3 class="product-name">
-											<a th:href="@{/products/detail/{id}(id=${product.maSP})}" th:text="${product.tenSP}">Product Name</a>
-										</h3>
-										<h4 class="product-price" th:text="'$' + ${product.gia}">Price</h4>
-									</div>
+								<!-- Product Body -->
+								<div class="product-body">
+									<p class="product-category" th:text="${product.tenLoai}">Category</p>
+									<h3 class="product-name">
+										<a th:href="@{/products/detail/{id}(id=${product.maSP})}"
+											th:text="${product.tenSP}">Product Name</a>
+									</h3>
+									<h4 class="product-price" th:text="'$' + ${product.gia}">Price</h4>
 								</div>
-								<!-- product widget -->
 							</div>
-
-							<div>
-								<!-- product widget -->
-								<div th:each="product : ${ipadTop3}" class="product-widget">
-									<!-- Product Image -->
-									<a class="product-img" th:href="@{/products/detail/{id}(id=${product.maSP})}">
-										<img th:src="${product.hinhAnh}" alt="">
-									</a>
-
-									<!-- Product Body -->
-									<div class="product-body">
-										<p class="product-category" th:text="${product.tenLoai}">Category</p>
-										<h3 class="product-name">
-											<a th:href="@{/products/detail/{id}(id=${product.maSP})}" th:text="${product.tenSP}">Product Name</a>
-										</h3>
-										<h4 class="product-price" th:text="'$' + ${product.gia}">Price</h4>
-									</div>
-								</div>
-								<!-- product widget -->
-							</div>
-						</div>
-					</div>
-
-					<div class="clearfix visible-sm visible-xs"></div>
-
-					<div class="col-md-4 col-xs-6">
-						<div class="section-title">
-							<h4 class="title">Top selling</h4>
-							<div class="section-nav">
-								<div id="slick-nav-5" class="products-slick-nav"></div>
-							</div>
-						</div>
-
-						<div class="products-widget-slick" data-nav="#slick-nav-5">
-							<div>
-								<!-- product widget -->
-								<div th:each="product : ${airpodsTop3}" class="product-widget">
-									<!-- Product Image -->
-									<a class="product-img" th:href="@{/products/detail/{id}(id=${product.maSP})}">
-										<img th:src="${product.hinhAnh}" alt="">
-									</a>
-
-									<!-- Product Body -->
-									<div class="product-body">
-										<p class="product-category" th:text="${product.tenLoai}">Category</p>
-										<h3 class="product-name">
-											<a th:href="@{/products/detail/{id}(id=${product.maSP})}" th:text="${product.tenSP}">Product Name</a>
-										</h3>
-										<h4 class="product-price" th:text="'$' + ${product.gia}">Price</h4>
-									</div>
-								</div>
-								<!-- product widget -->
-							</div>
-
-							<div>
-								<!-- product widget -->
-								<div th:each="product : ${iphoneTop3}" class="product-widget">
-									<!-- Product Image -->
-									<a class="product-img" th:href="@{/products/detail/{id}(id=${product.maSP})}">
-										<img th:src="${product.hinhAnh}" alt="">
-									</a>
-
-									<!-- Product Body -->
-									<div class="product-body">
-										<p class="product-category" th:text="${product.tenLoai}">Category</p>
-										<h3 class="product-name">
-											<a th:href="@{/products/detail/{id}(id=${product.maSP})}" th:text="${product.tenSP}">Product Name</a>
-										</h3>
-										<h4 class="product-price" th:text="'$' + ${product.gia}">Price</h4>
-									</div>
-								</div>
-								<!-- product widget -->
-							</div>
+							<!-- product widget -->
 						</div>
 					</div>
 				</div>
-				<!-- /row -->
-			</div>
-			<!-- /container -->
-		</div>
-		<!-- /SECTION -->
 
-		<!-- NEWSLETTER -->
-		<div id="newsletter" class="section">
-			<!-- container -->
-			<div class="container">
-				<!-- row -->
-				<div class="row">
-					<div class="col-md-12">
-						<div class="newsletter">
-							<p>Sign Up for the <strong>NEWSLETTER</strong></p>
-							<form>
-								<input class="input" type="email" placeholder="Enter Your Email">
-								<button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
-							</form>
-							<ul class="newsletter-follow">
-								<li>
-									<a href="https://www.facebook.com/"><i class="fa fa-facebook"></i></a>
-								</li>
-								<li>
-									<a href="https://x.com/?lang=vi"><i class="fa fa-twitter"></i></a>
-								</li>
-								<li>
-									<a href="https://www.instagram.com/"><i class="fa fa-instagram"></i></a>
-								</li>
-								<li>
-									<a href="https://www.pinterest.com/"><i class="fa fa-pinterest"></i></a>
-								</li>
-							</ul>
+				<div class="col-md-4 col-xs-6">
+					<div class="section-title">
+						<h4 class="title">Top selling</h4>
+						<div class="section-nav">
+							<div id="slick-nav-4" class="products-slick-nav"></div>
+						</div>
+					</div>
+
+					<div class="products-widget-slick" data-nav="#slick-nav-4">
+						<div>
+							<!-- product widget -->
+							<div th:each="product : ${iphoneTop3}" class="product-widget">
+								<!-- Product Image -->
+								<a class="product-img" th:href="@{/products/detail/{id}(id=${product.maSP})}">
+									<img th:src="${product.hinhAnh}" alt="">
+								</a>
+
+								<!-- Product Body -->
+								<div class="product-body">
+									<p class="product-category" th:text="${product.tenLoai}">Category</p>
+									<h3 class="product-name">
+										<a th:href="@{/products/detail/{id}(id=${product.maSP})}"
+											th:text="${product.tenSP}">Product Name</a>
+									</h3>
+									<h4 class="product-price" th:text="'$' + ${product.gia}">Price</h4>
+								</div>
+							</div>
+							<!-- product widget -->
+						</div>
+
+						<div>
+							<!-- product widget -->
+							<div th:each="product : ${ipadTop3}" class="product-widget">
+								<!-- Product Image -->
+								<a class="product-img" th:href="@{/products/detail/{id}(id=${product.maSP})}">
+									<img th:src="${product.hinhAnh}" alt="">
+								</a>
+
+								<!-- Product Body -->
+								<div class="product-body">
+									<p class="product-category" th:text="${product.tenLoai}">Category</p>
+									<h3 class="product-name">
+										<a th:href="@{/products/detail/{id}(id=${product.maSP})}"
+											th:text="${product.tenSP}">Product Name</a>
+									</h3>
+									<h4 class="product-price" th:text="'$' + ${product.gia}">Price</h4>
+								</div>
+							</div>
+							<!-- product widget -->
 						</div>
 					</div>
 				</div>
-				<!-- /row -->
+
+				<div class="clearfix visible-sm visible-xs"></div>
+
+				<div class="col-md-4 col-xs-6">
+					<div class="section-title">
+						<h4 class="title">Top selling</h4>
+						<div class="section-nav">
+							<div id="slick-nav-5" class="products-slick-nav"></div>
+						</div>
+					</div>
+
+					<div class="products-widget-slick" data-nav="#slick-nav-5">
+						<div>
+							<!-- product widget -->
+							<div th:each="product : ${airpodsTop3}" class="product-widget">
+								<!-- Product Image -->
+								<a class="product-img" th:href="@{/products/detail/{id}(id=${product.maSP})}">
+									<img th:src="${product.hinhAnh}" alt="">
+								</a>
+
+								<!-- Product Body -->
+								<div class="product-body">
+									<p class="product-category" th:text="${product.tenLoai}">Category</p>
+									<h3 class="product-name">
+										<a th:href="@{/products/detail/{id}(id=${product.maSP})}"
+											th:text="${product.tenSP}">Product Name</a>
+									</h3>
+									<h4 class="product-price" th:text="'$' + ${product.gia}">Price</h4>
+								</div>
+							</div>
+							<!-- product widget -->
+						</div>
+
+						<div>
+							<!-- product widget -->
+							<div th:each="product : ${iphoneTop3}" class="product-widget">
+								<!-- Product Image -->
+								<a class="product-img" th:href="@{/products/detail/{id}(id=${product.maSP})}">
+									<img th:src="${product.hinhAnh}" alt="">
+								</a>
+
+								<!-- Product Body -->
+								<div class="product-body">
+									<p class="product-category" th:text="${product.tenLoai}">Category</p>
+									<h3 class="product-name">
+										<a th:href="@{/products/detail/{id}(id=${product.maSP})}"
+											th:text="${product.tenSP}">Product Name</a>
+									</h3>
+									<h4 class="product-price" th:text="'$' + ${product.gia}">Price</h4>
+								</div>
+							</div>
+							<!-- product widget -->
+						</div>
+					</div>
+				</div>
 			</div>
-			<!-- /container -->
+			<!-- /row -->
 		</div>
-		<!-- /NEWSLETTER -->
+		<!-- /container -->
+	</div>
+	<!-- /SECTION -->
 
-		<!-- FOOTER -->
-		<footer th:replace="~{fragments/footer :: page_footer}"></footer> 
-		<!-- /FOOTER -->
+	<!-- NEWSLETTER -->
+	<div id="newsletter" class="section">
+		<!-- container -->
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+				<div class="col-md-12">
+					<div class="newsletter">
+						<p>Sign Up for the <strong>NEWSLETTER</strong></p>
+						<form>
+							<input class="input" type="email" placeholder="Enter Your Email">
+							<button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
+						</form>
+						<ul class="newsletter-follow">
+							<li>
+								<a href="https://www.facebook.com/"><i class="fa fa-facebook"></i></a>
+							</li>
+							<li>
+								<a href="https://x.com/?lang=vi"><i class="fa fa-twitter"></i></a>
+							</li>
+							<li>
+								<a href="https://www.instagram.com/"><i class="fa fa-instagram"></i></a>
+							</li>
+							<li>
+								<a href="https://www.pinterest.com/"><i class="fa fa-pinterest"></i></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /NEWSLETTER -->
 
-		<script>
-			document.addEventListener("DOMContentLoaded", function () {
-				// Lấy URL hiện tại
-				let currentLocation = window.location.pathname;
-		
-				// Lấy tất cả các mục menu
-				let menuItems = document.querySelectorAll(".main-nav li");
-		
-				menuItems.forEach(item => {
-					let link = item.querySelector("a");
-					if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
-						// Xóa class "active" khỏi tất cả menu
-						menuItems.forEach(i => i.classList.remove("active"));
-						// Thêm class "active" vào mục phù hợp
-						item.classList.add("active");
+	<div th:replace="fragments/chat-popup :: chatPopupFragment"></div>
+
+	<!-- FOOTER -->
+	<footer th:replace="~{fragments/footer :: page_footer}"></footer>
+	<!-- /FOOTER -->
+
+	<script th:if="${addSuccess}" th:inline="javascript">
+		alert('[[${addSuccess}]]');
+	</script>
+
+	<script th:if="${addError}" th:inline="javascript">
+		alert('[[${addError}]]');
+	</script>
+
+	<script th:if="${loginSuccess}" th:inline="javascript">
+		alert('[[${loginSuccess}]]');
+	</script>
+
+	<script th:if="${updateSuccess}" th:inline="javascript">
+		alert('[[${updateSuccess}]]');
+	</script>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			// Lấy URL hiện tại
+			let currentLocation = window.location.pathname;
+
+			// Lấy tất cả các mục menu
+			let menuItems = document.querySelectorAll(".main-nav li");
+
+			menuItems.forEach(item => {
+				let link = item.querySelector("a");
+				if (link && link.getAttribute("href") && currentLocation.includes(link.getAttribute("href"))) {
+					// Xóa class "active" khỏi tất cả menu
+					menuItems.forEach(i => i.classList.remove("active"));
+					// Thêm class "active" vào mục phù hợp
+					item.classList.add("active");
+				}
+			});
+		});
+	</script>
+
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!-- Bootstrap JS -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- Slick Carousel JS -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+	<!-- Custom JS -->
+	<script src="/js/main.js"></script>
+
+	<!-- Tìm kiếm  -->
+	<script th:inline="javascript">
+		$(document).ready(function () {
+			$("#searchButton").click(function () {
+				let keyword = $("#searchText").val();
+				let url = /*[[@{/product/search(query=${keyword})}]]*/ "/product/search?query=" + keyword;
+				window.location.href = url;
+			});
+		});
+	</script>
+
+	<!-- Giỏ Hàng -->
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			function updateCartTotal() {
+				let total = 0;
+				document.querySelectorAll("#cart-table tr").forEach(row => {
+					const totalCell = row.querySelector(".total");
+					if (totalCell) {
+						total += parseFloat(totalCell.textContent);
 					}
 				});
-			});
-		</script>
-
-		<!-- jQuery -->
-		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-		<!-- Bootstrap JS -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<!-- Slick Carousel JS -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
-		<!-- Custom JS -->
-		<script src="/js/main.js"></script>
-
-		<!-- Tìm kiếm  -->
-		<script th:inline="javascript">
-			$(document).ready(function(){
-				$("#searchButton").click(function(){
-					let keyword = $("#searchText").val();
-					let url = /*[[@{/product/search(query=${keyword})}]]*/ "/product/search?query=" + keyword;
-					window.location.href = url;
-				});
-			});
-		</script>
-
-		<!-- Contact -->
-		<script>
-			$("#contact-form").submit(function (e) {
-				e.preventDefault();
-				alert("Tin nhắn của bạn đã được gửi!");
-			});
-		</script>
-
-		<!-- JavaScript Countdown -->
-		<script>
-			// Set thời gian kết thúc (ví dụ: 2 ngày sau thời điểm tải trang)
-			const countdownDate = new Date();
-			countdownDate.setDate(countdownDate.getDate() + 2);
-
-			// Hàm cập nhật đồng hồ đếm ngược
-			function updateCountdown() {
-				const now = new Date().getTime();
-				const timeLeft = countdownDate - now;
-
-				if (timeLeft > 0) {
-					const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-					const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-					const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-					const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-					// Cập nhật giá trị vào HTML
-					document.getElementById("days").textContent = days.toString().padStart(2, '0');
-					document.getElementById("hours").textContent = hours.toString().padStart(2, '0');
-					document.getElementById("minutes").textContent = minutes.toString().padStart(2, '0');
-					document.getElementById("seconds").textContent = seconds.toString().padStart(2, '0');
-				} else {
-					// Nếu hết thời gian, hiển thị thông báo hết hạn
-					document.getElementById("hot-deal").innerHTML = "<h2>Deal has expired!</h2>";
-					clearInterval(countdownInterval);
-				}
+				document.getElementById("cart-total").textContent = total.toFixed(2);
 			}
 
-			// Cập nhật mỗi giây
-			const countdownInterval = setInterval(updateCountdown, 1000);
-			updateCountdown();
-		</script>
-
-		<!-- Giỏ Hàng -->
-		<script>
-			document.addEventListener("DOMContentLoaded", function () {
-				function updateCartTotal() {
-					let total = 0;
-					document.querySelectorAll("#cart-table tr").forEach(row => {
-						const totalCell = row.querySelector(".total");
-						if (totalCell) {
-							total += parseFloat(totalCell.textContent);
-						}
-					});
-					document.getElementById("cart-total").textContent = total.toFixed(2);
-				}
-
-				function updateQuantity(id, quantity) {
-					fetch('/Cart/UpdateQuantity', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({ id: id, quantity: quantity })
-					})
+			function updateQuantity(id, quantity) {
+				fetch('/cart/update-quantity', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ id: id, quantity: quantity })
+				})
 					.then(response => response.json())
 					.then(data => {
 						if (data.success) {
 							document.getElementById("cart-total").textContent = data.totalPrice.toFixed(2);
 						}
 					});
-				}
+			}
 
-				document.querySelectorAll(".increase").forEach(button => {
-					button.addEventListener("click", function () {
-						const row = this.closest("tr");
-						const input = row.querySelector(".quantity-input");
-						let quantity = parseInt(input.value) + 1;
+			document.querySelectorAll(".increase").forEach(button => {
+				button.addEventListener("click", function () {
+					const row = this.closest("tr");
+					const input = row.querySelector(".quantity-input");
+					let quantity = parseInt(input.value) + 1;
+					input.value = quantity;
+
+					const id = row.dataset.id;
+					const price = parseFloat(row.querySelector(".price").dataset.price);
+					row.querySelector(".total").textContent = (price * quantity).toFixed(2);
+
+					updateQuantity(id, quantity);
+					updateCartTotal();
+				});
+			});
+
+			document.querySelectorAll(".decrease").forEach(button => {
+				button.addEventListener("click", function () {
+					const row = this.closest("tr");
+					const input = row.querySelector(".quantity-input");
+					let quantity = parseInt(input.value);
+					if (quantity > 1) {
+						quantity -= 1;
 						input.value = quantity;
 
 						const id = row.dataset.id;
@@ -580,420 +594,291 @@
 
 						updateQuantity(id, quantity);
 						updateCartTotal();
-					});
-				});
-
-				document.querySelectorAll(".decrease").forEach(button => {
-					button.addEventListener("click", function () {
-						const row = this.closest("tr");
-						const input = row.querySelector(".quantity-input");
-						let quantity = parseInt(input.value);
-						if (quantity > 1) {
-							quantity -= 1;
-							input.value = quantity;
-
-							const id = row.dataset.id;
-							const price = parseFloat(row.querySelector(".price").dataset.price);
-							row.querySelector(".total").textContent = (price * quantity).toFixed(2);
-
-							updateQuantity(id, quantity);
-							updateCartTotal();
-						}
-					});
-				});
-
-				document.querySelectorAll(".quantity-input").forEach(input => {
-					input.addEventListener("change", function () {
-						const row = this.closest("tr");
-						const price = parseFloat(row.querySelector(".price").dataset.price);
-						let quantity = parseInt(this.value);
-
-						if (quantity < 1 || isNaN(quantity)) {
-							this.value = 1;
-							quantity = 1;
-						}
-
-						const id = row.dataset.id;
-						row.querySelector(".total").textContent = (price * quantity).toFixed(2);
-
-						updateQuantity(id, quantity);
-						updateCartTotal();
-					});
+					}
 				});
 			});
-		</script>
 
-		<!-- Giỏ hàng AJAX -->
-		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+			document.querySelectorAll(".quantity-input").forEach(input => {
+				input.addEventListener("change", function () {
+					const row = this.closest("tr");
+					const price = parseFloat(row.querySelector(".price").dataset.price);
+					let quantity = parseInt(this.value);
 
-		<!-- Update quantity -->
-		<script>
-			$(document).ready(function () {
-				$(".quantity-input").on("change", function () {
-					var row = $(this).closest("tr");
-					var productId = row.data("id");
-					var newQuantity = $(this).val();
-
-					if (newQuantity < 1) {
-						$(this).val(1);
-						newQuantity = 1;
+					if (quantity < 1 || isNaN(quantity)) {
+						this.value = 1;
+						quantity = 1;
 					}
 
-					$.ajax({
-						url: "/Cart/UpdateQuantity",
-						type: "POST",
-						data: { id: productId, quantity: newQuantity },
-						success: function (response) {
-							if (response.success) {
-								// Cập nhật tổng tiền của từng sản phẩm
-								var price = parseFloat(row.find(".price").data("price"));
-								row.find(".total").text((price * newQuantity).toFixed(2));
+					const id = row.dataset.id;
+					row.querySelector(".total").textContent = (price * quantity).toFixed(2);
 
-								// Cập nhật tổng tiền giỏ hàng
-								$("#cart-total").text(response.total);
-							}
-						},
-						error: function () {
-							alert("Cập nhật số lượng thất bại!");
-						}
-					});
+					updateQuantity(id, quantity);
+					updateCartTotal();
 				});
 			});
-		</script>
+		});
+	</script>
 
-		<!-- Xóa Giỏ Hàng QuickView -->
-		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-		<script>
-			$(document).ready(function () {
-				$('.cart-list').on('click', '.delete-cart-item', function () {
-					var button = $(this);
-					var productId = button.data('id');
+	<!-- Giỏ hàng AJAX -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-					// Gọi API hoặc gửi Ajax về server để xóa nếu cần
-					$.ajax({
-						url: '/Cart/RemoveCart',  // Đường dẫn action xóa trên controller
-						type: 'POST',
-						data: { id: productId },
-						success: function (response) {
-							// Xóa trên giao diện
-							button.closest('.product-widget').remove();
+	<!-- Xóa Giỏ Hàng QuickView -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			$('.cart-list').on('click', '.delete-cart-item', function () {
+				var button = $(this);
+				var productId = button.data('id');
 
-							// Cập nhật lại tổng số lượng và tổng tiền
-							updateCartSummary();
+				// Gọi API hoặc gửi Ajax về server để xóa nếu cần
+				$.ajax({
+					url: '/Cart/RemoveCart',  // Đường dẫn action xóa trên controller
+					type: 'POST',
+					data: { id: productId },
+					success: function (response) {
+						// Xóa trên giao diện
+						button.closest('.product-widget').remove();
 
-							// Thêm alert hoặc toast nếu cần
-							alert('Đã xóa sản phẩm khỏi giỏ hàng');
-						},
-						error: function () {
-							alert('Có lỗi xảy ra khi xóa sản phẩm!');
-						}
-					});
-				});
+						// Cập nhật lại tổng số lượng và tổng tiền
+						updateCartSummary();
 
-				function updateCartSummary() {
-					var totalQuantity = 0;
-					var totalPrice = 0;
-
-					$('.product-widget').each(function () {
-						var quantity = parseInt($(this).find('.qty').text()) || 0;
-						var price = parseFloat($(this).find('.product-price').text().replace(/[^\d\.]/g, '')) || 0;
-						totalQuantity += quantity;
-						totalPrice += price;
-					});
-
-					$('#cart-count').text(totalQuantity);
-					$('#cart-total').text(totalPrice.toFixed(2));
-
-					if (totalQuantity === 0) {
-						$('#cart-items').html('<p class="text-center">Giỏ hàng của bạn đang trống!</p>');
+						// Thêm alert hoặc toast nếu cần
+						alert('Đã xóa sản phẩm khỏi giỏ hàng');
+					},
+					error: function () {
+						alert('Có lỗi xảy ra khi xóa sản phẩm!');
 					}
-				}
-			});
-		</script>
-
-		<!-- Sắp xếp -->
-		<!-- <script>
-			document.getElementById("sortBy").addEventListener("change", function () {
-				const sortBy = this.value;
-				const pageSize = document.getElementById("pageSize").value;
-				window.location.href = "@Url.Action("Index")?loai=@ViewBag.Loai&page=1&sortBy=" + sortBy + "&pageSize=" + pageSize;
-			});
-
-			document.getElementById("pageSize").addEventListener("change", function () {
-				const sortBy = document.getElementById("sortBy").value;
-				const pageSize = this.value;
-				window.location.href = "@Url.Action("Index")?loai=@ViewBag.Loai&page=1&sortBy=" + sortBy + "&pageSize=" + pageSize;
-			}); 
-		</script> -->
-
-		<!-- Review -->
-		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-		<script>
-			$(document).ready(function () {
-				$(".review-form").submit(function (event) {
-					event.preventDefault(); // Ngăn trang bị reload
-
-					var name = $("#name").val().trim();
-					var email = $("#email").val().trim();
-					var review = $("#review").val().trim();
-					var rating = $("input[name='rating']:checked").val();
-					var productId = $("#productId").val(); // Lấy ID sản phẩm từ input ẩn
-
-					// Kiểm tra dữ liệu đầu vào
-					if (!name || !email || !review) {
-						alert("Vui lòng điền đầy đủ thông tin!");
-						return;
-					}
-
-					if (!rating) {
-						alert("Vui lòng chọn số sao đánh giá!");
-						return;
-					}
-
-					$.ajax({
-						url: "/api/reviews",
-						type: "POST",
-						contentType: "application/json",
-						data: JSON.stringify({
-							tenKhachHang: name,
-							email: email,
-							noiDung: review,
-							danhGia: parseInt(rating),
-							maSanPham: productId
-						}),
-						success: function (response) {
-							alert("Cảm ơn bạn đã đánh giá! Đánh giá của bạn đã được ghi nhận.");
-							location.reload(); // Làm mới trang để hiển thị đánh giá mới
-						},
-						error: function () {
-							alert("Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại sau.");
-						}
-					});
 				});
 			});
-		</script>
 
-		<!-- Form Thanh Toán -->
-		<script>
-			function validateForm() {
-				let fullName = document.getElementById("fullName").value.trim();
-				let email = document.getElementById("email").value.trim();
-				let address = document.getElementById("address").value.trim();
-				let phone = document.getElementById("phone").value.trim();
-				let paymentMethods = document.getElementsByName("payment");
-				let termsChecked = document.getElementById("terms").checked;
+			function updateCartSummary() {
+				var totalQuantity = 0;
+				var totalPrice = 0;
 
-				// Kiểm tra Họ tên
-				if (fullName.length < 3) {
-					alert("Họ và tên phải có ít nhất 3 ký tự.");
-					return false;
+				$('.product-widget').each(function () {
+					var quantity = parseInt($(this).find('.qty').text()) || 0;
+					var price = parseFloat($(this).find('.product-price').text().replace(/[^\d\.]/g, '')) || 0;
+					totalQuantity += quantity;
+					totalPrice += price;
+				});
+
+				$('#cart-count').text(totalQuantity);
+				$('#cart-total').text(totalPrice.toFixed(2));
+
+				if (totalQuantity === 0) {
+					$('#cart-items').html('<p class="text-center">Giỏ hàng của bạn đang trống!</p>');
 				}
-
-				// Kiểm tra Email
-				let emailPattern = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-				if (!email.match(emailPattern)) {
-					alert("Email không hợp lệ.");
-					return false;
-				}
-
-				// Kiểm tra Địa chỉ
-				if (address === "") {
-					alert("Địa chỉ không được để trống.");
-					return false;
-				}
-
-				// Kiểm tra Số điện thoại
-				let phonePattern = /^[0-9]{10,}$/;
-				if (!phone.match(phonePattern)) {
-					alert("Số điện thoại không hợp lệ. Phải có ít nhất 10 chữ số.");
-					return false;
-				}
-
-				// Kiểm tra phương thức thanh toán
-				let paymentSelected = false;
-				for (let i = 0; i < paymentMethods.length; i++) {
-					if (paymentMethods[i].checked) {
-						paymentSelected = true;
-						break;
-					}
-				}
-				if (!paymentSelected) {
-					alert("Vui lòng chọn phương thức thanh toán.");
-					return false;
-				}
-
-				// Kiểm tra đồng ý điều khoản
-				if (!termsChecked) {
-					alert("Bạn phải đồng ý với điều khoản & điều kiện.");
-					return false;
-				}
-
-				// Nếu mọi thứ hợp lệ, cho phép gửi form
-				return true;
 			}
-		</script>
+		});
+	</script>
 
-		<!-- Mã Khuyến Mãi -->
-		<script>
-			function applyPromo() {
-				let promoCode = document.getElementById("promoCode").value;
-				if (!promoCode) {
-					alert("Vui lòng nhập mã giảm giá!");
+	<!-- Review -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			$(".review-form").submit(function (event) {
+				event.preventDefault(); // Ngăn trang bị reload
+
+				var name = $("#name").val().trim();
+				var email = $("#email").val().trim();
+				var review = $("#review").val().trim();
+				var rating = $("input[name='rating']:checked").val();
+				var productId = $("#productId").val(); // Lấy ID sản phẩm từ input ẩn
+
+				// Kiểm tra dữ liệu đầu vào
+				if (!name || !email || !review) {
+					alert("Vui lòng điền đầy đủ thông tin!");
 					return;
 				}
 
-				fetch('/Checkout/ApplyPromotion?code=' + promoCode)
-					.then(response => response.json())
-					.then(data => {
-						if (data.success) {
-							alert("Áp dụng mã giảm giá thành công! Giảm: $" + data.discount);
-							document.getElementById("discountAmount").innerText = "- $" + data.discount.toFixed(2);
-							document.getElementById("totalAmount").innerText = "$" + data.totalAmount.toFixed(2);
+				if (!rating) {
+					alert("Vui lòng chọn số sao đánh giá!");
+					return;
+				}
 
-							// ✅ Gán promotionId vào hidden input để gửi về server
-							document.getElementById("promotionId").value = data.promotionId;
-						} else {
-							alert(data.message);
-						}
-					});
-			}
-		</script>
-
-		<!-- Chuyển Tab -->
-		<script>
-			function openTab(tabId) {
-				$('.tab-nav li').removeClass('active'); // Bỏ active của các tab khác
-				$('.tab-content .tab-pane').removeClass('in active'); // Ẩn nội dung của các tab khác
-
-				$("a[href='#" + tabId + "']").parent().addClass('active'); // Đánh dấu tab được chọn là active
-				$('#' + tabId).addClass('in active'); // Hiển thị nội dung của tab3
-			}
-		</script>
-
-		<!-- Thông báo -->
-		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-		<script>
-			function loadNotifications() {
 				$.ajax({
-					url: '/admin/notifications',
-					method: 'GET',
+					url: "/api/reviews",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({
+						tenKhachHang: name,
+						email: email,
+						noiDung: review,
+						danhGia: parseInt(rating),
+						maSanPham: productId
+					}),
 					success: function (response) {
-						// Cập nhật số lượng
-						$('#notification-qty').text(response.count);
+						alert("Cảm ơn bạn đã đánh giá! Đánh giá của bạn đã được ghi nhận.");
+						location.reload(); // Làm mới trang để hiển thị đánh giá mới
+					},
+					error: function () {
+						alert("Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại sau.");
+					}
+				});
+			});
+		});
+	</script>
 
-						let html = '';
-						if (response.count > 0) {
-							let index = 1;
-							response.data.forEach(function (item) {
-								html += `
+	<!-- Form Thanh Toán -->
+	<script>
+		function validateForm() {
+			let fullName = document.getElementById("fullName").value.trim();
+			let email = document.getElementById("email").value.trim();
+			let address = document.getElementById("address").value.trim();
+			let phone = document.getElementById("phone").value.trim();
+			let paymentMethods = document.getElementsByName("payment");
+			let termsChecked = document.getElementById("terms").checked;
+
+			// Kiểm tra Họ tên
+			if (fullName.length < 3) {
+				alert("Họ và tên phải có ít nhất 3 ký tự.");
+				return false;
+			}
+
+			// Kiểm tra Email
+			let emailPattern = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+			if (!email.match(emailPattern)) {
+				alert("Email không hợp lệ.");
+				return false;
+			}
+
+			// Kiểm tra Địa chỉ
+			if (address === "") {
+				alert("Địa chỉ không được để trống.");
+				return false;
+			}
+
+			// Kiểm tra Số điện thoại
+			let phonePattern = /^[0-9]{10,}$/;
+			if (!phone.match(phonePattern)) {
+				alert("Số điện thoại không hợp lệ. Phải có ít nhất 10 chữ số.");
+				return false;
+			}
+
+			// Kiểm tra phương thức thanh toán
+			let paymentSelected = false;
+			for (let i = 0; i < paymentMethods.length; i++) {
+				if (paymentMethods[i].checked) {
+					paymentSelected = true;
+					break;
+				}
+			}
+			if (!paymentSelected) {
+				alert("Vui lòng chọn phương thức thanh toán.");
+				return false;
+			}
+
+			// Kiểm tra đồng ý điều khoản
+			if (!termsChecked) {
+				alert("Bạn phải đồng ý với điều khoản & điều kiện.");
+				return false;
+			}
+
+			// Nếu mọi thứ hợp lệ, cho phép gửi form
+			return true;
+		}
+	</script>
+
+	<!-- Mã Khuyến Mãi -->
+	<script>
+		function applyPromo() {
+			let promoCode = document.getElementById("promoCode").value;
+			if (!promoCode) {
+				alert("Vui lòng nhập mã giảm giá!");
+				return;
+			}
+
+			fetch('/Checkout/ApplyPromotion?code=' + promoCode)
+				.then(response => response.json())
+				.then(data => {
+					if (data.success) {
+						alert("Áp dụng mã giảm giá thành công! Giảm: $" + data.discount);
+						document.getElementById("discountAmount").innerText = "- $" + data.discount.toFixed(2);
+						document.getElementById("totalAmount").innerText = "$" + data.totalAmount.toFixed(2);
+						document.getElementById("promotionId").value = data.promotionId;
+					} else {
+						alert(data.message);
+					}
+				});
+		}
+	</script>
+
+	<!-- Chuyển Tab -->
+	<script>
+		function openTab(tabId) {
+			$('.tab-nav li').removeClass('active'); // Bỏ active của các tab khác
+			$('.tab-content .tab-pane').removeClass('in active'); // Ẩn nội dung của các tab khác
+
+			$("a[href='#" + tabId + "']").parent().addClass('active'); // Đánh dấu tab được chọn là active
+			$('#' + tabId).addClass('in active'); // Hiển thị nội dung của tab3
+		}
+	</script>
+
+	<!-- Thông báo -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		function loadNotifications() {
+			$.ajax({
+				url: '/admin/notifications',
+				method: 'GET',
+				success: function (response) {
+					// Cập nhật số lượng
+					$('#notification-qty').text(response.count);
+
+					let html = '';
+					if (response.count > 0) {
+						let index = 1;
+						response.data.forEach(function (item) {
+							html += `
 								<div class="notification-item" style="padding: 10px; border-bottom: 1px solid #eee;">
 									<div style="font-weight:bold;">${index++}. ${item.message}</div>
 									<div style="color:#888; font-size: 12px; margin-top:5px;">${item.createdAt}</div>
 								</div>`;
-							});
-						} else {
-							html = `<div style="text-align:center; color:#888;">Không có thông báo nào.</div>`;
-						}
-						$('#notification-content').html(html);
-					},
-					error: function () {
-						$('#notification-content').html('<div style="text-align:center; color:red;">Không thể tải thông báo.</div>');
-					}
-				});
-			}
-
-			$(document).ready(function () {
-				loadNotifications();
-
-				// Bấm chuông mới toggle hiển thị danh sách
-				$('#notification-btn').click(function (e) {
-					e.preventDefault();
-					$('#notification-list').toggle();
-				});
-
-				// Optional: Tự động reload thông báo mỗi 30s
-				// setInterval(loadNotifications, 30000);
-			});
-		</script>
-
-		<!-- Mua lại -->
-		<script>
-			// JavaScript để chuyển hướng đến giỏ hàng khi nhấn nút Mua lại
-			// document.getElementById("add-to-cart-form").onsubmit = function () {
-			// 	let form = this;
-			// 	setTimeout(function () {
-			// 		window.location.href = '@Url.Action("Index", "Cart")'; 
-			// 	}, 500);
-			// };
-		</script>
-
-		<script>
-			// Tự động ẩn alert sau 3 giây
-			setTimeout(function () {
-				var alert = document.querySelector('.alert');
-				if (alert) {
-					alert.classList.remove('show');
-					alert.classList.add('hide');
-				}
-			}, 3000);
-		</script>
-
-		<!-- Tin Nhắn -->
-		<script>
-			// Mở chat popup khi nhấn vào nút chat
-			function openChat() {
-				document.getElementById('chat-popup').style.display = 'block';
-				document.getElementById('chat-button').style.display = 'none';
-			}
-
-			// Đóng chat popup khi nhấn vào nút đóng
-			function closeChat() {
-				document.getElementById('chat-popup').style.display = 'none';
-				document.getElementById('chat-button').style.display = 'block';
-			}
-
-			// Gửi tin nhắn và lưu vào cơ sở dữ liệu
-			function sendMessage() {
-				var message = document.getElementById('message').value;
-
-				// Kiểm tra xem tin nhắn có rỗng không
-				if (!message.trim()) {
-					alert('Vui lòng nhập tin nhắn của bạn.');
-					return;
-				}
-
-				// Gửi thông tin đến server qua AJAX (Fetch API)
-				fetch('/Chat/SaveMessage', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({
-						message: message
-					})
-				})
-				.then(response => response.json())
-				.then(data => {
-					if (data.success) {
-						alert('Cảm ơn bạn đã liên hệ. Chúng tôi sẽ phản hồi sớm với bạn!');
-						closeChat(); // Đóng popup sau khi gửi tin nhắn
+						});
 					} else {
-						alert('Lỗi khi gửi tin nhắn: ' + data.message);
+						html = `<div style="text-align:center; color:#888;">Không có thông báo nào.</div>`;
 					}
-				})
-				.catch(error => {
-					console.error('Error:', error);
-					alert('Đã có lỗi xảy ra khi gửi tin nhắn.');
-				});
-			}
-		</script>
+					$('#notification-content').html(html);
+				},
+				error: function () {
+					$('#notification-content').html('<div style="text-align:center; color:red;">Không thể tải thông báo.</div>');
+				}
+			});
+		}
 
-		<!-- jQuery Plugins -->
-		<script src="/js/jquery.min.js"></script>
-		<script src="/js/bootstrap.min.js"></script>
-		<script src="/js/slick.min.js"></script>
-		<script src="/js/nouislider.min.js"></script>
-		<script src="/js/jquery.zoom.min.js"></script>
-		<script src="/js/main.js"></script>
-	</body>
+		$(document).ready(function () {
+			loadNotifications();
+
+			// Bấm chuông mới toggle hiển thị danh sách
+			$('#notification-btn').click(function (e) {
+				e.preventDefault();
+				$('#notification-list').toggle();
+			});
+
+			// Optional: Tự động reload thông báo mỗi 30s
+			// setInterval(loadNotifications, 30000);
+		});
+	</script>
+
+	<script>
+		// Tự động ẩn alert sau 3 giây
+		setTimeout(function () {
+			var alert = document.querySelector('.alert');
+			if (alert) {
+				alert.classList.remove('show');
+				alert.classList.add('hide');
+			}
+		}, 3000);
+	</script>
+
+
+	<!-- jQuery Plugins -->
+	<script src="/js/jquery.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/slick.min.js"></script>
+	<script src="/js/nouislider.min.js"></script>
+	<script src="/js/jquery.zoom.min.js"></script>
+	<script src="/js/main.js"></script>
+</body>
+
 </html>

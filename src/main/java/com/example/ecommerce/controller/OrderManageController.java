@@ -21,13 +21,26 @@ public class OrderManageController {
     public String listOrders(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "filterStatus", required = false) String filterStatus,
             Model model) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<Order> ordersPage = orderRepository.findAll(pageable);
+        Page<Order> ordersPage;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            ordersPage = orderRepository.searchByOrderIdLike(keyword, pageable);
+        } else if (filterStatus != null && !filterStatus.trim().isEmpty()) {
+            ordersPage = orderRepository.findByStatus(filterStatus, pageable);
+        } else {
+            ordersPage = orderRepository.findAll(pageable);
+        }
 
         model.addAttribute("ordersPage", ordersPage);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("filterStatus", filterStatus);
         model.addAttribute("pageTitle", "Quản lí đơn hàng");
+
         return "view/admin/orderManage/order-list";
     }
 

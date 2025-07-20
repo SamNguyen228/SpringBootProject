@@ -114,8 +114,8 @@
                                         <i class="bi bi-star-fill"></i> Đánh Giá
                                     </a>
                                     <form th:if="${item.product != null}"
-                                        th:action="@{'/cart/add/' + ${item.product.productId} + '?redirect=cart'}"
-                                        method="post" class="d-inline me-2">
+                                        th:action="@{'/user/cart/add/' + ${item.product.productId} + '?redirect=/user/cart'}" method="post"
+                                        class="d-inline me-2">
                                         <input type="hidden" name="quantity" value="1" />
                                         <button type="submit" class="btn btn-primary">
                                             <i class="bi bi-cart-plus"></i> Mua lại
@@ -138,7 +138,7 @@
                             <div th:case="'Cancelled'">
                                 <th:block th:each="item : ${order.orderDetails}">
                                     <form th:if="${item.product != null}"
-                                        th:action="@{'/cart/add/' + ${item.product.productId} + '?redirect=cart'}"
+                                        th:action="@{'/user/cart/add/' + ${item.product.productId} + '?redirect=cart'}"
                                         method="post" class="d-inline me-2">
                                         <input type="hidden" name="quantity" value="1" />
                                         <button type="submit" class="btn btn-primary">
