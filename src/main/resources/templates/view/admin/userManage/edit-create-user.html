@@ -1,75 +1,82 @@
 <section xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{fragments/admin-layout}"
-        layout:fragment="body"
-        >
+         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+         layout:decorate="~{fragments/admin-layout}"
+         layout:fragment="body">
 
-    <div class="container mt-2 w-50">
-        <h2 th:text="${user.userId == null} ? 'Thêm người dùng mới' : 'Chỉnh sửa người dùng'" class="text-center"></h2>
-        <form th:action="@{${user.userId == null} ? '/admin/users/create' : '/admin/users/edit/' + ${user.userId}}" 
-            th:object="${user}" method="post">
+    <div class="container mt-5" style="max-width: 600px;">
+        <div class="card shadow rounded-4">
+            <div class="card-body">
+                <h4 class="text-center fw-bold mb-4 text-primary">
+                    <i class="bi" th:classappend="${user.userId == null} ? 'bi-person-plus-fill' : 'bi-pencil-square'"></i>
+                    <span th:text="${user.userId == null} ? 'Thêm người dùng mới' : 'Chỉnh sửa người dùng'"></span>
+                </h4>
 
-            <!-- Họ tên -->
-            <div class="mb-3">
-                <label class="form-label">Họ tên</label>
-                <input type="text" class="form-control" th:field="*{fullName}" required>
+                <form th:action="@{${user.userId == null} ? '/admin/users/create' : '/admin/users/edit/' + ${user.userId}}" 
+                      th:object="${user}" method="post" class="needs-validation" novalidate>
+
+                    <!-- Họ tên -->
+                    <div class="mb-3">
+                        <label class="form-label">Họ tên <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" th:field="*{fullName}" required>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" th:field="*{email}" required>
+                    </div>
+
+                    <!-- Số điện thoại -->
+                    <div class="mb-3">
+                        <label class="form-label">Số điện thoại</label>
+                        <input type="text" class="form-control" th:field="*{phone}">
+                    </div>
+
+                    <!-- Địa chỉ -->
+                    <div class="mb-3">
+                        <label class="form-label">Địa chỉ</label>
+                        <input type="text" class="form-control" th:field="*{address}">
+                    </div>
+
+                    <!-- Mật khẩu -->
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu <span th:if="${user.userId == null}" class="text-danger">*</span></label>
+                        <input type="text" class="form-control"
+                               th:field="*{passwordHash}"
+                               th:readonly="${user.userId != null}"
+                               th:placeholder="${user.userId != null} ? 'Giữ nguyên nếu không đổi' : ''"
+                               th:required="${user.userId == null}">
+                    </div>
+
+                    <!-- Trạng thái -->
+                    <div class="mb-3">
+                        <label class="form-label">Trạng thái</label>
+                        <select class="form-select" th:field="*{isLocked}">
+                            <option th:value="false">Hoạt động</option>
+                            <option th:value="true">Bị khóa</option>
+                        </select>
+                    </div>
+
+                    <!-- Vai trò -->
+                    <div class="mb-4">
+                        <label class="form-label">Vai trò</label>
+                        <select class="form-select" th:field="*{roleId}">
+                            <option th:value="1">Quản trị viên</option>
+                            <option th:value="2">Người dùng</option>
+                        </select>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle me-1"></i> Lưu
+                        </button>
+                        <a th:href="@{/admin/users}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i> Hủy
+                        </a>
+                    </div>
+                </form>
             </div>
-
-            <!-- Email -->
-            <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-control" th:field="*{email}" required>
-            </div>
-
-            <!-- Số điện thoại -->
-            <div class="mb-3">
-                <label class="form-label">Số điện thoại</label>
-                <input type="text" class="form-control" th:field="*{phone}">
-            </div>
-
-            <!-- Địa chỉ -->
-            <div class="mb-3">
-                <label class="form-label">Địa chỉ</label>
-                <input type="text" class="form-control" th:field="*{address}">
-            </div>
-
-            <!-- Mật khẩu -->
-            <div class="mb-3">
-                <label class="form-label">Mật khẩu</label>
-                <input type="text" class="form-control"
-                    th:field="*{passwordHash}"
-                    th:readonly="${user.userId != null}">
-            </div>
-
-            <!-- Trạng thái hoạt động -->
-            <!-- <div class="mb-3">
-                <label class="form-label">Trạng thái</label>
-                <select class="form-control" th:field="*{isLocked}">
-                    <option th:value="false" th:selected="${!user.isLocked}">Hoạt động</option>
-                    <option th:value="true" th:selected="${user.isLocked}">Bị khóa</option>
-                </select>
-            </div> -->
-
-            <div class="mb-3">
-                <label class="form-label">Trạng thái</label>
-                <select class="form-control" th:field="*{isLocked}">
-                    <option th:value="false">Hoạt động</option>
-                    <option th:value="true">Bị khóa</option>
-                </select>
-            </div>
-
-            <!-- Vai trò -->
-            <div class="mb-3">
-                <label class="form-label">Vai trò</label>
-                <select class="form-control" th:field="*{roleId}">
-                    <option th:value="1" th:selected="${user.roleId == 1}">Quản trị viên</option>
-                    <option th:value="2" th:selected="${user.roleId == 2}">Người dùng</option>
-                </select>
-            </div>
-
-            <!-- Buttons -->
-            <button type="submit" class="btn btn-success">Lưu</button>
-            <a th:href="@{/admin/users}" class="btn btn-secondary">Hủy</a>
-        </form>
+        </div>
     </div>
 </section>

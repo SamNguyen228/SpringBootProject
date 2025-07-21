@@ -1,93 +1,187 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle}">Trang Admin</title>
 
-    <!-- Bootstrap & FontAwesome -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap & Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+    <!-- Bootstrap & FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 
+    <!-- Custom Styles -->
     <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f6fa;
+        }
+
+        .navbar {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
         thead {
             position: sticky;
             top: 0;
-            background-color: #343a40;
+            background-color: #0d6efd;
             color: white;
             z-index: 10;
         }
+
+        .sidebar {
+            background-color: #1f2937;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .sidebar .nav-link {
+            color: #cbd5e1;
+            font-weight: 500;
+            border-radius: 0.375rem;
+            transition: background 0.2s;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: #374151;
+            color: #fff;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #0d6efd !important;
+            font-weight: 600;
+        }
+
+        .sidebar .nav-link i {
+            width: 20px;
+        }
+
+        .logout-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .logout-btn:hover i {
+            transform: rotate(-90deg);
+        }
+
+        /* Nút cuộn lên đầu */
+        #scrollToTopBtn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: none;
+            z-index: 1000;
+        }
     </style>
 </head>
-<body class="bg-light">
+
+<body>
+    <!-- Nút cuộn lên đầu -->
+    <button id="scrollToTopBtn" class="btn btn-primary rounded-circle shadow" title="Lên đầu trang">
+        <i class="bi bi-arrow-up-short fs-4"></i>
+    </button>
+
     <!-- Header -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-danger px-4">
-        <a class="navbar-brand fw-bold" th:href="@{/dashboard}">Admin Dashboard</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary px-4">
+        <a class="navbar-brand" th:href="@{/dashboard}">🛠 Admin Dashboard</a>
         <div class="ms-auto d-flex align-items-center">
             <span class="text-white me-3">
-                Xin chào, Admin <b style="color: aqua" th:text="${#authentication.principal.fullName}">admin</b>
+                Xin chào, <b style="color: #f9fc36" th:text="${#authentication.principal.fullName}">admin</b>
             </span>
-            <a th:href="@{/}" class="text-white text-decoration-none">
-                <i class="fas fa-sign-out-alt"></i>
+            <a th:href="@{/}" class="text-white text-decoration-none logout-btn">
+                <i class="bi bi-box-arrow-right fs-4"></i>
             </a>
         </div>
     </nav>
 
     <div class="d-flex">
         <!-- Sidebar -->
-        <div class="bg-white border-end p-3" style="width: 280px; min-height: 100vh;">
+        <div class="sidebar p-3" style="width: 280px;">
             <ul class="nav flex-column">
-                <li class="nav-item"><a th:href="@{/dashboard}" class="nav-link text-dark"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
-                <li class="nav-item"><a th:href="@{/admin/users}" class="nav-link text-dark"><i class="fas fa-users me-2"></i>Quản lý người dùng</a></li>
-                <li class="nav-item"><a th:href="@{/admin/products}" class="nav-link text-dark"><i class="fas fa-box me-2"></i>Quản lý sản phẩm</a></li>
-                <li class="nav-item"><a th:href="@{/admin/orders}" class="nav-link text-dark"><i class="fas fa-shopping-cart me-2"></i>Quản lý đơn hàng</a></li>
-                <li class="nav-item"><a th:href="@{/admin/promotions}" class="nav-link text-dark"><i class="fas fa-tags me-2"></i>Quản lý khuyến mãi</a></li>
-                <li class="nav-item"><a th:href="@{/admin/reports}" class="nav-link text-dark"><i class="fas fa-chart-line me-2"></i>Theo dõi thống kê</a></li>
-                <li class="nav-item"><a th:href="@{/admin/chat-messages}" class="nav-link text-dark"><i class="fas fa-headset me-2"></i>Quản lí hỗ trợ</a></li>
-                <li class="nav-item"><a th:href="@{/}" class="nav-link text-danger"><i class="fas fa-sign-out-alt me-2"></i>Đăng Xuất</a></li>
+                <li class="nav-item"><a th:href="@{/dashboard}" class="nav-link"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                <li class="nav-item"><a th:href="@{/admin/users}" class="nav-link"><i class="bi bi-people me-2"></i>Người dùng</a></li>
+                <li class="nav-item"><a th:href="@{/admin/products}" class="nav-link"><i class="bi bi-box-seam me-2"></i>Sản phẩm</a></li>
+                <li class="nav-item"><a th:href="@{/admin/orders}" class="nav-link"><i class="bi bi-cart-check me-2"></i>Đơn hàng</a></li>
+                <li class="nav-item"><a th:href="@{/admin/promotions}" class="nav-link"><i class="bi bi-tags me-2"></i>Khuyến mãi</a></li>
+                <li class="nav-item"><a th:href="@{/admin/reports}" class="nav-link"><i class="bi bi-graph-up me-2"></i>Thống kê</a></li>
+                <li class="nav-item"><a th:href="@{/admin/chat-messages}" class="nav-link"><i class="bi bi-headset me-2"></i>Hỗ trợ</a></li>
+                <li class="nav-item mt-3"><a th:href="@{/}" class="nav-link text-danger"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a></li>
             </ul>
         </div>
 
         <!-- Main Content -->
-       <div class="container-fluid p-4">
+        <div class="container-fluid p-4">
             <section layout:fragment="body"></section>
-       </div>
+        </div>
     </div>
-
-    <!-- Optional scripts section -->
-    <!-- <div th:replace="~{::scripts}"></div> -->
 
     <!-- JavaScript -->
     <script>
-        function togglePassword() {
-            var passwordInput = document.getElementById("passwordField");
-            var toggleIcon = document.getElementById("toggleIcon");
-            if (passwordInput) {
-                if (passwordInput.type === "password") {
-                    passwordInput.type = "text";
-                    toggleIcon.classList.replace("bi-eye-slash", "bi-eye");
-                } else {
-                    passwordInput.type = "password";
-                    toggleIcon.classList.replace("bi-eye", "bi-eye-slash");
+        document.addEventListener("DOMContentLoaded", function () {
+            // Sidebar Active Link Highlight
+            const links = document.querySelectorAll(".sidebar .nav-link");
+            const currentPath = window.location.pathname;
+
+            links.forEach(link => {
+                const href = link.getAttribute("href");
+                if (href && (currentPath === href || currentPath.startsWith(href) && href !== "/")) {
+                    link.classList.add("active");
                 }
+
+                link.addEventListener("click", function () {
+                    links.forEach(l => l.classList.remove("active"));
+                    this.classList.add("active");
+                });
+            });
+
+            // Scroll to Top Button
+            const scrollBtn = document.getElementById("scrollToTopBtn");
+            window.addEventListener("scroll", function () {
+                scrollBtn.style.display = window.scrollY > 300 ? "block" : "none";
+            });
+
+            scrollBtn.addEventListener("click", () => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            });
+        });
+
+        // Password Toggle (if any input uses it)
+        function togglePassword() {
+            const passwordInput = document.getElementById("passwordField");
+            const toggleIcon = document.getElementById("toggleIcon");
+            if (passwordInput) {
+                passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+                toggleIcon.classList.toggle("bi-eye");
+                toggleIcon.classList.toggle("bi-eye-slash");
             }
         }
 
         function updatePreview() {
-            var imageUrl = document.getElementById("imageUrlInput").value;
-            var imagePreview = document.getElementById("imagePreview");
-            if (imageUrl) {
-                imagePreview.src = imageUrl;
-                imagePreview.style.display = "block";
-            } else {
-                imagePreview.style.display = "none";
-            }
+            const imageUrl = document.getElementById("imageUrlInput").value;
+            const imagePreview = document.getElementById("imagePreview");
+            imagePreview.style.display = imageUrl ? "block" : "none";
+            imagePreview.src = imageUrl;
         }
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- External Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

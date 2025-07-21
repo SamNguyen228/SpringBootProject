@@ -3,70 +3,79 @@
          layout:decorate="~{fragments/admin-layout}"
          layout:fragment="body">
 
-    <div class="container mt-4 w-50">
-        <h2 class="mb-3">Chi tiết đơn hàng</h2>
+    <div class="container mt-5 mb-5 w-75">
+        <h2 class="mb-4 fw-bold text-primary text-center">📦 Chi tiết đơn hàng</h2>
 
-        <div class="card mb-4">
+        <!-- Thông tin đơn hàng -->
+        <div class="card shadow-sm rounded-4 mb-4">
             <div class="card-body">
-                <h5 class="card-title">Mã đơn hàng: #<span th:text="${order.orderId}"></span></h5>
+                <h5 class="card-title text-dark fw-semibold mb-3">
+                    Mã đơn hàng: <span class="text-primary">#<span th:text="${order.orderId}"></span></span>
+                </h5>
+
                 <p><strong>Trạng thái:</strong>
                     <span th:switch="${order.status}">
-                        <span th:case="'Pending'" class="badge bg-warning text-dark">Chờ xác nhận</span>
-                        <span th:case="'Processing'" class="badge bg-primary">Đang xử lý</span>
-                        <span th:case="'Shipped'" class="badge bg-info text-dark">Đã giao hàng</span>
-                        <span th:case="'Completed'" class="badge bg-success">Hoàn thành</span>
-                        <span th:case="'Cancelled'" class="badge bg-danger">Đã hủy</span>
+                        <span th:case="'Pending'" class="badge bg-warning text-dark px-3 py-2 fs-6 rounded-pill">Chờ xác nhận</span>
+                        <span th:case="'Processing'" class="badge bg-primary px-3 py-2 fs-6 rounded-pill">Đang xử lý</span>
+                        <span th:case="'Shipped'" class="badge bg-info text-dark px-3 py-2 fs-6 rounded-pill">Đã giao hàng</span>
+                        <span th:case="'Completed'" class="badge bg-success px-3 py-2 fs-6 rounded-pill">Hoàn thành</span>
+                        <span th:case="'Cancelled'" class="badge bg-danger px-3 py-2 fs-6 rounded-pill">Đã hủy</span>
                         <span th:case="*">Không xác định</span>
                     </span>
                 </p>
-                <p><strong>Tổng tiền:</strong> <span th:text="${order.totalAmount} + '$'"></span></p>
-                <p><strong>Giảm giá:</strong>
-                    <span th:text="${order.discountAmount != null ? order.discountAmount + '$' : '0$'}"></span>
+
+                <p><strong>Tổng tiền:</strong> <span class="text-dark fw-bold" th:text="${order.totalAmount} + '$'"></span></p>
+                <p><strong>Giảm giá:</strong> 
+                    <span th:text="${order.discountAmount != null ? order.discountAmount + '$' : '0$'}" class="text-secondary"></span>
                 </p>
-                <p><strong>Người đặt:</strong> <span th:text="${order.user.fullName}"></span></p>
-                <p><strong>Ngày tạo:</strong>
-                    <span th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
+                <p><strong>Người đặt:</strong> <span th:text="${order.user.fullName}" class="text-dark"></span></p>
+                <p><strong>Ngày tạo:</strong> 
+                    <span class="text-muted" th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
                 </p>
             </div>
         </div>
 
-        <!-- Thao tác -->
-        <div class="mb-4">
-            <form th:action="@{'/admin/orders/' + ${order.orderId} + '/next'}" method="post"
-                  th:if="${order.status != 'Completed' and order.status != 'Cancelled'}">
-                <button type="submit" class="btn btn-success me-2">Cập nhật bước tiếp theo</button>
+        <!-- Hành động -->
+        <div class="d-flex gap-3 mb-4" th:if="${order.status != 'Completed' and order.status != 'Cancelled'}">
+            <form th:action="@{'/admin/orders/' + ${order.orderId} + '/next'}" method="post">
+                <button type="submit" class="btn btn-outline-success px-4"><i class="bi bi-arrow-repeat me-1"></i>Cập nhật bước tiếp theo</button>
             </form>
-            <br>
+
             <form th:action="@{'/admin/orders/' + ${order.orderId} + '/cancel'}" method="post"
-                  th:if="${order.status != 'Completed' and order.status != 'Cancelled'}"
                   onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
-                <button type="submit" class="btn btn-danger">Hủy đơn hàng</button>
+                <button type="submit" class="btn btn-outline-danger px-4"><i class="bi bi-x-circle me-1"></i>Hủy đơn hàng</button>
             </form>
         </div>
 
-        <!-- Chi tiết sản phẩm trong đơn -->
-        <div class="table-responsive">
-            <h4>Chi tiết đơn hàng</h4>
-            <table class="table table-bordered table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>Sản phẩm</th>
-                        <th>Số lượng</th>
-                        <th>Đơn giá</th>
-                        <th>Thành tiền</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="item : ${order.orderDetails}">
-                        <td th:text="${item.product.productName}"></td>
-                        <td th:text="${item.quantity}"></td>
-                        <td th:text="${item.price} + '$'"></td>
-                        <td th:text="${item.price * item.quantity} + '$'"></td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Danh sách sản phẩm -->
+        <div class="card shadow-sm rounded-4">
+            <div class="card-body">
+                <h4 class="mb-3 text-center text-secondary fw-semibold">🛒 Sản phẩm trong đơn hàng</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover text-center align-middle">
+                        <thead class="table-light sticky-top">
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Số lượng</th>
+                                <th>Đơn giá</th>
+                                <th>Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item : ${order.orderDetails}">
+                                <td th:text="${item.product.productName}"></td>
+                                <td th:text="${item.quantity}"></td>
+                                <td th:text="${item.price} + '$'"></td>
+                                <td th:text="${item.price * item.quantity} + '$'"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <a th:href="@{/admin/orders}" class="btn btn-secondary mt-3">Quay lại danh sách</a>
+        <div class="text-center mt-4">
+            <a th:href="@{/admin/orders}" class="btn btn-secondary"><i class="bi bi-arrow-left me-1"></i> Quay lại</a>
+        </div>
     </div>
 </section>

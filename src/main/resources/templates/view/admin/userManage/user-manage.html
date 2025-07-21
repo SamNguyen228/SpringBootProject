@@ -15,14 +15,14 @@
             </form>
         </div>
 
-        <table class="table table-bordered table-hover text-center">
-            <thead>
-                <tr class="text-center">
+        <table class="table table-bordered table-hover text-center shadow-sm rounded bg-white">
+            <thead class="table-primary sticky-top">
+                <tr class="align-middle">
                     <th>ID</th>
                     <th>Họ tên</th>
                     <th>Email</th>
                     <th>Điện thoại</th>
-                    <th>Địa Chỉ</th>
+                    <th>Địa chỉ</th>
                     <th>Vai trò</th>
                     <th>Trạng thái</th>
                     <th>Hành động</th>
@@ -36,15 +36,24 @@
                     <td th:text="${user.phone}"></td>
                     <td th:text="${user.address}"></td>
                     <td th:text="${user.role.roleName}"></td>
-                    <td th:text="${user.isLocked} ? 'Bị khóa' : 'Hoạt động'"></td>
                     <td>
-                        <a th:href="@{|/admin/users/edit/${user.userId}|}" class="btn btn-sm btn-warning">Sửa</a>
-                        <a th:href="@{|/admin/users/delete/${user.userId}|}" class="btn btn-sm btn-danger"
-                            onclick="return confirm('Xác nhận xóa?')">Xóa</a>
+                        <span th:classappend="${user.isLocked} ? 'badge bg-danger' : 'badge bg-success'"
+                            th:text="${user.isLocked} ? 'Bị khóa' : 'Hoạt động'"></span>
+                    </td>
+                    <td>
+                        <a th:href="@{|/admin/users/edit/${user.userId}|}" class="btn btn-sm btn-outline-primary me-1"
+                            title="Chỉnh sửa">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a th:href="@{|/admin/users/delete/${user.userId}|}" class="btn btn-sm btn-outline-danger"
+                            title="Xóa người dùng" onclick="return confirm('Xác nhận xóa người dùng này?')">
+                            <i class="bi bi-trash3"></i>
+                        </a>
                     </td>
                 </tr>
             </tbody>
         </table>
+
 
         <div class="text-center mt-3">
             <nav aria-label="Page navigation">

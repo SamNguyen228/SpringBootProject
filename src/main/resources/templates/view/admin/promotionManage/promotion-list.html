@@ -13,7 +13,7 @@
                     <input type="text" class="form-control" name="keyword" placeholder="Tìm theo tên"
                         th:value="${keyword}">
                     <button class="btn btn-outline-secondary" type="submit">
-                        <i class="bi bi-search"></i> 
+                        <i class="bi bi-search"></i>
                     </button>
                 </div>
             </form>
@@ -31,9 +31,8 @@
             <a th:href="@{/admin/promotions/create}" class="btn btn-primary ms-auto">Thêm khuyến mãi</a>
         </div>
 
-
-        <table class="table table-bordered table-hover text-center">
-            <thead class="table-light">
+        <table class="table table-bordered table-hover text-center shadow-sm rounded bg-white">
+            <thead class="table-primary sticky-top">
                 <tr>
                     <th>ID</th>
                     <th>Tên</th>
@@ -48,16 +47,28 @@
                 <tr th:each="promo : ${promotionsPage.content}">
                     <td th:text="${promo.promotionId}"></td>
                     <td th:text="${promo.promotionName}"></td>
-                    <td th:text="${promo.discountPercentage != null ? promo.discountPercentage + '%' : '-'}"></td>
-                    <td th:text="${promo.discountAmount != null ? promo.discountAmount + '$' : '-'}"></td>
+                    <td>
+                        <span th:if="${promo.discountPercentage != null}" class="badge bg-info text-dark"
+                            th:text="${promo.discountPercentage + '%'}"></span>
+                        <span th:if="${promo.discountPercentage == null}">-</span>
+                    </td>
+                    <td>
+                        <span th:if="${promo.discountAmount != null}" class="badge bg-warning text-dark"
+                            th:text="${promo.discountAmount + ' $'}"></span>
+                        <span th:if="${promo.discountAmount == null}">-</span>
+                    </td>
                     <td th:text="${#temporals.format(promo.startDate, 'dd/MM/yyyy')}"></td>
                     <td th:text="${#temporals.format(promo.endDate, 'dd/MM/yyyy')}"></td>
                     <td>
                         <a th:href="@{'/admin/promotions/edit/' + ${promo.promotionId}}"
-                            class="btn btn-sm btn-warning">Sửa</a>
+                            class="btn btn-sm btn-outline-primary me-1" title="Chỉnh sửa">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
                         <a th:href="@{'/admin/promotions/delete/' + ${promo.promotionId}}"
                             onclick="return confirm('Bạn có chắc chắn muốn xóa?');"
-                            class="btn btn-sm btn-danger">Xóa</a>
+                            class="btn btn-sm btn-outline-danger" title="Xóa">
+                            <i class="bi bi-trash3-fill"></i>
+                        </a>
                     </td>
                 </tr>
             </tbody>

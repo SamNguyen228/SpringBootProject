@@ -3,55 +3,66 @@
          layout:decorate="~{fragments/admin-layout}"
          layout:fragment="body">
 
-    <div class="container mt-2 w-50">
-        <h2 th:text="${product.productId} != null ? 'Chỉnh sửa sản phẩm' : 'Tạo sản phẩm mới'" class="mb-4 text-center"></h2>
+    <div class="container mt-4" style="max-width: 640px;">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body">
+                <h3 th:text="${product.productId} != null ? '📝 Chỉnh sửa sản phẩm' : '➕ Tạo sản phẩm mới'" class="mb-4 text-center fw-bold text-primary"></h3>
 
-        <form th:action="@{${product.productId} != null ? '/admin/products/edit/' + ${product.productId} : '/admin/products/create'}"
-            th:object="${product}" method="post">
-            <div class="mb-3">
-                <label class="form-label">Tên sản phẩm</label>
-                <input type="text" th:field="*{productName}" class="form-control" required>
+                <form th:action="@{${product.productId} != null ? '/admin/products/edit/' + ${product.productId} : '/admin/products/create'}"
+                      th:object="${product}" method="post">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tên sản phẩm</label>
+                        <input type="text" th:field="*{productName}" class="form-control" placeholder="Nhập tên sản phẩm" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Giá ($)</label>
+                        <input type="number" step="0.01" th:field="*{price}" class="form-control" placeholder="Nhập giá sản phẩm" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Số lượng tồn kho</label>
+                        <input type="number" th:field="*{stockQuantity}" class="form-control" placeholder="Nhập số lượng" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Dung lượng</label>
+                        <input type="text" th:field="*{capacity}" class="form-control" placeholder="Ví dụ: 64GB, 256GB">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Màu sắc</label>
+                        <input type="text" th:field="*{color}" class="form-control" placeholder="Ví dụ: Đen, Trắng, Xanh">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Hình ảnh (URL)</label>
+                        <input type="text" th:field="*{imageUrl}" class="form-control" placeholder="Dán liên kết ảnh...">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Mô tả chi tiết</label>
+                        <textarea th:field="*{description}" class="form-control" rows="4" placeholder="Mô tả ngắn gọn về sản phẩm..."></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Loại sản phẩm</label>
+                        <select th:field="*{categoryId}" class="form-select">
+                            <option value="" disabled selected>-- Chọn danh mục --</option>
+                            <option th:each="cat : ${categories}"
+                                    th:value="${cat.categoryId}"
+                                    th:text="${cat.categoryName}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-success px-4"><i class="bi bi-save me-2"></i>Lưu</button>
+                        <a href="/admin/products" class="btn btn-secondary px-4"><i class="bi bi-arrow-left me-2"></i>Hủy</a>
+                    </div>
+                </form>
             </div>
-
-            <div class="mb-3">
-                <label class="form-label">Giá</label>
-                <input type="number" step="0.01" th:field="*{price}" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Số lượng</label>
-                <input type="number" th:field="*{stockQuantity}" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Dung lượng</label>
-                <input type="text" th:field="*{capacity}" class="form-control">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Màu sắc</label>
-                <input type="text" th:field="*{color}" class="form-control">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Hình ảnh (URL)</label>
-                <input type="text" th:field="*{imageUrl}" class="form-control">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Mô tả</label>
-                <textarea th:field="*{description}" class="form-control" rows="4"></textarea>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Loại sản phẩm</label>
-                <select th:field="*{categoryId}" class="form-select">
-                    <option th:each="cat : ${categories}" th:value="${cat.categoryId}" th:text="${cat.categoryName}"></option>
-                </select>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Lưu</button>
-            <a href="/admin/products" class="btn btn-secondary">Hủy</a>
-        </form>
+        </div>
     </div>
 </section>

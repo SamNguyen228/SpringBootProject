@@ -3,51 +3,63 @@
          layout:decorate="~{fragments/admin-layout}"
          layout:fragment="body">
 
-    <div class="container mt-4 w-50">
-        <h2 th:text="${promotion.promotionId == null ? 'Thêm khuyến mãi' : 'Chỉnh sửa khuyến mãi'}"></h2>
+    <div class="container mt-5" style="max-width: 650px;">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body p-4">
+                <h4 class="mb-4 text-primary text-center fw-bold" 
+                    th:text="${promotion.promotionId == null ? '🎁 Thêm khuyến mãi mới' : '✏️ Chỉnh sửa khuyến mãi'}"></h4>
 
-        <form th:action="@{/admin/promotions/save}" th:object="${promotion}" method="post">
-            <input type="hidden" th:field="*{promotionId}" />
+                <form th:action="@{/admin/promotions/save}" th:object="${promotion}" method="post">
+                    <input type="hidden" th:field="*{promotionId}" />
 
-            <div class="mb-3">
-                <label class="form-label">Tên khuyến mãi</label>
-                <input type="text" class="form-control" th:field="*{promotionName}" required />
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tên khuyến mãi <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" th:field="*{promotionName}" placeholder="Nhập tên khuyến mãi" required />
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Phần trăm giảm (%)</label>
+                            <input type="number" step="0.01" min="0" class="form-control" th:field="*{discountPercentage}" placeholder="VD: 10" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Số tiền giảm ($)</label>
+                            <input type="number" step="1000" min="0" class="form-control" th:field="*{discountAmount}" placeholder="VD: 5000" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Ngày bắt đầu</label>
+                            <input type="datetime-local" class="form-control" th:field="*{startDate}" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Ngày kết thúc</label>
+                            <input type="datetime-local" class="form-control" th:field="*{endDate}" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Giá trị đơn tối thiểu</label>
+                            <input type="number" min="0" class="form-control" th:field="*{minOrderValue}" placeholder="VD: 100000" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Giảm tối đa</label>
+                            <input type="number" min="0" class="form-control" th:field="*{maxDiscount}" placeholder="VD: 20000" />
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="submit" class="btn btn-success me-2">
+                            <i class="bi bi-check-circle me-1"></i> Lưu
+                        </button>
+                        <a th:href="@{/admin/promotions}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle me-1"></i> Hủy
+                        </a>
+                    </div>
+                </form>
             </div>
-
-            <div class="mb-3">
-                <label class="form-label">Phần trăm giảm (%)</label>
-                <input type="number" step="0.01" class="form-control" th:field="*{discountPercentage}" />
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Số tiền giảm ($)</label>
-                <input type="number" step="1000" class="form-control" th:field="*{discountAmount}" />
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Ngày bắt đầu</label>
-                <input type="datetime-local" class="form-control"
-                       th:field="*{startDate}" />
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Ngày kết thúc</label>
-                <input type="datetime-local" class="form-control"
-                       th:field="*{endDate}" />
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Giá trị đơn tối thiểu</label>
-                <input type="number" class="form-control" th:field="*{minOrderValue}" />
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Giảm tối đa</label>
-                <input type="number" class="form-control" th:field="*{maxDiscount}" />
-            </div>
-
-            <button type="submit" class="btn btn-success">Lưu</button>
-            <a th:href="@{/admin/promotions}" class="btn btn-secondary">Hủy</a>
-        </form>
+        </div>
     </div>
 </section>
