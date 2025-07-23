@@ -110,8 +110,7 @@
             <!-- Danh mục sản phẩm -->
             <th:block th:each="categoryEntry : ${categoryMap}">
                 <div class="hot-deal-category">
-                    <h2 class="category-title">📱 <span th:text="${categoryEntry.key}"></span> - Giảm Giá Cực Sốc 📱
-                    </h2>
+                    <h2 class="category-title"><span th:text="${categoryEntry.key}"></span></h2>
                     <div class="row">
                         <th:block th:each="productMap : ${categoryEntry.value}">
                             <div class="col-lg-3 col-md-4 col-sm-6">
