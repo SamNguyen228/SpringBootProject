@@ -95,7 +95,6 @@
 							<div id="tab1" class="tab-pane active">
 								<div class="products-slick" data-nav="#slick-nav-1">
 									<!-- product -->
-									<!-- product -->
 									<div class="product" th:each="product : ${products}">
 										<a class="product-img" th:href="@{/products/detail/{id}(id=${product.maSP})}">
 											<img th:if="${product.HinhAnh != null}" th:src="@{${product.HinhAnh}}"
@@ -125,7 +124,6 @@
 											</form>
 										</div>
 									</div>
-									<!-- /product -->
 									<!-- /product -->
 								</div>
 								<div id="slick-nav-1" class="products-slick-nav"></div>
@@ -528,6 +526,55 @@
 		});
 	</script>
 
+	<!-- HotDeal Count -->
+	<script>
+		const targetDate = new Date('2025-08-20T23:59:59'); 
+
+		// Lấy các element
+		const daysEl = document.getElementById('days');
+		const hoursEl = document.getElementById('hours');
+		const minutesEl = document.getElementById('minutes');
+		const secondsEl = document.getElementById('seconds');
+
+		// Hỗ trợ aria-live cho đọc màn hình (nếu muốn)
+		[daysEl, hoursEl, minutesEl, secondsEl].forEach(el => {
+			if (el) el.setAttribute('aria-live', 'polite');
+		});
+
+		function pad(n) {
+			return n.toString().padStart(2, '0');
+		}
+
+		function updateCountdown() {
+			const now = new Date();
+			let diff = targetDate - now;
+
+			if (diff <= 0) {
+				daysEl.textContent = '00';
+				hoursEl.textContent = '00';
+				minutesEl.textContent = '00';
+				secondsEl.textContent = '00';
+				clearInterval(timerInterval);
+				return;
+			}
+
+			const secTotal = Math.floor(diff / 1000);
+			const days = Math.floor(secTotal / (24 * 3600));
+			const hours = Math.floor((secTotal % (24 * 3600)) / 3600);
+			const minutes = Math.floor((secTotal % 3600) / 60);
+			const seconds = secTotal % 60;
+
+			daysEl.textContent = pad(days);
+			hoursEl.textContent = pad(hours);
+			minutesEl.textContent = pad(minutes);
+			secondsEl.textContent = pad(seconds);
+		}
+
+		// Cập nhật ngay lập tức rồi setInterval
+		updateCountdown();
+		const timerInterval = setInterval(updateCountdown, 1000);
+	</script>
+
 	<!-- Giỏ Hàng -->
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {
@@ -863,7 +910,6 @@
 			}
 		}, 3000);
 	</script>
-
 
 	<!-- jQuery Plugins -->
 	<script src="/js/jquery.min.js"></script>

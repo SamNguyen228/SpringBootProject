@@ -643,7 +643,7 @@ textarea.input {
   border-top: 3px solid var(--web-color);
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 30;
 }
 
 /*----------------------------*\

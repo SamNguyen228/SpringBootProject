@@ -6,25 +6,58 @@
             <h2 class="text-center mb-4 fw-bold text-primary">📊 Báo cáo thống kê</h2>
 
             <!-- Bộ lọc ngày -->
-            <form id="filterForm" class="row g-3 align-items-end mb-5">
+            <form id="filterForm" class="row g-3 align-items-end mb-5 fade-in">
                 <div class="col-md-4">
                     <label for="fromDate" class="form-label fw-semibold">Từ ngày</label>
-                    <input type="date" id="fromDate" name="fromDate" class="form-control border-primary">
+                    <input type="date" id="fromDate" name="fromDate" class="form-control border-primary" required>
+                    <div class="invalid-feedback" id="fromDateError"></div>
                 </div>
                 <div class="col-md-4">
                     <label for="toDate" class="form-label fw-semibold">Đến ngày</label>
-                    <input type="date" id="toDate" name="toDate" class="form-control border-primary">
+                    <input type="date" id="toDate" name="toDate" class="form-control border-primary" required>
+                    <div class="invalid-feedback" id="toDateError"></div>
                 </div>
                 <div class="col-md-4">
-                    <button type="submit" class="btn btn-primary w-100"><i
-                            class="bi bi-funnel-fill me-2"></i>Lọc</button>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-fill" id="filterBtn">
+                            <i class="bi bi-funnel-fill me-2"></i>Lọc
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary flex-fill" id="resetBtn">
+                            <i class="bi bi-arrow-clockwise me-2"></i>Làm mới
+                        </button>
+                    </div>
                 </div>
             </form>
 
+            <!-- Thông báo lỗi -->
+            <div class="alert alert-danger d-none" id="errorAlert" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span id="errorMessage"></span>
+            </div>
+
+            <!-- Thông tin khoảng thời gian -->
+            <div class="alert alert-info d-none" id="dateRangeInfo" role="alert">
+                <i class="bi bi-calendar-range me-2"></i>
+                <span id="dateRangeText"></span>
+            </div>
+
+            <!-- Loading spinner -->
+            <div class="text-center d-none" id="loadingSpinner">
+                <div class="loading-spinner">
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-ring"></div>
+                </div>
+                <p class="mt-3 text-muted fw-semibold loading-text">Đang tải dữ liệu thống kê...</p>
+                <div class="mt-2">
+                    <div class="shimmer rounded" style="height: 20px; width: 200px; margin: 0 auto;"></div>
+                </div>
+            </div>
+
             <!-- Tổng quan -->
-            <div class="row text-center mb-5">
+            <div class="row text-center mb-5" id="overviewSection">
                 <div class="col-md-4">
-                    <div class="card shadow-sm border-start border-success border-4 rounded-4">
+                    <div class="card shadow-sm border-start border-success border-4 rounded-4 stat-card fade-in" style="animation-delay: 0.1s;">
                         <div class="card-body">
                             <h5 class="text-muted"><i class="bi bi-box-seam me-2 text-success"></i>Sản phẩm đã bán</h5>
                             <strong class="fs-3 text-dark" id="totalProducts">0</strong>
@@ -32,7 +65,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card shadow-sm border-start border-primary border-4 rounded-4">
+                    <div class="card shadow-sm border-start border-primary border-4 rounded-4 stat-card fade-in" style="animation-delay: 0.2s;">
                         <div class="card-body">
                             <h5 class="text-muted"><i class="bi bi-currency-dollar me-2 text-primary"></i>Tổng doanh thu
                             </h5>
@@ -41,7 +74,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card shadow-sm border-start border-warning border-4 rounded-4">
+                    <div class="card shadow-sm border-start border-warning border-4 rounded-4 stat-card fade-in" style="animation-delay: 0.3s;">
                         <div class="card-body">
                             <h5 class="text-muted"><i class="bi bi-people-fill me-2 text-warning"></i>Khách hàng</h5>
                             <strong class="fs-3 text-dark" id="totalCustomers">0</strong>
@@ -51,28 +84,40 @@
             </div>
 
             <!-- Biểu đồ -->
-            <div class="row mb-5">
+            <div class="row mb-5" id="chartSection">
                 <div class="col-md-6">
-                    <div class="card shadow-sm border-start border-success border-3 rounded-4">
+                    <div class="card shadow-sm border-start border-success border-3 rounded-4 fade-in" style="animation-delay: 0.4s;">
                         <div class="card-body">
                             <h5 class="text-center fw-semibold mb-3">📈 Doanh thu theo tháng</h5>
-                            <canvas id="revenueChart" style="max-height: 280px;"></canvas>
+                            <div class="chart-container" id="revenueChartContainer">
+                                <canvas id="revenueChart" style="max-height: 280px;"></canvas>
+                            </div>
+                            <div class="text-center text-muted d-none" id="noRevenueData">
+                                <i class="bi bi-graph-down fs-1"></i>
+                                <p>Không có dữ liệu doanh thu trong khoảng thời gian này</p>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="card shadow-sm border-start border-info border-3 rounded-4">
+                    <div class="card shadow-sm border-start border-info border-3 rounded-4 fade-in" style="animation-delay: 0.5s;">
                         <div class="card-body">
                             <h5 class="text-center fw-semibold mb-3">📊 Sản phẩm bán theo danh mục</h5>
-                            <canvas id="categoryChart" style="max-height: 280px;"></canvas>
+                            <div class="chart-container" id="categoryChartContainer">
+                                <canvas id="categoryChart" style="max-height: 280px;"></canvas>
+                            </div>
+                            <div class="text-center text-muted d-none" id="noCategoryData">
+                                <i class="bi bi-pie-chart fs-1"></i>
+                                <p>Không có dữ liệu sản phẩm trong khoảng thời gian này</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Danh sách khách hàng -->
-            <div class="mb-5">
-                <h5 class="text-center mb-3 fw-bold text-secondary">📋 Danh sách khách hàng mua hàng</h5>
+            <div class="mb-5" id="customerSection">
+                <h5 class="text-center mb-3 fw-bold text-secondary slide-in">📋 Danh sách khách hàng mua hàng</h5>
                 <div class="table-responsive" style="max-height: 300px;">
                     <table class="table table-hover align-middle text-center table-bordered border-secondary-subtle">
                         <thead class="table-light sticky-top">
@@ -88,11 +133,15 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="text-center text-muted d-none" id="noCustomerData">
+                    <i class="bi bi-people fs-1"></i>
+                    <p>Không có dữ liệu khách hàng trong khoảng thời gian này</p>
+                </div>
             </div>
 
             <!-- Danh sách sản phẩm -->
-            <div class="mb-5">
-                <h5 class="text-center mb-3 fw-bold text-secondary">🛒 Danh sách sản phẩm đã bán</h5>
+            <div class="mb-5" id="productSection">
+                <h5 class="text-center mb-3 fw-bold text-secondary slide-in">🛒 Danh sách sản phẩm đã bán</h5>
                 <div class="table-responsive" style="max-height: 300px;">
                     <table class="table table-hover align-middle text-center table-bordered border-secondary-subtle">
                         <thead class="table-light sticky-top">
@@ -108,108 +157,601 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="text-center text-muted d-none" id="noProductData">
+                    <i class="bi bi-box-seam fs-1"></i>
+                    <p>Không có dữ liệu sản phẩm trong khoảng thời gian này</p>
+                </div>
             </div>
         </div>
 
+        <style>
+            /* Hiệu ứng loading spinner đẹp */
+            .loading-spinner {
+                position: relative;
+                width: 60px;
+                height: 60px;
+                margin: 0 auto;
+            }
+            
+            .loading-spinner .spinner-ring {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                border: 4px solid transparent;
+                border-top: 4px solid #007bff;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+            
+            .loading-spinner .spinner-ring:nth-child(2) {
+                border-top-color: #28a745;
+                animation-delay: 0.2s;
+            }
+            
+            .loading-spinner .spinner-ring:nth-child(3) {
+                border-top-color: #ffc107;
+                animation-delay: 0.4s;
+            }
+            
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+
+            /* Hiệu ứng fade in cho các card */
+            .fade-in {
+                animation: fadeIn 0.8s ease-in-out;
+            }
+            
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* Hiệu ứng slide in cho bảng */
+            .slide-in {
+                animation: slideIn 0.6s ease-out;
+            }
+            
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateX(-50px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            /* Hiệu ứng pulse cho số liệu */
+            .pulse-number {
+                animation: pulse 0.6s ease-in-out;
+            }
+            
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+
+            /* Hiệu ứng hover cho card */
+            .stat-card {
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+            
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+            }
+
+            /* Hiệu ứng shimmer cho loading */
+            .shimmer {
+                background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite;
+            }
+            
+            @keyframes shimmer {
+                0% { background-position: -200% 0; }
+                100% { background-position: 200% 0; }
+            }
+
+            /* Hiệu ứng cho biểu đồ */
+            .chart-container {
+                opacity: 0;
+                transform: scale(0.9);
+                transition: all 0.8s ease;
+            }
+            
+            .chart-container.loaded {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            /* Hiệu ứng cho bảng */
+            .table-row {
+                opacity: 0;
+                transform: translateY(20px);
+                animation: tableRowFadeIn 0.5s ease forwards;
+            }
+            
+            @keyframes tableRowFadeIn {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* Hiệu ứng cho alert */
+            .alert {
+                animation: slideDown 0.4s ease-out;
+            }
+            
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* Hiệu ứng cho form */
+            .form-control:focus {
+                transform: scale(1.02);
+                transition: transform 0.2s ease;
+            }
+
+            /* Hiệu ứng cho button */
+            .btn {
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            }
+            
+            .btn:active {
+                transform: translateY(0);
+            }
+
+            /* Hiệu ứng ripple cho button */
+            .btn::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.3);
+                transform: translate(-50%, -50%);
+                transition: width 0.6s, height 0.6s;
+            }
+            
+            .btn:active::after {
+                width: 300px;
+                height: 300px;
+            }
+
+            /* Hiệu ứng cho card khi load */
+            .card {
+                transition: all 0.3s ease;
+            }
+
+            /* Hiệu ứng cho icon */
+            .bi {
+                transition: transform 0.3s ease;
+            }
+
+            .stat-card:hover .bi {
+                transform: scale(1.2);
+            }
+
+            /* Hiệu ứng cho table */
+            .table tbody tr {
+                transition: all 0.2s ease;
+            }
+
+            .table tbody tr:hover {
+                background-color: rgba(0,123,255,0.1) !important;
+                transform: scale(1.01);
+            }
+
+            /* Hiệu ứng cho loading text */
+            .loading-text {
+                background: linear-gradient(45deg, #007bff, #28a745, #ffc107, #dc3545);
+                background-size: 400% 400%;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                animation: gradientShift 3s ease infinite;
+            }
+
+            @keyframes gradientShift {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+
+            /* Hiệu ứng cho chart container */
+            .chart-container {
+                position: relative;
+            }
+
+            .chart-container::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+                transform: translateX(-100%);
+                transition: transform 0.6s ease;
+            }
+
+            .chart-container.loaded::before {
+                transform: translateX(100%);
+            }
+        </style>
         <script>
+            // Biến để lưu trữ các biểu đồ
+            let revenueChart = null;
+            let categoryChart = null;
+
+            // Hàm hiển thị/ẩn loading
+            function showLoading(show) {
+                const loading = document.getElementById('loadingSpinner');
+                const overview = document.getElementById('overviewSection');
+                const charts = document.getElementById('chartSection');
+                const customers = document.getElementById('customerSection');
+                const products = document.getElementById('productSection');
+                
+                if (show) {
+                    loading.classList.remove('d-none');
+                    overview.classList.add('d-none');
+                    charts.classList.add('d-none');
+                    customers.classList.add('d-none');
+                    products.classList.add('d-none');
+                } else {
+                    loading.classList.add('d-none');
+                    overview.classList.remove('d-none');
+                    charts.classList.remove('d-none');
+                    customers.classList.remove('d-none');
+                    products.classList.remove('d-none');
+                }
+            }
+
+            // Hàm hiển thị/ẩn thông báo lỗi
+            function showError(message, show = true) {
+                const errorAlert = document.getElementById('errorAlert');
+                const errorMessage = document.getElementById('errorMessage');
+                
+                if (show) {
+                    errorMessage.textContent = message;
+                    errorAlert.classList.remove('d-none');
+                } else {
+                    errorAlert.classList.add('d-none');
+                }
+            }
+
+            // Hàm hiển thị thông tin khoảng thời gian
+            function showDateRangeInfo(fromDate, toDate, show = true) {
+                const dateRangeInfo = document.getElementById('dateRangeInfo');
+                const dateRangeText = document.getElementById('dateRangeText');
+                
+                if (show && fromDate && toDate) {
+                    const from = new Date(fromDate).toLocaleDateString('vi-VN');
+                    const to = new Date(toDate).toLocaleDateString('vi-VN');
+                    dateRangeText.textContent = `Đang hiển thị thống kê từ ${from} đến ${to}`;
+                    dateRangeInfo.classList.remove('d-none');
+                } else {
+                    dateRangeInfo.classList.add('d-none');
+                }
+            }
+
+            // Hàm validation ngày
+            function validateDates(fromDate, toDate) {
+                if (!fromDate || !toDate) {
+                    showError('Vui lòng chọn cả ngày bắt đầu và ngày kết thúc');
+                    return false;
+                }
+
+                const from = new Date(fromDate);
+                const to = new Date(toDate);
+                const today = new Date();
+
+                if (from > to) {
+                    showError('Ngày bắt đầu không thể lớn hơn ngày kết thúc');
+                    return false;
+                }
+
+                if (to > today) {
+                    showError('Ngày kết thúc không thể lớn hơn ngày hiện tại');
+                    return false;
+                }
+
+                showError('', false);
+                return true;
+            }
+
+            // Hàm xóa biểu đồ cũ
+            function destroyCharts() {
+                if (revenueChart) {
+                    revenueChart.destroy();
+                    revenueChart = null;
+                }
+                if (categoryChart) {
+                    categoryChart.destroy();
+                    categoryChart = null;
+                }
+            }
+
+            // Hàm hiển thị/ẩn các phần dữ liệu
+            function toggleDataSections(hasData) {
+                const noRevenueData = document.getElementById('noRevenueData');
+                const noCategoryData = document.getElementById('noCategoryData');
+                const noCustomerData = document.getElementById('noCustomerData');
+                const noProductData = document.getElementById('noProductData');
+
+                if (hasData) {
+                    noRevenueData.classList.add('d-none');
+                    noCategoryData.classList.add('d-none');
+                    noCustomerData.classList.add('d-none');
+                    noProductData.classList.add('d-none');
+                } else {
+                    noRevenueData.classList.remove('d-none');
+                    noCategoryData.classList.remove('d-none');
+                    noCustomerData.classList.remove('d-none');
+                    noProductData.classList.remove('d-none');
+                }
+            }
+
+            // Hàm tạo hiệu ứng cho số liệu
+            function animateNumber(element, finalValue, duration = 1000) {
+                const startValue = 0;
+                const startTime = performance.now();
+                
+                function updateNumber(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    // Easing function để tạo hiệu ứng mượt mà
+                    const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                    const currentValue = startValue + (finalValue - startValue) * easeOutQuart;
+                    
+                    if (element.id === 'totalRevenue') {
+                        element.textContent = Number(currentValue).toLocaleString('en-Us') + ' $';
+                    } else {
+                        element.textContent = Math.round(currentValue);
+                    }
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(updateNumber);
+                    } else {
+                        // Thêm hiệu ứng pulse khi hoàn thành
+                        element.classList.add('pulse-number');
+                        setTimeout(() => element.classList.remove('pulse-number'), 600);
+                    }
+                }
+                
+                requestAnimationFrame(updateNumber);
+            }
+
+            // Hàm tạo hiệu ứng cho bảng
+            function animateTableRows(tableBody, rows) {
+                rows.forEach((row, index) => {
+                    row.style.animationDelay = `${index * 0.1}s`;
+                    row.classList.add('table-row');
+                });
+            }
+
             async function loadReport(fromDate = '', toDate = '') {
                 try {
+                    showLoading(true);
+                    showError('', false);
+                    showDateRangeInfo(fromDate, toDate, fromDate && toDate);
+
                     let url = `/admin/reports/sales-report`;
                     if (fromDate && toDate) {
                         url += `?fromDate=${fromDate}&toDate=${toDate}`;
                     }
 
                     const response = await fetch(url);
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                    }
+
                     const data = await response.json();
 
-                    // Tổng quan
-                    document.getElementById('totalProducts').textContent = data.totalProductsSold;
-                    document.getElementById('totalRevenue').textContent = Number(data.totalRevenue).toLocaleString('en-Us') + ' $';
-                    document.getElementById('totalCustomers').textContent = data.totalCustomers;
+                    // Kiểm tra xem có dữ liệu hay không
+                    const hasData = data.totalProductsSold > 0 || data.totalRevenue > 0 || data.totalCustomers > 0;
+                    toggleDataSections(hasData);
+
+                    // Tổng quan với hiệu ứng animation
+                    animateNumber(document.getElementById('totalProducts'), data.totalProductsSold || 0);
+                    animateNumber(document.getElementById('totalRevenue'), data.totalRevenue || 0);
+                    animateNumber(document.getElementById('totalCustomers'), data.totalCustomers || 0);
+
+                    // Xóa biểu đồ cũ
+                    destroyCharts();
 
                     // Biểu đồ doanh thu (cột)
-                    const monthLabels = data.salesOverTime.map(e => `${e.month}/${e.year}`);
-                    const revenues = data.salesOverTime.map(e => e.revenue);
+                    if (data.salesOverTime && data.salesOverTime.length > 0) {
+                        const monthLabels = data.salesOverTime.map(e => `${e.month}/${e.year}`);
+                        const revenues = data.salesOverTime.map(e => e.revenue);
 
-                    new Chart(document.getElementById('revenueChart'), {
-                        type: 'bar',
-                        data: {
-                            labels: monthLabels,
-                            datasets: [{
-                                label: 'Doanh thu ($)',
-                                data: revenues,
-                                backgroundColor: '#42a5f5'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    ticks: {
-                                        callback: val => val.toLocaleString('en-Us') + '$'
+                        revenueChart = new Chart(document.getElementById('revenueChart'), {
+                            type: 'bar',
+                            data: {
+                                labels: monthLabels,
+                                datasets: [{
+                                    label: 'Doanh thu ($)',
+                                    data: revenues,
+                                    backgroundColor: '#42a5f5'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            callback: val => val.toLocaleString('en-Us') + '$'
+                                        }
                                     }
                                 }
                             }
-                        }
-                    });
+                        });
+                        
+                        // Hiệu ứng cho biểu đồ
+                        setTimeout(() => {
+                            document.getElementById('revenueChartContainer').classList.add('loaded');
+                        }, 100);
+                    }
 
                     // Biểu đồ sản phẩm theo danh mục (tròn)
-                    const categories = Object.keys(data.salesByCategory);
-                    const values = Object.values(data.salesByCategory);
+                    if (data.salesByCategory && Object.keys(data.salesByCategory).length > 0) {
+                        const categories = Object.keys(data.salesByCategory);
+                        const values = Object.values(data.salesByCategory);
 
-                    new Chart(document.getElementById('categoryChart'), {
-                        type: 'pie',
-                        data: {
-                            labels: categories,
-                            datasets: [{
-                                data: values,
-                                backgroundColor: ['#66bb6a', '#ffa726', '#42a5f5', '#ab47bc', '#ef5350']
-                            }]
-                        }
-                    });
+                        categoryChart = new Chart(document.getElementById('categoryChart'), {
+                            type: 'pie',
+                            data: {
+                                labels: categories,
+                                datasets: [{
+                                    data: values,
+                                    backgroundColor: ['#66bb6a', '#ffa726', '#42a5f5', '#ab47bc', '#ef5350', '#26a69a', '#ff7043', '#8d6e63']
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom'
+                                    }
+                                }
+                            }
+                        });
+                        
+                        // Hiệu ứng cho biểu đồ
+                        setTimeout(() => {
+                            document.getElementById('categoryChartContainer').classList.add('loaded');
+                        }, 200);
+                    }
 
                     // Bảng khách hàng
                     const customerBody = document.getElementById("customerTableBody");
                     customerBody.innerHTML = "";
-                    data.customerDetails.forEach(c => {
-                        customerBody.innerHTML += `
-                    <tr>
-                        <td>${c.name}</td>
-                        <td>${c.email}</td>
-                        <td>${c.orderCount}</td>
-                        <td>${Number(c.totalSpent).toLocaleString('en-Us')}$</td>
-                    </tr>
-                `;
-                    });
+                    if (data.customerDetails && data.customerDetails.length > 0) {
+                        data.customerDetails.forEach(c => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${c.name || 'N/A'}</td>
+                                <td>${c.email || 'N/A'}</td>
+                                <td>${c.orderCount || 0}</td>
+                                <td>${Number(c.totalSpent || 0).toLocaleString('en-Us')}$</td>
+                            `;
+                            customerBody.appendChild(row);
+                        });
+                        
+                        // Hiệu ứng cho các dòng bảng
+                        const rows = customerBody.querySelectorAll('tr');
+                        animateTableRows(customerBody, rows);
+                    }
 
                     // Bảng sản phẩm
                     const productBody = document.getElementById("productTableBody");
                     productBody.innerHTML = "";
-                    data.productDetails.forEach(p => {
-                        productBody.innerHTML += `
-                    <tr>
-                        <td>${p.productName}</td>
-                        <td>${p.category}</td>
-                        <td>${p.quantitySold}</td>
-                        <td>${Number(p.totalRevenue).toLocaleString('en-Us')}$</td>
-                    </tr>
-                `;
-                    });
+                    if (data.productDetails && data.productDetails.length > 0) {
+                        data.productDetails.forEach(p => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${p.productName || 'N/A'}</td>
+                                <td>${p.category || 'N/A'}</td>
+                                <td>${p.quantitySold || 0}</td>
+                                <td>${Number(p.totalRevenue || 0).toLocaleString('en-Us')}$</td>
+                            `;
+                            productBody.appendChild(row);
+                        });
+                        
+                        // Hiệu ứng cho các dòng bảng
+                        const rows = productBody.querySelectorAll('tr');
+                        animateTableRows(productBody, rows);
+                    }
+
+                    // Hiển thị thông báo nếu không có dữ liệu
+                    if (!hasData && fromDate && toDate) {
+                        showError('Không có dữ liệu thống kê trong khoảng thời gian đã chọn. Vui lòng thử khoảng thời gian khác.', true);
+                    } else if (!hasData) {
+                        showError('Không có dữ liệu thống kê nào trong hệ thống.', true);
+                    }
 
                 } catch (err) {
                     console.error("Lỗi khi tải dữ liệu báo cáo:", err);
+                    showError(err.message || 'Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại sau.');
+                    toggleDataSections(false);
+                } finally {
+                    showLoading(false);
                 }
             }
 
+            // Hàm reset form
+            function resetForm() {
+                document.getElementById('fromDate').value = '';
+                document.getElementById('toDate').value = '';
+                showError('', false);
+                showDateRangeInfo('', '', false);
+                loadReport(); // Tải dữ liệu mặc định
+            }
+
             document.addEventListener("DOMContentLoaded", () => {
+                // Tải dữ liệu mặc định khi trang được load
                 loadReport();
 
+                // Xử lý form filter
                 document.getElementById('filterForm').addEventListener('submit', function (e) {
                     e.preventDefault();
                     const from = document.getElementById('fromDate').value;
                     const to = document.getElementById('toDate').value;
-                    loadReport(from, to);
+                    
+                    if (validateDates(from, to)) {
+                        loadReport(from, to);
+                    }
+                });
+
+                // Xử lý nút reset
+                document.getElementById('resetBtn').addEventListener('click', resetForm);
+
+                // Validation real-time cho ngày
+                document.getElementById('fromDate').addEventListener('change', function() {
+                    const from = this.value;
+                    const to = document.getElementById('toDate').value;
+                    if (from && to) {
+                        validateDates(from, to);
+                    }
+                });
+
+                document.getElementById('toDate').addEventListener('change', function() {
+                    const from = document.getElementById('fromDate').value;
+                    const to = this.value;
+                    if (from && to) {
+                        validateDates(from, to);
+                    }
                 });
             });
         </script>

@@ -222,6 +222,51 @@
         alert('[[${addError}]]');
     </script>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		function loadNotifications() {
+			$.ajax({
+				url: '/admin/notifications',
+				method: 'GET',
+				success: function (response) {
+					// Cập nhật số lượng
+					$('#notification-qty').text(response.count);
+
+					let html = '';
+					if (response.count > 0) {
+						let index = 1;
+						response.data.forEach(function (item) {
+							html += `
+								<div class="notification-item" style="padding: 10px; border-bottom: 1px solid #eee;">
+									<div style="font-weight:bold;">${index++}. ${item.message}</div>
+									<div style="color:#888; font-size: 12px; margin-top:5px;">${item.createdAt}</div>
+								</div>`;
+						});
+					} else {
+						html = `<div style="text-align:center; color:#888;">Không có thông báo nào.</div>`;
+					}
+					$('#notification-content').html(html);
+				},
+				error: function () {
+					$('#notification-content').html('<div style="text-align:center; color:red;">Không thể tải thông báo.</div>');
+				}
+			});
+		}
+
+		$(document).ready(function () {
+			loadNotifications();
+
+			// Bấm chuông mới toggle hiển thị danh sách
+			$('#notification-btn').click(function (e) {
+				e.preventDefault();
+				$('#notification-list').toggle();
+			});
+
+			// Optional: Tự động reload thông báo mỗi 30s
+			// setInterval(loadNotifications, 30000);
+		});
+	</script>
+
     <script>
         function updateFilter() {
             const sortBy = document.getElementById('sortBy').value;

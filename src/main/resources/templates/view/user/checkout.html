@@ -20,6 +20,7 @@
             <div class="container">
                 <div class="row">
                     <form th:action="@{/user/process}" method="post" id="checkoutForm">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
                         <input type="hidden" name="promotionId" id="promotionId" value="" />
                         <div class="col-md-7">
                             <div class="billing-details">
@@ -89,16 +90,31 @@
                             </div>
                             <div class="payment-method">
                                 <div class="input-radio">
-                                    <input type="radio" name="payment" id="payment-1">
+                                    <input type="radio" name="payment" id="payment-1" value="bank">
                                     <label for="payment-1"><span></span>Chuyển khoản ngân hàng</label>
                                 </div>
                                 <div class="input-radio">
-                                    <input type="radio" name="payment" id="payment-2">
+                                    <input type="radio" name="payment" id="payment-2" value="cod">
                                     <label for="payment-2"><span></span>Thanh toán khi nhận hàng</label>
                                 </div>
                                 <div class="input-radio">
-                                    <input type="radio" name="payment" id="payment-3">
-                                    <label for="payment-3"><span></span>Hệ thống Paypal</label>
+                                    <input type="radio" name="payment" id="payment-3" value="paypal">
+                                    <label for="payment-3"><span></span><i class="fab fa-paypal"></i> PayPal QR Code</label>
+                                </div>
+                            </div>
+
+                            <!-- PayPal QR Preview (hidden by default) -->
+                            <div id="paypalQRPreview" class="paypal-qr-preview" style="display: none;">
+                                <div class="qr-info">
+                                    <h5><i class="fab fa-paypal"></i> Thanh Toán PayPal QR</h5>
+                                    <p>Quét mã QR để thanh toán nhanh chóng và an toàn</p>
+                                    <div class="qr-amount">
+                                        <span>Tổng tiền:</span>
+                                        <strong th:text="'$' + ${#numbers.formatDecimal(checkoutModel.totalAmount, 1, 'COMMA', 2, 'POINT')}">$99.99</strong>
+                                    </div>
+                                    <button type="button" class="btn-paypal-qr" onclick="proceedWithPayPal()" style="position: relative; z-index: 1000;">
+                                        <i class="fab fa-paypal"></i> Tiếp Tục Với PayPal
+                                    </button>
                                 </div>
                             </div>
 
@@ -107,7 +123,7 @@
                                 <label for="terms"><span></span> Tôi đã đọc và đồng ý với <a href="#">điều khoản & điều kiện</a></label>
                             </div>
 
-                            <button type="submit" class="primary-btn order-submit" onclick="return validateForm()">Đặt Hàng</button>
+                            <button type="submit" class="primary-btn order-submit" id="orderSubmitBtn" onclick="return validateForm()">Đặt Hàng</button>
                         </div>
                     </form>
                 </div>
@@ -156,6 +172,25 @@
 	<!-- /FOOTER -->
 
     <script>
+        // Payment method selection handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const paymentMethods = document.querySelectorAll('input[name="payment"]');
+            const paypalPreview = document.getElementById('paypalQRPreview');
+            const orderSubmitBtn = document.getElementById('orderSubmitBtn');
+            
+            paymentMethods.forEach(method => {
+                method.addEventListener('change', function() {
+                    if (this.value === 'paypal') {
+                        paypalPreview.style.display = 'block';
+                        orderSubmitBtn.style.display = 'none';
+                    } else {
+                        paypalPreview.style.display = 'none';
+                        orderSubmitBtn.style.display = 'block';
+                    }
+                });
+            });
+        });
+        
         function applyPromo() {
             let promoCode = document.getElementById("promoCode").value.trim();
             if (!promoCode) {
@@ -182,80 +217,287 @@
                 })
                 .catch(err => {
                     alert("Đã xảy ra lỗi khi áp dụng mã giảm giá.");
-                    console.error("Apply promo error:", err);
                 });
         }
-    </script>
 
-    <script>
         function validateForm() {
-            const fullNameInput = document.getElementById("fullName");
-            const emailInput = document.getElementById("email");
-            const addressInput = document.getElementById("address");
-            const phoneInput = document.getElementById("phone");
-            const termsCheckbox = document.getElementById("terms");
-            const paymentMethods = document.getElementsByName("payment");
-
-            if (!fullNameInput || !emailInput || !addressInput || !phoneInput || !termsCheckbox) {
-                alert("Thiếu trường dữ liệu trong form. Vui lòng tải lại trang.");
+            // Check if terms are accepted
+            if (!document.getElementById("terms").checked) {
+                alert("Vui lòng đồng ý với điều khoản & điều kiện!");
                 return false;
             }
-
-            const fullName = fullNameInput.value.trim();
-            const email = emailInput.value.trim();
-            const address = addressInput.value.trim();
-            const phone = phoneInput.value.trim();
-            const termsChecked = termsCheckbox.checked;
-
-            // Kiểm tra Họ tên
-            if (fullName.length < 3) {
-                alert("Họ và tên phải có ít nhất 3 ký tự.");
+            
+            // Check if payment method is selected
+            const selectedPayment = document.querySelector('input[name="payment"]:checked');
+            if (!selectedPayment) {
+                alert("Vui lòng chọn phương thức thanh toán!");
                 return false;
             }
-
-            // Kiểm tra Email
-            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            if (!emailPattern.test(email)) {
-                alert("Email không hợp lệ.");
+            
+            // Check if address is provided (required for all payment methods)
+            const addressInput = document.getElementById('address');
+            if (!addressInput || !addressInput.value.trim()) {
+                alert("Vui lòng nhập địa chỉ giao hàng!");
                 return false;
             }
-
-            // Kiểm tra Địa chỉ
-            if (address === "") {
-                alert("Địa chỉ không được để trống.");
-                return false;
+            
+            // If PayPal is selected, don't submit the form (let PayPal handle it)
+            if (selectedPayment.value === 'paypal') {
+                return true; // Changed from false to true for PayPal
             }
-
-            // Kiểm tra Số điện thoại
-            const phonePattern = /^[0-9]{10,}$/;
-            if (!phonePattern.test(phone)) {
-                alert("Số điện thoại không hợp lệ. Phải có ít nhất 10 chữ số.");
-                return false;
-            }
-
-            // Kiểm tra phương thức thanh toán
-            let paymentSelected = false;
-            for (let i = 0; i < paymentMethods.length; i++) {
-                if (paymentMethods[i].checked) {
-                    paymentSelected = true;
-                    break;
-                }
-            }
-            if (!paymentSelected) {
-                alert("Vui lòng chọn phương thức thanh toán.");
-                return false;
-            }
-
-            // Kiểm tra đồng ý điều khoản
-            if (!termsChecked) {
-                alert("Bạn phải đồng ý với điều khoản & điều kiện.");
-                return false;
-            }
-
-            // ✅ Tất cả đều hợp lệ
+            
             return true;
         }
+
+        // PayPal QR handling
+        function proceedWithPayPal() {
+            try {
+                
+                // First validate the form
+                if (!validateForm()) {
+                    return false;
+                }
+                
+                
+                // Show loading state
+                const paypalBtn = document.querySelector('.btn-paypal-qr');
+                if (!paypalBtn) {
+                    console.error('PayPal button not found');
+                    alert('Lỗi: Không tìm thấy nút PayPal');
+                    return false;
+                }
+                
+                const originalText = paypalBtn.innerHTML;
+                paypalBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo đơn hàng...';
+                paypalBtn.disabled = true;
+                
+                // Submit form to create order
+                const form = document.getElementById('checkoutForm');
+                if (!form) {
+                    console.error('Checkout form not found');
+                    alert('Lỗi: Không tìm thấy form thanh toán');
+                    paypalBtn.innerHTML = originalText;
+                    paypalBtn.disabled = false;
+                    return false;
+                }
+                
+                const formData = new FormData(form);
+                formData.append('paymentMethod', 'paypal');
+                
+                // Add address from the form
+                const addressInput = document.getElementById('address');
+                if (addressInput && addressInput.value.trim()) {
+                    formData.append('address', addressInput.value.trim());
+                }
+                
+                
+                // Get CSRF token
+                const csrfToken = document.querySelector('input[name="_csrf"]').value;
+                
+                fetch('/user/process', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: formData
+                })
+                .then(response => {
+                    
+                    
+                    if (response.redirected) {
+                        // Handle redirect response
+                        const redirectUrl = response.url;
+                        
+                        
+                        // Extract order ID from redirect URL
+                        const orderIdMatch = redirectUrl.match(/\/confirmation\/(\d+)/);
+                        if (orderIdMatch) {
+                            const orderId = orderIdMatch[1];
+                            
+                            
+                            // Redirect to PayPal payment page
+                            window.location.href = `/paypal/payment?orderId=${orderId}`;
+                        } else {
+                            console.error('Could not extract order ID from redirect URL');
+                            alert('Đơn hàng đã được tạo nhưng không thể chuyển đến trang thanh toán PayPal. Vui lòng kiểm tra email hoặc lịch sử đơn hàng.');
+                            window.location.href = '/user/order-history';
+                        }
+                    } else if (response.ok) {
+                        // Handle successful response
+                        return response.text();
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                })
+                .then(html => {
+                    if (html) {
+                        
+                        // Try to extract order ID from HTML response
+                        const orderIdMatch = html.match(/orderId["\s]*[:=]\s*["\s]*(\d+)/);
+                        if (orderIdMatch) {
+                            const orderId = orderIdMatch[1];
+                            
+                            window.location.href = `/paypal/payment?orderId=${orderId}`;
+                        } else {
+                            
+                            // Look for confirmation link in the response
+                            const confirmationMatch = html.match(/\/confirmation\/(\d+)/);
+                            if (confirmationMatch) {
+                                const orderId = confirmationMatch[1];
+                                
+                                window.location.href = `/paypal/payment?orderId=${orderId}`;
+                            } else {
+                                console.error('Could not find order ID in response');
+                                alert('Đơn hàng đã được tạo nhưng không thể chuyển đến trang thanh toán PayPal. Vui lòng kiểm tra email hoặc lịch sử đơn hàng.');
+                                window.location.href = '/user/order-history';
+                            }
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error creating order:', error);
+                    alert('Có lỗi xảy ra khi tạo đơn hàng: ' + error.message + '. Vui lòng thử lại.');
+                })
+                .finally(() => {
+                    // Restore button state
+                    paypalBtn.innerHTML = originalText;
+                    paypalBtn.disabled = false;
+                });
+            } catch (error) {
+                console.error('Unexpected error in proceedWithPayPal:', error);
+                alert('Lỗi không mong muốn: ' + error.message);
+            }
+        }
     </script>
+    
+    <style>
+        .paypal-qr-preview {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #0070ba;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+            animation: slideInDown 0.5s ease;
+        }
+        
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .qr-info h5 {
+            color: #0070ba;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .qr-info p {
+            color: #6c757d;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+        
+        .qr-amount {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .qr-amount span {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+        
+        .qr-amount strong {
+            color: #0070ba;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+        
+        .btn-paypal-qr {
+            background: linear-gradient(135deg, #0070ba, #005ea6);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 112, 186, 0.3);
+            position: relative;
+            z-index: 1000;
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        .btn-paypal-qr:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 112, 186, 0.4);
+            background: linear-gradient(135deg, #005ea6, #004085);
+        }
+        
+        .btn-paypal-qr i {
+            margin-right: 8px;
+        }
+        
+        .btn-paypal-qr:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: 0 4px 15px rgba(0, 112, 186, 0.3) !important;
+        }
+        
+        .btn-paypal-qr .fa-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Payment method styling */
+        .payment-method .input-radio label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .payment-method .input-radio label i {
+            color: #0070ba;
+            font-size: 18px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .paypal-qr-preview {
+                padding: 20px;
+                margin: 15px 0;
+            }
+            
+            .qr-info h5 {
+                font-size: 1.2rem;
+            }
+            
+            .btn-paypal-qr {
+                padding: 12px 30px;
+                font-size: 14px;
+            }
+        }
+    </style>
 
     <!-- jQuery Plugins -->
 	<script th:src="@{/js/jquery.min.js}"></script>
